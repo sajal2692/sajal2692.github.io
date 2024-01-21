@@ -25,7 +25,7 @@ represent the block-by-block process of coding something relatively complex.
 
 ## Table of contents
 
-## What's K-Means Clustering?
+## Coding K-Means Clustering
 
 K-means clustering is an unsupervised learning algorithm, which groups an unlabeled dataset into different clusters. The "K" refers to the number of pre-defined clusters the dataset is grouped into.
 
