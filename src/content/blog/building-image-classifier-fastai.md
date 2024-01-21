@@ -10,7 +10,6 @@ tags:
   - Computer Vision
   - fastai
 description: "In this post, I demonstrate how to quickly build an image classifier using the fastai library, a powerful tool for practical deep learning. The project involves classifying images of fruit as either rotten or fresh."
-ogImage: ""  # You can add a relevant OG image URL here
 canonicalURL: ""  # Add if the article is published elsewhere
 ---
 

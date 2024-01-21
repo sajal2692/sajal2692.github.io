@@ -10,9 +10,10 @@ tags:
   - interviews
   - machine-learning-from-scratch
 description: "This post details the process of coding the K-Means Clustering algorithm from scratch using Python and NumPy. It's a great exercise for understanding the mechanics of this fundamental machine learning algorithm."
-ogImage: ""  # You can add a relevant OG image URL here
 canonicalURL: ""  # Add if the article is published elsewhere
 ---
+
+## Table of contents
 
 ## Introduction
 
@@ -22,8 +23,6 @@ Despite this, it's a good exercise to try and code some of the basic algorithms 
 
 In this post, we'll implement the K-means clustering algorithm. The code is adapted from multiple sources listed in the references at the bottom, but presented in a way to
 represent the block-by-block process of coding something relatively complex.
-
-## Table of contents
 
 ## Coding K-Means Clustering
 
