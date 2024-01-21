@@ -80,9 +80,11 @@ In order to find the closest centroid for a given sample x, we can use Euclidean
 The euclidean distance between two points, p and q in Euclidean n-space is given by the formula:
 
 
+
 $$
 d\left( p,q\right) = \sqrt {\sum _{i=1}^{n}  \left( q_{i}-p_{i}\right)^2 }
 $$
+
 
 
 This can be adapted by thinking in terms of two vectors x1 and x2:
