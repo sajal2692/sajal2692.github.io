@@ -6,7 +6,6 @@ Welcome to the GitHub repository for my personal website. This site showcases my
 
 - **Purpose**: This repository hosts the static files for blog and portfolio, albeit the portfolio is lacking for now.
 - **Technology**: The site is built with [Astro.js](https://astro.build/), leveraging the [AstroPaper theme](https://github.com/satnaing/astro-paper).
-- **Content**: Information about my professional background, technical skills, academic achievements, and a selection of projects I've worked on.
 
 ## About AstroPaper
 
