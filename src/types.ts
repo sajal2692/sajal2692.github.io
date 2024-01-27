@@ -2,7 +2,7 @@ import type socialIcons from "@assets/socialIcons";
 
 export type Site = {
   website: string;
-  githubRepoName: string;
+  githubRepoName?: string;
   author: string;
   desc: string;
   title: string;
