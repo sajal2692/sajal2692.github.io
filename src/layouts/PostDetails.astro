@@ -46,6 +46,14 @@ const layoutProps = {
 ---
 
 <Layout {...layoutProps}>
+
+  <!-- Add Katex Stylesheet to render Latex code correctly -->
+  <head>
+    <!-- Katex -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
+        integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+  </head>
+
   <Header />
   <div class="mx-auto flex w-full max-w-3xl justify-start px-2">
     <button
@@ -134,7 +142,7 @@ const layoutProps = {
 
       let copyButton = document.createElement("button");
       copyButton.className =
-        "copy-code absolute right-3 -top-3 rounded bg-skin-card px-2 py-1 text-xs leading-4 text-skin-base font-medium";
+        "copy-code absolute right-0 -top-0 rounded bg-skin-card px-2 py-1 text-xs leading-4 text-skin-base font-medium";
       copyButton.innerHTML = copyButtonLabel;
       codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);
