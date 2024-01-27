@@ -2,6 +2,7 @@ import type { Site, SocialObjects } from "./types";
 
 export const SITE: Site = {
   website: "https://sajal2692.github.io", // "https://sajalsharma.com/", // replace this with your deployed domain
+  githubRepoName: "/sajalsharma-v3",
   author: "Sajal Sharma",
   desc: "Internet home of Sajal Sharma, a software engineer specializing in AI and ML.",
   title: "Sajal Sharma",

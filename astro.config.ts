@@ -9,6 +9,7 @@ import { SITE } from "./src/config";
 // https://astro.build/config
 export default defineConfig({
   site: SITE.website,
+  base: SITE.githubRepoName,
   integrations: [
     tailwind({
       applyBaseStyles: false,
@@ -25,9 +26,9 @@ export default defineConfig({
           test: "Table of contents",
         },
       ],
-      'remark-math'
+      "remark-math",
     ],
-    rehypePlugins: ['rehype-katex'],
+    rehypePlugins: ["rehype-katex"],
     shikiConfig: {
       theme: "one-dark-pro",
       wrap: true,
