@@ -29,6 +29,8 @@ This is where [Corrective RAG (CRAG)](https://arxiv.org/abs/2401.15884) comes in
 
 In my latest experiment, I implemented CRAG using [LangGraph](https://python.langchain.com/docs/langgraph), a powerful framework developed by the team at Langchain, for building complex AI workflows, using a graph-based approach. Follow along and this blog post will reinforce not only the value of CRAG to handle similar situations, but also the capability of LangGraph in orchestrating complex LLM workflows.
 
+You can find a Python notebook for this post [here](https://github.com/sajal2692/llm_tutorials/blob/main/rag/corrective_rag_with_langgraph.ipynb).
+
 ## Set Up
 
 We’ll use langgraph (and thus, langchain) as our orchestration framework, OpenAI API for the chat and embedding endpoints, and ChromaDB for this demonstration.
