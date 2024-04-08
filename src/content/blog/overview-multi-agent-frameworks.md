@@ -37,11 +37,11 @@ Agents are autonomous entities programmed to perform specific tasks, make decisi
 
 #### Tools
 
-Tools represent specialized functions or skills that agents leverage to execute tasks. Ranging from simple data retrieval to complex analysis, these tools form the operational backbone of agents, enabling them to perform a wide array of actions. The careful selection of these tools is vital in detemining the system's overall functionality and efficiency.
+Tools represent specialized functions or skills that agents leverage to execute tasks. Ranging from simple data retrieval (from an API or a knowledge base) to complex analysis, these tools form the operational backbone of agents, enabling them to perform a wide array of actions. The careful selection of these tools is vital in detemining the system's overall functionality and efficiency.
 
 #### Processes or Flows
 
-Processes (or flows) orchestrate the execution of tasks within a multi-agent system, ensuring efficient task distribution and alignment with strategic objectives. They provide a structured approach to task management, akin to project management within human teams, facilitating scalable and effective operations.
+Processes (or flows) define how tasks should be orchestrated within a multi-agent system, ensuring efficient task distribution and alignment with objectives. Processes can be defined both inter, and intra agent i.e. how an agent interacts with tools, or with outputs of other agents or computational processes.
 
 ### Leading Multi-Agent Frameworks
 
