@@ -39,6 +39,8 @@ A shoutout to **Nicole Butterfield** and **Charlotte Ames** from O'Reilly for th
 
 The course is now live on O’Reilly! If you're excited about AI, multi-agent systems, or just love taking online course (like I do), check it out [here](https://learning.oreilly.com/course/building-ai-agents/0642572077884/).
 
+A Github repo containing the code for the course is also available [here](https://github.com/sajal2692/building_ai_agents_with_langgraph).
+
 Please feel free to reach out to me if you have any feedback or questions about the course, through [LinkedIn](https://www.linkedin.com/in/sajals/) or [email](mailto:contact@sajalsharma.com). Always happy to hear from you!
 
 Let’s build some AI agents! 💡⚡
