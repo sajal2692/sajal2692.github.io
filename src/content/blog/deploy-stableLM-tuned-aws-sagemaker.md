@@ -3,7 +3,7 @@ title: "Deploy StableLM models on AWS Sagemaker Endpoints"
 author: "Sajal Sharma" # Replace with the actual author's name
 pubDatetime: 2023-04-30T00:00:00Z
 slug: deploy-stablelm-models-aws-sagemaker
-featured: true
+featured: false
 draft: false
 tags:
   - llms
