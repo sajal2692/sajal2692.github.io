@@ -1,9 +1,9 @@
 ---
 title: "Deploy StableLM models on AWS Sagemaker Endpoints"
-author: "Your Name"  # Replace with the actual author's name
+author: "Sajal Sharma" # Replace with the actual author's name
 pubDatetime: 2023-04-30T00:00:00Z
 slug: deploy-stablelm-models-aws-sagemaker
-featured: true
+featured: false
 draft: false
 tags:
   - llms
@@ -11,7 +11,7 @@ tags:
   - aws
   - generative-ai
 description: "This blog post guides you through the process of deploying StableLM models on AWS Sagemaker Endpoints, including creating a custom inference script and setting up the endpoint."
-canonicalURL: ""  # Add if the article is published elsewhere
+canonicalURL: "" # Add if the article is published elsewhere
 ---
 
 ## Table of contents
@@ -27,9 +27,11 @@ This blog post is based on the [Deploy FLAN-UL2 20B on Amazon SageMaker](https:/
 check out his website for excellent content about NLP and AWS.
 
 ![StableLM](@assets/images/blog/deploying-stablelm/newparrot.png)
+
 <Caption text="StableLM" />
 
 ## Steps:
+
 1. Download the model from Huggingface.
 2. Create a custom inference script.
 3. Package the model and inference script by creating the model.tar.gz archive.
@@ -37,12 +39,12 @@ check out his website for excellent content about NLP and AWS.
 5. Create a Sagemaker Endpoint.
 
 You can follow the steps on your local machine or on an AWS Sagemaker Studio notebook / terminal. You'll need to make sure that your local machine or the Sagemaker instance has enough
-disk space to download the model & create the archive file. This blog post will also not go into details about how to set up your AWS account permissions, so please make sure to 
+disk space to download the model & create the archive file. This blog post will also not go into details about how to set up your AWS account permissions, so please make sure to
 follow the blog post provided in the references on how to do this for a similar model.
 
 ### 1. Download the model from Huggingface.
 
-Make sure you have *git* and *git-lfs* installed on your system. Simply run the following commands in your terminal to download the model:
+Make sure you have _git_ and _git-lfs_ installed on your system. Simply run the following commands in your terminal to download the model:
 
 ```bash
 # Make sure you have git-lfs installed (https://git-lfs.com)
@@ -50,17 +52,18 @@ git lfs install
 git clone https://huggingface.co/stabilityai/stablelm-tuned-alpha-7b
 ```
 
-The model will then be available inside the directory *stablelm-tuned-alpha-7b*.
+The model will then be available inside the directory _stablelm-tuned-alpha-7b_.
 
 ### 2. Create a custom inference script.
 
-Change the directory to the model directory and create a directory called *code*.
+Change the directory to the model directory and create a directory called _code_.
+
 ```bash
 cd stablelm-tuned-alpha-7b
 mkdir code
 ```
 
-Create a file called *inference*.py inside the *code* directory and copy the following code into it:
+Create a file called _inference_.py inside the _code_ directory and copy the following code into it:
 
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
@@ -87,13 +90,13 @@ def model_fn(model_dir):
     model = AutoModelForCausalLM.from_pretrained(model_dir)
     model.half().cuda()
     return model, tokenizer
-    
+
 def predict_fn(data, model_and_tokenizer):
-    
+
     model, tokenizer = model_and_tokenizer
-    
+
     input = data.pop("input", None)
-    
+
     prompt = f"{SYSTEM_PROMPT}<|USER|>{input}<|ASSISTANT|>"
     inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
     input_ids = inputs['input_ids']
@@ -118,15 +121,15 @@ If you want to try out the model with a different system prompt, you can pass it
 
 ### 3. Package the model and inference script by creating the model.tar.gz archive.
 
-Now that we have the model and the inference code, we need to package it into a single archive file. We'll be using the *tar* command to do this. Make sure you have *tar* installed on your system.
+Now that we have the model and the inference code, we need to package it into a single archive file. We'll be using the _tar_ command to do this. Make sure you have _tar_ installed on your system.
 
-Assuming you are inside the *stablelm-tuned-alpha-7b* directory, run the following command to create the archive file:
+Assuming you are inside the _stablelm-tuned-alpha-7b_ directory, run the following command to create the archive file:
 
 ```bash
 tar zcvf model.tar.gz *
 ```
 
-The command includes all the files within the above directory in the *model.tar.gz*. It takes around 30mins to run on my M1 Mac.
+The command includes all the files within the above directory in the _model.tar.gz_. It takes around 30mins to run on my M1 Mac.
 
 ### 4. Upload the model to S3.
 
@@ -136,7 +139,7 @@ To accomplish this, you can refer to the [official AWS guide](https://docs.aws.a
 
 ### 5. Create a Sagemaker Endpoint.
 
-Now that we have the model uploaded to S3, we can create a Sagemaker Endpoint using the Sagemaker python SDK. It includes a class called *HuggingFaceModel* that we can use to create the endpoint.
+Now that we have the model uploaded to S3, we can create a Sagemaker Endpoint using the Sagemaker python SDK. It includes a class called _HuggingFaceModel_ that we can use to create the endpoint.
 
 Make sure to install the Sagemaker SDK first in your Python environment:
 
@@ -155,7 +158,7 @@ from sagemaker.huggingface.model import HuggingFaceModel
 MODEL_S3_LOCATION = "" # fill in with your S3 object URL for the model
 
 huggingface_model = HuggingFaceModel(
-    model_data=MODEL_S3_LOCATION, 
+    model_data=MODEL_S3_LOCATION,
     role= sagemaker.get_execution_role(), # IAM role with permissions to create an Endpoint
     transformers_version="4.26",
     pytorch_version="1.13",
@@ -165,7 +168,7 @@ huggingface_model = HuggingFaceModel(
 predictor = huggingface_model.deploy(initial_instance_count=1, instance_type="ml.g5.4xlarge")
 ```
 
-The code above creates a HuggingFaceModel object and deploys it to a Sagemaker Endpoint. It uses the *ml.g5.4xlarge* instance type, but you can experiment with other instance types if you are using a smaller model (like the 3b variant).
+The code above creates a HuggingFaceModel object and deploys it to a Sagemaker Endpoint. It uses the _ml.g5.4xlarge_ instance type, but you can experiment with other instance types if you are using a smaller model (like the 3b variant).
 
 You can invoke the endpoint using the following code:
 
@@ -175,9 +178,8 @@ predictor.predict({ "input": "Write me a poem about AWS."})
 
 It should hopefully work if you followed the above steps. If you run into any issues, please feel free to reach out to me on contact@sajalsharma.com and I'll update the post accordingly.
 
-
-
 ## References
+
 1. [Deploy FLAN-UL2 20B on Amazon SageMaker](https://www.philschmid.de/deploy-flan-ul2-sagemaker)
 2. [StabileLM Tuned Alpha 7b on HuggingFace](https://huggingface.co/stabilityai/stablelm-tuned-alpha-7b)
 3. [Uploading objects to an S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html)

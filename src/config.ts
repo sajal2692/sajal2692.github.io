@@ -1,13 +1,13 @@
 import type { Site, SocialObjects } from "./types";
 
 export const SITE: Site = {
-  website: "https://sajal2692.github.io", // "https://sajalsharma.com/", // replace this with your deployed domain
+  website: "https://sajalsharma.com/", // replace this with your deployed domain
   author: "Sajal Sharma",
   desc: "Internet home of Sajal Sharma, a software engineer specializing in AI and ML.",
   title: "Sajal Sharma",
   ogImage: "astropaper-og.jpg",
   lightAndDarkMode: true,
-  postPerPage: 3,
+  postPerPage: 5,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
 };
 
@@ -47,7 +47,7 @@ export const SOCIALS: SocialObjects = [
     name: "Twitter",
     href: "https://twitter.com/sajal2692",
     linkTitle: `${SITE.title} on Twitter`,
-    active: true,
+    active: false,
   },
   {
     name: "Twitch",

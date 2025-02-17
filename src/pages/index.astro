@@ -43,11 +43,11 @@ const socialCount = SOCIALS.filter(social => social.active).length;
         <span class="sr-only">RSS Feed</span>
       </a> -->
 
-      <p> I'm Sajal, a seasoned Software Engineer specializing in Generative AI, Machine Learning, and Natural Language Processing.</p>
+      <p>I'm Sajal, AI Engineer and Technology Leader specializing in Generative AI, Machine Learning, and Natural Language Processing.</p>
 
-      <p>At the heart of my work lies a passion for bridging the gap between human intelligence and artificial ingenuity. Discover my journey and insights in AI & ML on my blog, or dive into my professional story through my resume.</p>
+      <p>I’m passionate about building AI systems that amplify human potential—bridging the gap between human and artificial intelligence.</p>
 
-      <p>Let's explore the possibilities of AI together! 🚀</p>
+      <p>Explore my journey and insights on AI & ML through my <a href="/posts">blog</a>, or read more about my <a href="/about">professional experience</a>. 🚀</p>
 
       {
         // only display if at least one social link is enabled
@@ -66,7 +66,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
       featuredPosts.length > 0 && (
         <>
           <section id="featured">
-            <h2>Featured</h2>
+            <h2>Featured Posts</h2>
             <ul>
               {featuredPosts.map(({ data, slug }) => (
                 <Card
@@ -122,6 +122,17 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   #hero {
     @apply pb-6 pt-8;
   }
+  /* ===== Hero Section Link Styles ===== */
+    #hero a {
+    @apply outline-2 outline-offset-1 outline-skin-fill 
+      focus-visible:no-underline focus-visible:outline-dashed 
+      underline decoration-dashed underline-offset-8;
+  }
+
+  #hero a:hover {
+    @apply text-skin-accent;
+  }
+
   #hero h1 {
     @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
   }

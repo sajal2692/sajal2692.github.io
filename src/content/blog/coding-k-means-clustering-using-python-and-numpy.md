@@ -1,6 +1,6 @@
 ---
 title: "Coding K-Means Clustering using Python and NumPy"
-author: "Your Name"  # Replace with the actual author's name
+author: "Sajal Sharma"
 pubDatetime: 2022-09-22T00:00:00Z
 slug: coding-kmeans-clustering-python-numpy
 featured: false
@@ -10,7 +10,7 @@ tags:
   - interviews
   - machine-learning-from-scratch
 description: "This post details the process of coding the K-Means Clustering algorithm from scratch using Python and NumPy. It's a great exercise for understanding the mechanics of this fundamental machine learning algorithm."
-canonicalURL: ""  # Add if the article is published elsewhere
+canonicalURL: "" # Add if the article is published elsewhere
 ---
 
 ## Table of contents
@@ -30,20 +30,22 @@ K-means clustering is an unsupervised learning algorithm, which groups an unlabe
 
 We'll implement the algorithm using Python and NumPy to understand the concepts more clearly.
 
-Given: 
-   - K = number of clusters
-   - X = training data of shape (m, n): m samples and n features
-   - max_iterations = max number of iterations to run the algorithm for
+Given:
+
+- K = number of clusters
+- X = training data of shape (m, n): m samples and n features
+- max_iterations = max number of iterations to run the algorithm for
 
 Plainly, the algorithm entails the following steps:
+
 1. Randomly initialize K cluster centroids i.e. the center of the clusters.
 2. Repeat till convergence or end of max number of iterations:
-    1. For samples i=1 to m in the dataset:
-        - Assign the closest cluster centroid to X[i] 
-    2. For cluster k=1 to K:
-        - Find new cluster centroids by calculating the mean of the points assigned to cluster k.
-        
-We will define the needed functions as and when we require them. 
+   1. For samples i=1 to m in the dataset:
+      - Assign the closest cluster centroid to X[i]
+   2. For cluster k=1 to K:
+      - Find new cluster centroids by calculating the mean of the points assigned to cluster k.
+
+We will define the needed functions as and when we require them.
 
 ```python
 import numpy as np
@@ -53,10 +55,9 @@ import numpy as np
 
 As a starting point, we'll initialize the K cluster centoids by picking K samples at random from the dataset X.
 
-Note that this method of initialization can result in different clusters being found in different runs of the algorithm. The clusters will also depend on the location of the initial centroids. 
+Note that this method of initialization can result in different clusters being found in different runs of the algorithm. The clusters will also depend on the location of the initial centroids.
 
 A smarter initialization mehtod, which produces more stable clusters, while maximizing the distance between a centroid to other centroids is the [k-means++](https://www.geeksforgeeks.org/ml-k-means-algorithm/) algorithm. We won't be covering it here, but feel free to read up on it. K-means++ is the initialization algorithm used in Scikit-learn's implementation.
-
 
 ```python
 # randomly initializing K centroid by picking K samples from X
@@ -68,26 +69,21 @@ def initialize_random_centroids(K, X):
     # pick indices of K samples, with replacement, from the training data
     centroid_indices = np.random.choice(range(m), size=K, replace=False)
     for i in range(K):
-        centroids[i] =  X[centroid_indices[i]] 
+        centroids[i] =  X[centroid_indices[i]]
     return centroids
 ```
 
 ### 2. Calculate euclidean distance between two vectors
 
-In order to find the closest centroid for a given sample x, we can use Euclidean Distance between a given centroid and x. 
+In order to find the closest centroid for a given sample x, we can use Euclidean Distance between a given centroid and x.
 
 The euclidean distance between two points, p and q in Euclidean n-space is given by the formula:
-
-
 
 $$
 d\left( p,q\right) = \sqrt {\sum _{i=1}^{n}  \left( q_{i}-p_{i}\right)^2 }
 $$
 
-
-
 This can be adapted by thinking in terms of two vectors x1 and x2:
-
 
 ```python
 def euclidean_distance(x1, x2):
@@ -96,7 +92,6 @@ def euclidean_distance(x1, x2):
 ```
 
 We can also use the calculate the same by taking the L2 norm of the difference between the two vectors. This can be accomplished using NumPy:
-
 
 ```python
 np.linalg.norm(x1 - x2)
@@ -148,7 +143,7 @@ def compute_means(cluster_idx, K, X):
 
 ### 6. Putting everything together
 
-Let's build a function that can run the K-means algorithm for the required number of iterations, or till convergence. 
+Let's build a function that can run the K-means algorithm for the required number of iterations, or till convergence.
 
 ```python
 def run_Kmeans(K, X, max_iterations=500):
@@ -160,7 +155,7 @@ def run_Kmeans(K, X, max_iterations=500):
     for _ in range(max_iterations):
         # create clusters by assigning the samples to the closet centroids
         clusters = create_clusters(centroids, K, X)
-        previous_centroids = centroids                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+        previous_centroids = centroids
         # compute means of the clusters and assign to centroids
         centroids = compute_means(clusters, K, X)
         # if the new_centroids are the same as the old centroids, return clusters
@@ -196,7 +191,7 @@ p.plot_in_2d(X, y, title="Actual Clustering")
 ![coding-k-means-clustering](@assets/images/blog/coding-k-means-clustering/k-means-clustering-output.png)
 
 ![coding-k-means-clustering](@assets/images/blog/coding-k-means-clustering/actual-clustering-output.png)
-    
+
 Again, the clusters can depend on the initialization points of centroids, but this time it looks like our implementation was able to find the correct clusters.
 
 ## Summary
