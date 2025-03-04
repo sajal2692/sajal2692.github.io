@@ -3,7 +3,7 @@ title: "Building a Corrective RAG workflow with LangGraph"
 author: "Sajal Sharma" # Replace with the actual author's name
 pubDatetime: 2024-02-29T00:00:00Z
 slug: corrective-rag-langgraph
-featured: true
+featured: false
 draft: false
 tags:
   - llms
