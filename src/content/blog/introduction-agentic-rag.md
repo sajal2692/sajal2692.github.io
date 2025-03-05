@@ -10,7 +10,7 @@ tags:
   - ai-engineering
   - ai-agents
   - rag
-description: "This post details the foundation of agentic RAG, a multi-agent framework that uses AI Agents as decision-makers in a RAG pipeline. It does through the common design patterns for Agentic RAG, as well as a few example pipelines."
+description: "A comprehensive introduction to agentic RAG, common design patterns, as well as a few example pipelines."
 canonicalURL: "" # Add if the article is published elsewhere
 ---
 
@@ -202,7 +202,7 @@ While Agentic RAG enhances retrieval adaptability and reasoning, it also introdu
 
 Agentic RAG dynamically refines queries, re-evaluates retrieved results, and iterates on retrieval, leading to longer response times compared to a standard RAG pipeline.
 
-Mitigation Strategies:
+**Mitigation Strategies:**
 
 - **Prioritize efficiency in decision-making** – Use lighter models for query routing and reflection instead of larger, flagship LLMs.
 - **Introduce early stopping criteria** – If retrieval confidence is high after the first pass, avoid unnecessary additional retrieval steps.
@@ -212,7 +212,7 @@ Mitigation Strategies:
 
 Additional processing, multiple retrieval steps, and self-reflection loops increase inference costs, especially when using large LLMs for decision-making.
 
-Mitigation Strategies:
+**Mitigation Strategies:**
 
 Strategies mentioned above also apply to keeping the costs under control. Additionally, we can
 
@@ -223,7 +223,7 @@ Strategies mentioned above also apply to keeping the costs under control. Additi
 
 Agentic RAG systems rely on LLMs making decisions at multiple stages, such as query classification, retrieval re-ranking, and response validation. Crafting and fine-tuning prompts for these decision points requires ongoing maintenance.
 
-Mitigation Strategies:
+**Mitigation Strategies:**
 
 - **Use modular prompt templates & prompt libraries** – Instead of hardcoding separate prompts for each agent, use a consistent structure across all decision-making steps. Take advantage of prompt management tools such as Langtrace.
 - **Limit decision-making complexity** – Not every step needs an LLM decision—use **rule-based heuristics** for simple routing tasks to reduce reliance on prompts.
@@ -232,7 +232,7 @@ Mitigation Strategies:
 
 Traditional RAG evaluation methods focus on retrieval accuracy, but Agentic RAG requires evaluating decision-making quality, retrieval effectiveness, planning & reflection accuracy, and final response correctness, making the evaluation process more complex.
 
-Mitigation Strategies:
+**Mitigation Strategies:**
 
 - **Break evaluation into stages** – Measure the quality of each agent / decision point separately. For example, measure retrieval quality separately from the accuracy of query analyser and the reflection agents.
 - **Use automatic evaluation pipelines** – Implement LLM-based grading or embedding similarity scoring to automate quality assessments, as much as possible.
