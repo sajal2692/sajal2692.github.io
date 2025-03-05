@@ -10,7 +10,7 @@ tags:
   - ai-engineering
   - ai-agents
   - rag
-description: "This post details the foundation of agentic RAG, a multi-agent framework that uses AI Agents as decision-makers in a RAG pipeline. It does through the common design patterns for Agentic RAG, as well as a few example pipelines."
+description: "A comprehensive introduction to agentic RAG, common design patterns, as well as a few example pipelines."
 canonicalURL: "" # Add if the article is published elsewhere
 ---
 
