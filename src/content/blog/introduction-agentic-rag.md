@@ -107,7 +107,7 @@ For example, given a query like _"How did the 2008 financial crisis compare to t
 
 ### Self Evaluation through Reflection
 
-Another limitation of traditional RAG is its inability to assess the quality of retrieved documents \*\*\*\*before using them for response generation. Agentic RAG overcomes this by incorporating self-evaluation mechanisms, where the system can actively check its own retrieval results and generated responses.
+Another limitation of traditional RAG is its inability to assess the quality of retrieved documents before using them for response generation. Agentic RAG overcomes this by incorporating self-evaluation mechanisms, where the system can actively check its own retrieval results and generated responses.
 
 This pattern can involve:
 
