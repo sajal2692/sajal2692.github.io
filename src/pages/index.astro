@@ -48,6 +48,15 @@ const socialCount = SOCIALS.filter(social => social.active).length;
       <p>I’m passionate about building AI systems that amplify human potential—bridging the gap between human and artificial intelligence.</p>
 
       <p>Explore my journey and insights on AI & ML through my <a href="/posts">blog</a>, or read more about my <a href="/about">professional experience</a>. 🚀</p>
+      <section id="newsletter">
+        <p> Sign up for my newsletter to get updates on my latest projects and insights on AI & ML. 👇</p>
+        <script
+          async
+          data-uid="2d16cff56e"
+          src="https://sajalsharma.kit.com/2d16cff56e/index.js"
+          is:inline
+        ></script>
+      </section>
 
       {
         // only display if at least one social link is enabled
@@ -164,4 +173,10 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   .all-posts-btn-wrapper {
     @apply my-8 text-center;
   }
+
+  /* add some top padding for newsletter */
+  #newsletter {
+    @apply pt-6 pl-0;
+  }
+
 </style>

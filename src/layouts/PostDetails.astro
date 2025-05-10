@@ -83,8 +83,20 @@ const layoutProps = {
       {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
     </ul>
 
+    <section id="newsletter" class="mt-8 mb-8 p-0">
+      <p>Sign up for my newsletter to get updates on my latest projects and insights on AI & ML. 👇</p>
+      <div class="mt-4"> 
+        <script
+          async
+          data-uid="2d16cff56e"
+          src="https://sajalsharma.kit.com/2d16cff56e/index.js"
+          is:inline
+        ></script>
+      </div>
+    </section>
+
     <div
-      class="flex flex-col-reverse items-center justify-between gap-6 sm:flex-row-reverse sm:items-end sm:gap-4"
+      class="flex flex-col-reverse items-center justify-between gap-6 sm:flex-row-reverse sm:items-end sm:gap-4 mb-8"
     >
       <button
         id="back-to-top"
@@ -99,7 +111,9 @@ const layoutProps = {
       </button>
 
       <ShareLinks />
+
     </div>
+    
   </main>
   <Footer />
 </Layout>
