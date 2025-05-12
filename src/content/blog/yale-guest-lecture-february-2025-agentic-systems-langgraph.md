@@ -3,7 +3,7 @@ title: "Guest Lecture at Yale: February 2025 - Agentic Systems with LangGraph"
 author: "Sajal Sharma" # Replace with the actual author's name
 pubDatetime: 2025-02-20T00:00:00Z
 slug: yale-guest-lecture-february-2025-ai-agents-langgraph
-featured: true
+featured: false
 draft: false
 tags:
   - ai-agents
