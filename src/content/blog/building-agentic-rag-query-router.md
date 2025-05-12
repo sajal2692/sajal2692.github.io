@@ -12,7 +12,7 @@ tags:
   - rag
   - nlp
   - agentic-workflows
-description: "A deep dive into building an agentic RAG workflow with a query router using LangGraph, enabling the system to intelligently choose between Wikipedia and web search retrievers based on query type."
+description: "A coding tutorial on building an agentic RAG workflow with a query router using LangGraph, enabling the system to intelligently choose between Wikipedia and web search retrievers based on query type."
 canonicalURL: ""
 ---
 
