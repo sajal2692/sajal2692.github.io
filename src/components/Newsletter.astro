@@ -34,7 +34,7 @@
             <span>Subscribe</span>
           </button>
         </div>
-        <div id="success-message" class="hidden mt-4 p-3 bg-green-50 text-green-800 rounded-md border border-green-200">
+        <div id="success-message" class="hidden mt-4 p-3 bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-md border border-green-200 dark:border-green-800">
           <p class="text-center">Thanks for subscribing! <strong>Please check your email to confirm your subscription.</strong></p>
         </div>
       </div>
@@ -48,6 +48,31 @@
   }
   .subscribe-btn:hover {
     background-color: #005a8e;
+  }
+  
+  /* Input styles */
+  .formkit-input {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  /* Dark mode styles */
+  html[data-theme="dark"] .subscribe-btn {
+    background-color: #149231;
+  }
+  html[data-theme="dark"] .subscribe-btn:hover {
+    background-color: #0d6b22;
+  }
+  
+  /* Dark mode input styles */
+  html[data-theme="dark"] .formkit-input {
+    background-color: #2A3550;
+    border-color: #3E4A6B;
+    color: #E4EDF3;
+  }
+  
+  html[data-theme="dark"] .formkit-input::placeholder {
+    color: #8996B5;
   }
 </style>
 
