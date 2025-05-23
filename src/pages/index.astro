@@ -15,7 +15,6 @@ const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
 const socialCount = SOCIALS.filter(social => social.active).length;
 ---
@@ -79,30 +78,10 @@ const socialCount = SOCIALS.filter(social => social.active).length;
               ))}
             </ul>
           </section>
-          {recentPosts.length > 0 && <Hr />}
         </>
       )
     }
 
-    {
-      recentPosts.length > 0 && (
-        <section id="recent-posts">
-          <h2>More Posts</h2>
-          <ul>
-            {recentPosts.map(
-              ({ data, slug }, index) =>
-                index < 4 && (
-                  <Card
-                    href={`/posts/${slug}`}
-                    frontmatter={data}
-                    secHeading={false}
-                  />
-                )
-            )}
-          </ul>
-        </section>
-      )
-    }
 
     <div class="all-posts-btn-wrapper">
       <LinkButton href="/posts">
