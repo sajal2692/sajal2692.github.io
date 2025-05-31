@@ -1,5 +1,5 @@
 ---
-title: "Building an Agentic RAG Workflow with Query Router Using LangGraph"
+title: "Agentic RAG Series - Part 2: Building an Agentic RAG Workflow with Query Router Using LangGraph"
 author: "Sajal Sharma"
 pubDatetime: 2025-05-12T00:00:00Z
 slug: agentic-rag-query-router-langgraph
