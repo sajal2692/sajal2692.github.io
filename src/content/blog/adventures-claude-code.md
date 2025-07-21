@@ -51,7 +51,7 @@ _A high level architecture of the POC we built using Claude Code_
 
 ### Frontend Journey
 
-Our starting point was code downloaded from a Lovable app that the product manager on our team had created using Vite.js. Claude Code was able to port this to Next.js quite effectively. It's worth noting that services like nextlovable.com are now charging for this specific type of migration, but Claude Code handled it seamlessly as part of our broader development goals. We migrated to Next.js since our comapany uses Vercel for deployments.
+Our starting point was code downloaded from a Lovable app that the product manager on our team had created. This was a vite.js app that Claude Code was able to port this to Next.js quite effectively. It's worth noting that services like nextlovable.com are now charging for this specific type of migration, but Claude Code handled it seamlessly as part of our broader development goals. We migrated to Next.js since our comapany uses Vercel for deployments.
 
 ### Backend Development
 
