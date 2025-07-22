@@ -1,5 +1,5 @@
 ---
-title: "Adventures with Claude Code: Building a Full-Stack System from Scratch in 60 Days"
+title: "Adventures with Claude Code: Reflections on Building a Full-Stack System with AI Assisted Coding"
 author: "Sajal Sharma"
 pubDatetime: 2025-07-20T00:00:00Z
 slug: adventures-claude-code
