@@ -1,5 +1,5 @@
 ---
-title: "Adventures with Claude Code: Thoughts after Two Months of Daily Use"
+title: "Adventures with Claude Code: Building a Full-Stack System from Scratch in 60 Days"
 author: "Sajal Sharma"
 pubDatetime: 2025-07-20T00:00:00Z
 slug: adventures-claude-code
