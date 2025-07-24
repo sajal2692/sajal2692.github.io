@@ -109,14 +109,18 @@ const socialImageURL = new URL(
     <!-- <ViewTransitions /> -->
 
     <!-- Google tag (gtag.js) -->
-    <script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-JCR2S41KRX"></script>
-    <script type="text/partytown">
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+    {import.meta.env.GA_TRACKING_ID && (
+      <>
+        <script type="text/partytown" async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.GA_TRACKING_ID}`}></script>
+        <script type="text/partytown" define:vars={{ gaId: import.meta.env.GA_TRACKING_ID }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
-      gtag('config', 'G-JCR2S41KRX');
-    </script>
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
 
     <script is:inline src="/toggle-theme.js"></script>
   </head>
