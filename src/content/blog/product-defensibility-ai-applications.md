@@ -3,7 +3,7 @@ title: "What's the Moat? Product Defensibility for AI Applications"
 author: "Sajal Sharma"
 pubDatetime: 2025-04-11T00:00:00Z
 slug: product-defensibility-ai-applications
-featured: true
+featured: false
 draft: false
 tags:
   - llms

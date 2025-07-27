@@ -3,7 +3,7 @@ title: "Agentic RAG Series - Part 3: Building a Comprehensive Agentic RAG Workfl
 author: "Sajal Sharma"
 pubDatetime: 2025-05-31T00:00:00Z
 slug: comprehensive-agentic-rag
-featured: true
+featured: false
 draft: false
 tags:
   - llms
