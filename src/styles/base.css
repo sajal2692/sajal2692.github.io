@@ -50,8 +50,14 @@
     sm:scale-110;
   }
   .prose {
-    @apply prose-headings:!mb-3 prose-headings:!text-skin-base 
-    prose-h3:italic prose-p:!text-skin-base 
+    @apply prose-headings:!text-skin-base 
+    prose-h1:!text-3xl prose-h1:!font-bold prose-h1:!mb-6 prose-h1:!mt-8 prose-h1:!border-l-4 prose-h1:!border-skin-accent prose-h1:!pl-4
+    prose-h2:!text-2xl prose-h2:!font-semibold prose-h2:!mb-4 prose-h2:!mt-12 prose-h2:!border-l-4 prose-h2:!border-skin-accent prose-h2:!border-opacity-80 prose-h2:!pl-4
+    prose-h3:!text-xl prose-h3:!font-medium prose-h3:!mb-3 prose-h3:!mt-8 prose-h3:italic prose-h3:!border-l-4 prose-h3:!border-skin-accent prose-h3:!border-opacity-60 prose-h3:!pl-4
+    prose-h4:!text-lg prose-h4:!font-medium prose-h4:!mb-3 prose-h4:!mt-6 prose-h4:!border-l-4 prose-h4:!border-skin-accent prose-h4:!border-opacity-40 prose-h4:!pl-4
+    prose-h5:!text-base prose-h5:!font-medium prose-h5:!mb-2 prose-h5:!mt-4 prose-h5:!border-l-4 prose-h5:!border-skin-accent prose-h5:!border-opacity-30 prose-h5:!pl-4
+    prose-h6:!text-sm prose-h6:!font-medium prose-h6:!mb-2 prose-h6:!mt-4 prose-h6:!text-skin-base prose-h6:!opacity-75 prose-h6:!border-l-4 prose-h6:!border-skin-accent prose-h6:!border-opacity-20 prose-h6:!pl-4
+    prose-p:!text-skin-base 
     prose-a:!text-skin-base prose-a:!decoration-dashed prose-a:underline-offset-8
     hover:prose-a:text-skin-accent prose-blockquote:!border-l-skin-accent
     prose-blockquote:border-opacity-50 prose-blockquote:opacity-80
