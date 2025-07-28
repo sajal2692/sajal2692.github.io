@@ -126,6 +126,9 @@ Example: "Let's use `any` type for now and fix it later" should trigger immediat
 
 #### Technical debt awareness
 
+![Debugging AI-generated Codebases](@assets/images/blog/effective-ai-coding/debugging_books.png)
+_Grady Booch's tweet about where AI-generated codebases are heading._
+
 AI can generate code faster than you can review it, making technical debt accumulation a real risk. Set up systems to track what gets generated and schedule regular cleanup sessions. Key areas to monitor from my experience:
 
 - Duplicate type definitions or interfaces across files
