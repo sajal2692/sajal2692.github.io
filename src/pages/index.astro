@@ -48,6 +48,15 @@ const socialCount = SOCIALS.filter(social => social.active).length;
       <p>I’m passionate about building AI systems that amplify human potential—bridging the gap between human and artificial intelligence.</p>
 
       <p>Explore my journey and insights on AI & ML through my <a href="/posts">blog</a>, or read more about my <a href="/about">professional experience</a>. 🚀</p>
+
+      <div class="courses-section">
+        <p><strong>Take my courses on O'Reilly:</strong></p>
+        <ul>
+          <li><a href="https://learning.oreilly.com/course/building-ai-agents/0642572077884/" target="_blank" rel="noopener noreferrer">Building AI Agents with LangGraph</a> (on-demand course)</li>
+          <li><a href="https://www.oreilly.com/live-events/agentic-rag-with-langgraph/0642572176174/" target="_blank" rel="noopener noreferrer">Agentic RAG</a> (live course, Aug 13 at 8pm SGT / 8am ET)</li>
+        </ul>
+      </div>
+      
       <Newsletter />
 
       {
@@ -149,6 +158,19 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   /* add some top padding for newsletter */
   #newsletter {
     @apply pt-6 pl-0;
+  }
+
+  /* ===== Courses Section ===== */
+  .courses-section {
+    @apply mt-6 mb-4;
+  }
+  
+  .courses-section p {
+    @apply mb-2;
+  }
+  
+  .courses-section ul {
+    @apply ml-6 space-y-1 list-disc list-inside;
   }
 
 </style>
