@@ -20,7 +20,10 @@ Here's a bit more about my professional milestones:
 
 ## 🌱 Beyond the Workspace
 
-- **Instructor at O’Reilly (2025)**: Created and taught "[Building AI Agents with LangGraph](https://learning.oreilly.com/course/building-ai-agents/0642572077884/)", a 3 hour video course offering a hands-on introduction to developing AI agents with Python, OpenAI, and LangGraph. The course covers core AI agent concepts, multi-agent architectures, and essential design patterns for building agentic systems.
+- **Instructor at O'Reilly (2025-2026)**: Created and taught courses on building AI agents and agentic systems.
+  - **[Building AI Agents with LangGraph](https://learning.oreilly.com/course/building-ai-agents/0642572077884/)** - 3-hour on-demand course covering AI agent concepts, multi-agent architectures, and essential design patterns.
+  - **[Agentic RAG with LangGraph](https://learning.oreilly.com/live-events/agentic-rag-with-langgraph/0642572176174/)** - Live course on building advanced RAG systems using agentic workflows and LangGraph.
+  - **[Getting Started with Claude Agent SDK](https://learning.oreilly.com/live-events/getting-started-with-claude-agent-sdk/0642572273255/0642572273248/)** - Live course introducing the Claude Agent SDK for building AI agents.
 - **Guest Lecturer at Yale University (2025-2026)**: Delivered guest lectures in MGT 899: Generative AI & Entrepreneurship, sharing insights on the evolution of AI systems with entrepreneurs.
   - **2026**: "From Agentic Workflows to Agent Harness" - Examined the architectural transition from agentic workflows to agent harness frameworks and its transformative effect on AI application development.
   - **2025**: "Building Agentic Systems with LangGraph" - Explored how entrepreneurs can leverage graph-based AI workflows to build the next generation of AI-driven products.
