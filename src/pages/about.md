@@ -20,8 +20,13 @@ Here's a bit more about my professional milestones:
 
 ## 🌱 Beyond the Workspace
 
-- **Instructor at O’Reilly (2025)**: Created and taught "[Building AI Agents with LangGraph](https://learning.oreilly.com/course/building-ai-agents/0642572077884/)", a 3 hour video course offering a hands-on introduction to developing AI agents with Python, OpenAI, and LangGraph. The course covers core AI agent concepts, multi-agent architectures, and essential design patterns for building agentic systems.
-- **Guest Lecturer at Yale University (2025)**: Delivered a guest lecture on "Building Agentic Systems with LangGraph" in MGT 899: Generative AI & Entrepreneurship, exploring how entrepreneurs can leverage graph-based AI workflows to build the next generation of AI-driven products.
+- **Instructor at O'Reilly (2025-2026)**: Created and taught courses on building AI agents and agentic systems.
+  - **[Building AI Agents with LangGraph](https://learning.oreilly.com/course/building-ai-agents/0642572077884/)** - 3-hour on-demand course covering AI agent concepts, multi-agent architectures, and essential design patterns.
+  - **[Agentic RAG with LangGraph](https://learning.oreilly.com/live-events/agentic-rag-with-langgraph/0642572176174/)** - Live course on building advanced RAG systems using agentic workflows and LangGraph.
+  - **[Getting Started with Claude Agent SDK](https://learning.oreilly.com/live-events/getting-started-with-claude-agent-sdk/0642572273255/0642572273248/)** - Live course introducing the Claude Agent SDK for building AI agents.
+- **Guest Lecturer at Yale University (2025-2026)**: Delivered guest lectures in MGT 899: Generative AI & Entrepreneurship, sharing insights on the evolution of AI systems with entrepreneurs.
+  - **2026**: "From Agentic Workflows to Agent Harness" - Examined the architectural transition from agentic workflows to agent harness frameworks and its transformative effect on AI application development.
+  - **2025**: "Building Agentic Systems with LangGraph" - Explored how entrepreneurs can leverage graph-based AI workflows to build the next generation of AI-driven products.
 - **Mentorship at Udacity (2017 - 2023)**: As a mentor for Udacity's Machine Learning and Data Science courses, I provided guidance to students in form of technical support as well as code reviews, helping them navigate complex machine learning and AI concepts. Over the years, I reviewed more than 1,000 projects and was consistently rated an A+ mentor by Udacity's internal audit team for my contributions.
 - **Mentorship at the University of Melbourne (2020 - 2023)**: As part of the university's STEM Mentorship Program, I supported students in their journey through technology and AI, offering career advice and technical insights.
 - **Data Science Portfolio on GitHub**: Open-source repository of classical Data Science projects with more than 1000 stars. Find it [here](https://github.com/sajal2692/data-science-portfolio).
