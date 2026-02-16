@@ -3,7 +3,7 @@ title: "Building AI Agents with LangGraph: My First O'Reilly Course!"
 author: "Sajal Sharma"
 pubDatetime: 2025-02-17T00:00:00Z
 slug: building-ai-agents-langgraph-oreilly
-featured: true
+featured: false
 draft: false
 tags:
   - ai-agents
