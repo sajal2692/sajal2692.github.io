@@ -3,7 +3,7 @@ title: "Understanding MCP: How the Model Context Protocol Solves AI's Integratio
 author: "Sajal Sharma"
 pubDatetime: 2025-06-21T00:00:00Z
 slug: understanding-mcp
-featured: true
+featured: false
 draft: false
 tags:
   - ai-engineering

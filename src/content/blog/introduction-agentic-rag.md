@@ -3,7 +3,7 @@ title: "Agentic RAG Series - Part 1: An Introduction to Agentic RAG"
 author: "Sajal Sharma"
 pubDatetime: 2025-03-04T00:00:00Z
 slug: introduction-to-agentic-rag
-featured: true
+featured: false
 draft: false
 tags:
   - llms
