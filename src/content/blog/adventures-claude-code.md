@@ -3,7 +3,7 @@ title: "Adventures with Claude Code: Reflections on Building a Full-Stack System
 author: "Sajal Sharma"
 pubDatetime: 2025-07-20T00:00:00Z
 slug: adventures-claude-code
-featured: true
+featured: false
 draft: false
 tags:
   - ai-engineering

@@ -1,0 +1,247 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import BackpropVisualizer from "@components/BackpropVisualizer";
+---
+
+<Layout
+  title="Understanding Backpropagation Through Computational Graphs"
+  description="An interactive visualization of the backpropagation algorithm with step-by-step explanations of forward and backward passes through a computational graph."
+>
+  <Header activeNav="posts" />
+  <main id="main-content" class="mx-auto w-full max-w-3xl px-4 pb-12">
+    <section class="prose prose-lg mb-8">
+      <h1 class="mb-4 text-3xl font-bold text-skin-accent">
+        Understanding Backpropagation Through Computational Graphs
+      </h1>
+
+      <p class="mb-6 text-skin-base">
+        Backpropagation is the cornerstone algorithm for training neural
+        networks. This interactive visualization demonstrates how gradients flow
+        backward through a computational graph using the chain rule.
+      </p>
+
+      <div class="mb-8">
+        <h2 class="mb-3 text-2xl font-bold text-skin-base">Interactive Demo</h2>
+        <p class="mb-4 text-skin-base">
+          This example computes <code class="text-skin-accent"
+            >L = (a × b + c) × f</code
+          >
+          with values <code class="text-skin-accent">a=2, b=3, c=-10, f=5</code
+          >.
+        </p>
+      </div>
+    </section>
+
+    <BackpropVisualizer client:load />
+
+    <section class="prose prose-lg mt-12">
+      <h2 class="mb-4 text-2xl font-bold text-skin-base">How It Works</h2>
+
+      <div class="space-y-6 text-skin-base">
+        <div>
+          <h3 class="mb-2 text-xl font-semibold text-skin-accent">
+            Forward Pass
+          </h3>
+          <p class="mb-2">
+            The forward pass computes values from inputs to output in
+            topological order:
+          </p>
+          <ol class="ml-4 list-inside list-decimal space-y-1">
+            <li><code>e = a × b = 2 × 3 = 6</code></li>
+            <li><code>d = e + c = 6 + (-10) = -4</code></li>
+            <li><code>L = d × f = (-4) × 5 = -20</code></li>
+          </ol>
+        </div>
+
+        <div>
+          <h3 class="mb-2 text-xl font-semibold text-skin-accent">
+            Backward Pass (Backpropagation)
+          </h3>
+          <p class="mb-2">
+            The backward pass computes gradients from output to inputs using the <strong
+              >chain rule</strong
+            >:
+          </p>
+          <ol class="ml-4 list-inside list-decimal space-y-2">
+            <li>
+              <strong>Initialize:</strong>
+              <code>∂L/∂L = 1</code> (gradient of output w.r.t. itself)
+            </li>
+            <li>
+              <strong>Gradient at d:</strong>
+              <code>∂L/∂d = ∂L/∂L × ∂L/∂d = 1 × f = 5</code>
+              <br />
+              <span class="text-sm opacity-80"
+                >Since L = d × f, the derivative ∂L/∂d = f</span
+              >
+            </li>
+            <li>
+              <strong>Gradient at e:</strong>
+              <code>∂L/∂e = ∂L/∂d × ∂d/∂e = 5 × 1 = 5</code>
+              <br />
+              <span class="text-sm opacity-80"
+                >Since d = e + c, the derivative ∂d/∂e = 1</span
+              >
+            </li>
+            <li>
+              <strong>Gradient at a:</strong>
+              <code>∂L/∂a = ∂L/∂e × ∂e/∂a = 5 × b = 5 × 3 = 15</code>
+              <br />
+              <span class="text-sm opacity-80"
+                >Since e = a × b, the derivative ∂e/∂a = b</span
+              >
+            </li>
+            <li>
+              <strong>Gradient at b:</strong>
+              <code>∂L/∂b = ∂L/∂e × ∂e/∂b = 5 × a = 5 × 2 = 10</code>
+              <br />
+              <span class="text-sm opacity-80"
+                >Since e = a × b, the derivative ∂e/∂b = a</span
+              >
+            </li>
+          </ol>
+        </div>
+
+        <div>
+          <h3 class="mb-2 text-xl font-semibold text-skin-accent">
+            The Chain Rule
+          </h3>
+          <p class="mb-2">
+            The chain rule is the mathematical foundation of backpropagation.
+            For a function composed as
+            <code>y = g(f(x))</code>, the chain rule states:
+          </p>
+          <p class="my-4 text-center font-mono">dy/dx = (dy/du) × (du/dx)</p>
+          <p>
+            where <code>u = f(x)</code>. In our computational graph, we apply
+            this rule repeatedly to compute how the output L changes with
+            respect to each input variable.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="mb-2 text-xl font-semibold text-skin-accent">
+            Local Derivatives
+          </h3>
+          <p class="mb-3">
+            Each operation in the graph has <strong>local derivatives</strong> that
+            describe how its output changes with respect to its inputs:
+          </p>
+          <ul class="ml-4 list-inside list-disc space-y-1">
+            <li>
+              <strong>Multiplication:</strong> For <code>c = a × b</code>, we
+              have <code>∂c/∂a = b</code> and <code>∂c/∂b = a</code>
+            </li>
+            <li>
+              <strong>Addition:</strong> For <code>c = a + b</code>, we have <code
+                >∂c/∂a = 1</code
+              > and <code>∂c/∂b = 1</code>
+            </li>
+          </ul>
+          <p class="mt-3">
+            These local derivatives are combined via the chain rule during
+            backpropagation to compute the gradients of the output with respect
+            to all inputs.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="mb-2 text-xl font-semibold text-skin-accent">
+            Why This Matters
+          </h3>
+          <p>
+            In neural networks, the computational graph is much larger (with
+            thousands to billions of nodes), but the principle remains the same.
+            Backpropagation efficiently computes gradients for all parameters in
+            a single backward pass, enabling gradient descent optimization to
+            train the network.
+          </p>
+          <p class="mt-3">
+            The gradients tell us how to adjust each parameter to reduce the
+            loss function. A large gradient (like ∂L/∂a = 15) means that
+            variable has a strong influence on the output, while a small
+            gradient means less influence.
+          </p>
+        </div>
+
+        <div class="mt-8 rounded-lg border border-skin-line bg-skin-card p-6">
+          <h3 class="mb-3 text-xl font-semibold text-skin-accent">
+            Key Takeaways
+          </h3>
+          <ul class="list-inside list-disc space-y-2">
+            <li>
+              <strong>Forward pass:</strong> Compute values from inputs to output
+            </li>
+            <li>
+              <strong>Backward pass:</strong> Compute gradients from output to inputs
+            </li>
+            <li>
+              <strong>Chain rule:</strong> Multiply gradients along each path
+            </li>
+            <li>
+              <strong>Local derivatives:</strong> Simple rules for each operation
+              type
+            </li>
+            <li>
+              <strong>Efficiency:</strong> One backward pass computes all gradients
+            </li>
+            <li>
+              <strong>Applications:</strong> Training neural networks via gradient
+              descent
+            </li>
+          </ul>
+        </div>
+
+        <div class="mt-8">
+          <h3 class="mb-2 text-xl font-semibold text-skin-accent">
+            Further Reading
+          </h3>
+          <p class="mb-3">
+            To dive deeper into the mathematics of backpropagation:
+          </p>
+          <ul class="ml-4 list-inside list-disc space-y-1">
+            <li>
+              <a
+                href="https://colah.github.io/posts/2015-08-Backprop/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-skin-accent hover:underline"
+              >
+                Calculus on Computational Graphs by Chris Olah
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://cs231n.github.io/optimization-2/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-skin-accent hover:underline"
+              >
+                CS231n: Backpropagation and Neural Networks
+              </a>
+            </li>
+            <li>
+              <a
+                href="http://neuralnetworksanddeeplearning.com/chap2.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-skin-accent hover:underline"
+              >
+                How the backpropagation algorithm works by Michael Nielsen
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  code {
+    @apply rounded border border-skin-line bg-skin-card px-1.5 py-0.5 font-mono text-sm;
+  }
+</style>
