@@ -43,7 +43,7 @@ A github repository for this project can be found [here](https://github.com/saja
 
 Our comprehensive agentic RAG workflow orchestrates multiple decision points and feedback loops to ensure high-quality responses. Here's the complete flow:
 
-![Comprehensive Agentic RAG Workflow](@assets/images/blog/comprehensive-agentic-rag/workflow.png)
+![Comprehensive Agentic RAG Workflow](/images/blog/comprehensive-agentic-rag/workflow.png)
 
 This architecture ensures that:
 

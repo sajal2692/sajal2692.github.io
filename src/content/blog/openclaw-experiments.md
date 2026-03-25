@@ -40,7 +40,7 @@ For file access, I don't share anything from my personal computer. I created a s
 
 I also set up Gmail as a secondary channel so I can forward emails to James for processing. This one required more careful engineering though. I don't want anyone other than me sending emails to James - after all, it's my personal assistant. I implemented a deterministic hook that filters incoming emails against an approved sender list - so anything from unapproved email accounts is ignored. When I asked James to implement this filter itself, it chose an LLM based filtering mechanism, and we learned pretty quickly that it won't work.
 
-![James processing an email to create tasks, schedule calendar events, and save articles](@assets/images/blog/openclaw-experiments/email.png)
+![James processing an email to create tasks, schedule calendar events, and save articles](/images/blog/openclaw-experiments/email.png)
 _James autonomously processing an email: extracting tasks for Things, scheduling calendar events, and saving articles to my knowledge base_
 
 I set up Tailscale to access the Mac Mini when I'm not nearby to debug it (which I've needed to use **a lot**).

@@ -67,7 +67,7 @@ The source of the data is a verbose, markdown version of me resume. It has infor
 
 Since the source is a markdown file, we can be a bit more clever than simply chunking it using character count. We’ll chunk the file using the markdown headers, ensuring that each chunk maintains its integrity, encapsulating the relevant data within.
 
-![markdown_document_chunking.png](@assets/images/blog/corrective-rag-langgraph/markdown-document-chunking.png)
+![markdown_document_chunking.png](/images/blog/corrective-rag-langgraph/markdown-document-chunking.png)
 
 We’ll also create a vector store using ChromaDB, and a retriever object using the vector store.
 
@@ -105,7 +105,7 @@ llm = ChatOpenAI(model="gpt-4-0125-preview", temperature=0)
 
 Defining a standard RAG chain using the retriever that we created previously:
 
-![basic-rag-flow.png](@assets/images/blog/corrective-rag-langgraph/basic-rag-flow.png)
+![basic-rag-flow.png](/images/blog/corrective-rag-langgraph/basic-rag-flow.png)
 
 ```python
 rag_prompt = """You are an AI  assistant. Your main task is to answer questions people may have about Sajal.
@@ -192,7 +192,7 @@ To do this, we’ll build a LangGraph graph, with nodes for retrieving documents
 
 Here’s what the flow will look like upon completion:
 
-![corrective-rag-flow.png](@assets/images/blog/corrective-rag-langgraph/corrective-rag-flow.png)
+![corrective-rag-flow.png](/images/blog/corrective-rag-langgraph/corrective-rag-flow.png)
 
 First, we begin by defining a data class that will hold the state of the graph. Think of it as a dictionary that contains data that is shared and used by nodes across the graph. A node modifies the state of the graph, i.e. updates the data in the state by adding, modifying or deleting.
 

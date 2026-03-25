@@ -26,7 +26,7 @@ After months of intensive use, pushing Claude Code to its limits across frontend
 
 This guide distills practical strategies from building production systems with AI coding assistants. Whether you're an AI coding skeptic, a casual user looking to level up, or someone already deep in the trenches, these battle-tested approaches will help you work more effectively with these tools.
 
-![Claude Code Logo](@assets/images/blog/effective-ai-coding/claude_code.png)
+![Claude Code Logo](/images/blog/effective-ai-coding/claude_code.png)
 _Claude Code - AI coding assistant that lives in your terminal_
 
 Fair warning: this is a living document. As AI coding tools evolve at breakneck speed, so must our workflows. What works today might be obsolete next month. But the principles remain constant even as capabilities expand: clear communication, strategic thinking, quality control, and human judgment.
@@ -105,7 +105,7 @@ When I needed to implement WebSocket connections for real-time updates, I asked 
 
 #### Review everything
 
-![Human & AI Review Workflow](@assets/images/blog/effective-ai-coding/review_workflow.png)
+![Human & AI Review Workflow](/images/blog/effective-ai-coding/review_workflow.png)
 _Human & AI Review Workflow - Systematic quality control with human oversight_
 
 I may sound like a broken record, but the biggest takeaway from this post is this: **Be actively engaged**. AI-generated code requires active, engaged review. Every line should make sense to you. When it doesn't, stop and investigate. The temptation to rubber-stamp working code is strong, especially when deadlines loom, but this leads to codebases you don't understand and can't maintain, and that blow up at the most inopportune moments.
@@ -126,7 +126,7 @@ Example: "Let's use `any` type for now and fix it later" should trigger immediat
 
 #### Technical debt awareness
 
-![Debugging AI-generated Codebases](@assets/images/blog/effective-ai-coding/debugging_books.png)
+![Debugging AI-generated Codebases](/images/blog/effective-ai-coding/debugging_books.png)
 _Grady Booch's tweet about where AI-generated codebases are heading._
 
 AI can generate code faster than you can review it, making technical debt accumulation a real risk. Set up systems to track what gets generated and schedule regular cleanup sessions. Key areas to monitor from my experience:
@@ -177,7 +177,7 @@ Review this plan critically. Look for over-engineering, missed requirements, or 
 
 Track progress against this plan systematically. Ask the coding agent to update the checklist of tasks as it completes each phase. This creates natural checkpoints for review and prevents the AI from wandering off course. This is in addition to the automated checklists tools like Claude Code use when executing your prompt.
 
-![Agentic Coding Workflow](@assets/images/blog/effective-ai-coding/agentic_coding_workflow.png)
+![Agentic Coding Workflow](/images/blog/effective-ai-coding/agentic_coding_workflow.png)
 _A systematic, plan-first approach to AI-assisted development_
 
 **Example**: For a recent refactoring to use shared types, I had Claude Code create a plan with specific tasks: creating a new module for shared types, scripts for automated type generation, and frontend and backend codebase changes. I saved this as `shared-types-refactoring.md` and updated it after each major milestone. When I hit issues (and I did frequently), I could trace back to see where we deviated from the original design.

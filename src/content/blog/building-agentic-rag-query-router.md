@@ -70,7 +70,7 @@ os.environ["TAVILY_API_KEY"] = "your-tavily-api-key"
 Before diving into our more complex agentic workflow, let's first set up a simple RAG pipeline using LangGraph and Wikipedia as our retrieval source. Unlike LangChain's pre-packaged chains that combine retrieval and generation steps, we'll deconstruct the RAG pipeline into distinct nodes within a graph-based workflow.
 
 Our RAG workflow will look like this:
-![simple_rag_pipeline.png](@assets/images/blog/building-agentic-rag-query-router/wikipedia-rag.png)
+![simple_rag_pipeline.png](/images/blog/building-agentic-rag-query-router/wikipedia-rag.png)
 
 First, we need to define our graph state:
 
@@ -195,7 +195,7 @@ To address the limitations of our basic RAG pipeline, we'll now build an agentic
 3. **Conditional Edges**: Logic that directs the flow based on the router's decision.
 
 After we're finished, the workflow will look like this:
-![agentic_rag_query_router.png](@assets/images/blog/building-agentic-rag-query-router/agentic-rag.png)
+![agentic_rag_query_router.png](/images/blog/building-agentic-rag-query-router/agentic-rag.png)
 
 Let's start by adding a web search retriever using the Tavily API:
 

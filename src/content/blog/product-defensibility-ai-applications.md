@@ -29,7 +29,7 @@ I've explained my thoughts on this topic countless times. But, the recurring nat
 
 ## First, What's a Moat?
 
-![The AI Moat Wars](@assets/images/blog/product-defensibility-ai-applications/ai_moat_wars.png)
+![The AI Moat Wars](/images/blog/product-defensibility-ai-applications/ai_moat_wars.png)
 _The AI Moat Wars, by GPT-4o. Prompt: cartoon image of two robot factions, one on top of a roof of a castle and one outside, fighting with lasers, separated by a moat._
 
 The term "economic moat," popularized by Warren Buffett, refers to a company's ability to maintain competitive advantages over its rivals, protecting its long-term profits and market share. Just as a medieval castle used water-filled moats to keep invaders at bay, businesses need defenses against competitors who might replicate their success or erode their margins.
@@ -90,7 +90,7 @@ I like to think of LLMs as another paradigm of programming. Just as JavaScript p
 
 The application layer requires considerable work. At its core, the infrastructure needed for production LLM applications is substantial and nuanced. At the very least, developers need to build robust prompt engineering and management systems that maintain consistency across user interactions. Often, they must implement **retrieval-augmented generation (RAG)** architectures that connect models to private data, allowing their AI products access to domain-specific information rather than generic knowledge. This often involves custom vector databases, embedding strategies, and retrieval mechanisms that become increasingly sophisticated as applications scale.
 
-![a16z's emerging llm app stack](@assets/images/blog/product-defensibility-ai-applications/emerging_llm_app_stack.png)
+![a16z's emerging llm app stack](/images/blog/product-defensibility-ai-applications/emerging_llm_app_stack.png)
 _a16z's "Emerging LLM App Stack" offers a high level overview of the components needed for production LLM applications. Image Source: [a16z](https://a16z.com/emerging-architectures-for-llm-applications/)_
 
 > \*Sidebar on RAG: [RAG is HARD](https://medium.com/samanvitha-ai-labs/why-rag-based-applications-are-failing-in-production-a-deep-dive-e8b0e07e386c). The retrieval component of RAG is particularly critical and often underestimated - it's not merely a simple search function but rather a complex ranking challenge that combines semantic relevance, contextual appropriateness, and business logic. Building effective retrieval systems requires expertise in information retrieval theory, vector similarity algorithms, hybrid search approaches, and dynamic re-ranking techniques. The most sophisticated RAG implementations employ multi-stage retrieval pipelines with filtering, chunking strategies optimized for specific content types, and context-aware relevance scoring.
@@ -117,7 +117,7 @@ Creating a complete product that delivers consistent value requires expertise ac
 
 Perplexity has built a powerful AI search engine despite competing directly with Google, one of the world's most valuable companies with decades of search expertise. On paper, this should be an impossible battle, yet Perplexity has gained millions of users and raised [significant funding at a multi-billion dollar valuation](https://www.reuters.com/technology/artificial-intelligence/perplexity-ai-talks-raise-funds-18-billion-valuation-bloomberg-news-reports-2025-03-20/).
 
-![Perplexity's thoughts on Perplexity's moat.](@assets/images/blog/product-defensibility-ai-applications/perplexity.png)
+![Perplexity's thoughts on Perplexity's moat.](/images/blog/product-defensibility-ai-applications/perplexity.png)
 _Perplexity's thoughts on Perplexity's moat._
 
 Their moat includes several reinforcing elements:
@@ -134,7 +134,7 @@ While it's too early to declare a clear winner in the AI search race—Google ha
 
 CharacterAI created a platform for conversational AI characters that users can interact with or create themselves. It’s a product that attracts millions of users despite competition from both established players and new entrants.
 
-![CharacterAI's Character Chat](@assets/images/blog/product-defensibility-ai-applications/character_ai.png)
+![CharacterAI's Character Chat](/images/blog/product-defensibility-ai-applications/character_ai.png)
 _Reliving my high school nightmares through CharacterAI._
 
 Their defensibility comes from multiple sources:
@@ -153,7 +153,7 @@ While OpenAI's GPT marketplace enables custom assistants, CharacterAI maintains 
 
 Midjourney has remained competitive in AI image generation despite powerful alternatives from OpenAI (DALL-E), Stability AI, and others. In a field where the underlying technology is rapidly evolving and becoming more accessible, Midjourney has maintained a loyal user base and sustainable business model.
 
-![Midjourney's Discovery Board](@assets/images/blog/product-defensibility-ai-applications/midjourney.png)
+![Midjourney's Discovery Board](/images/blog/product-defensibility-ai-applications/midjourney.png)
 _Midjourney's image board, as shown in the screenshot, offers a powerful blend of visual discovery and prompt transparency that fuels creative exploration in a way that's both intuitive and inspiring._
 
 Their defensibility stems from several sources:

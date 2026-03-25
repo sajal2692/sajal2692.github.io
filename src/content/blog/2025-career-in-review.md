@@ -40,7 +40,7 @@ I've always loved taking online courses. There's something about "just in time" 
 
 In early 2025, my first course went live: [_Building AI Agents with LangGraph_](https://learning.oreilly.com/course/building-ai-agents/0642572077884/). The first few months were slow. A trickle of students. But every now and then, someone would reach out on LinkedIn to say thank you and provide feedback. Things picked up through the year and by December 2025, it was in the **top 2 on-demand AI courses on O'Reilly**.
 
-![O'Reilly Course Ranking](@assets/images/blog/2025-career-in-review/oreilly-course-ranking.jpeg)
+![O'Reilly Course Ranking](/images/blog/2025-career-in-review/oreilly-course-ranking.jpeg)
 _Building AI Agents with LangGraph - ranked #2 in on-demand AI courses on O'Reilly_
 
 I didn't expect the course to be as popular as it is. It's not perfect of course, too introductory for some, and too advanced for others (can't make everyone happy!). My delivery is also stiff in the recorded videos, and I understand that it can make it less engaging. But the fact that people found it helpful enough to reach out personally means more to me than any rating.

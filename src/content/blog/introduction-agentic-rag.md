@@ -24,7 +24,7 @@ Large Language Models (LLMs) or Foundational Models, are powerful but have a fun
 
 Retrieval-Augmented Generation (RAG) is a technique addresses the above issue by giving an LLM access to external knowledge. Instead of relying solely on their pre-trained data, **RAG systems retrieve relevant documents from databases, vector stores, or APIs and feed them as additional context to the LLM before generating a response**. This makes the model’s responses more accurate, up-to-date, and grounded in relevant contextual information.
 
-![A simple rag pipeline](@assets/images/blog/introduction-agentic-rag/simple_rag_pipeline.png)
+![A simple rag pipeline](/images/blog/introduction-agentic-rag/simple_rag_pipeline.png)
 
 **Limitations of Traditional RAG**
 
@@ -79,7 +79,7 @@ Before retrieving information, an Agentic RAG system can first analyze the user�
 - **Deciding the appropriate retrieval strategy** – Some queries require **semantic search** in a vector database, while others are better suited for **keyword-based or hybrid search**. An agentic system can dynamically **choose the best retrieval method** for the query.
   - **Extracting filters** – Some queries contain **implicit constraints** (e.g., timeframes, categories, or document types). An agentic system can **automatically extract filters** (e.g., _"Q2 2023 financial reports on renewable energy"_) and incorporate them into an appropriate structured query for the knowledge source.
 
-![query analysis pattern](@assets/images/blog/introduction-agentic-rag/query_analysis_pattern.png)
+![query analysis pattern](/images/blog/introduction-agentic-rag/query_analysis_pattern.png)
 
 ### Query Rewriting
 
@@ -91,7 +91,7 @@ This process can involve:
 - **Breaking down complex queries into smaller sub-queries** to retrieve more precise information.
 - **Reframing queries** to match the format of indexed knowledge (e.g., transforming _"What are the symptoms of Type 2 diabetes?"_ into _"Type 2 diabetes common symptoms and diagnosis"_).
 
-![query rewriting pattern](@assets/images/blog/introduction-agentic-rag/query_rewriting_pattern.png)
+![query rewriting pattern](/images/blog/introduction-agentic-rag/query_rewriting_pattern.png)
 
 ### Planning & Multi-Step Retrieval
 
@@ -103,7 +103,7 @@ For example, given a query like _"How did the 2008 financial crisis compare to t
 2. Retrieve data about the COVID-19 economic impact.
 3. Compare both retrieved sets and generate a synthesized response.
 
-![planning pattern](@assets/images/blog/introduction-agentic-rag/planning_pattern.png)
+![planning pattern](/images/blog/introduction-agentic-rag/planning_pattern.png)
 
 ### Self Evaluation through Reflection
 
@@ -117,7 +117,7 @@ This pattern can involve:
 
 Usually, self evaluation is performed in parallel for each document being evaluated to improve both assessment quality and latency.
 
-![reflection pattern](@assets/images/blog/introduction-agentic-rag/reflection_pattern.png)
+![reflection pattern](/images/blog/introduction-agentic-rag/reflection_pattern.png)
 
 ### Bringing It All Together
 
@@ -148,7 +148,7 @@ This is the simplest enhancement to a traditional RAG pipeline. A routing agent 
 2. It dynamically selects the appropriate knowledge source (e.g., internal documents vs. web search).
 3. The selected retrieval process is executed, and the retrieved data is passed to the LLM for response generation.
 
-![single agent router](@assets/images/blog/introduction-agentic-rag/single_agent_router.png)
+![single agent router](/images/blog/introduction-agentic-rag/single_agent_router.png)
 
 This routing-based approach introduces adaptability without adding much complexity, making it a lightweight yet impactful upgrade over standard RAG.
 
@@ -166,7 +166,7 @@ Corrective RAG introduces reflection mechanisms, allowing the system to refine i
    - Discarding irrelevant or low-confidence documents, to reduce noise in the generation step.
 4. After validation and passing the necessary quality checks, does the system proceed to response generation.
 
-![corrective rag pipeline](@assets/images/blog/introduction-agentic-rag/corrective_rag.png)
+![corrective rag pipeline](/images/blog/introduction-agentic-rag/corrective_rag.png)
 
 This approach transforms RAG into an iterative, self-correcting process, making it more resilient to incomplete or misleading retrievals.
 
@@ -190,7 +190,7 @@ The Adaptive RAG pipeline leverages query analysis, retrieval refinement, and se
    - If the answer is satisfactory, it is returned.
    - If not, retrieval is refined, or additional sources are queried before regenerating the response.
 
-![adaptive rag pipeline](@assets/images/blog/introduction-agentic-rag/adaptive_rag.png)
+![adaptive rag pipeline](/images/blog/introduction-agentic-rag/adaptive_rag.png)
 
 This pipeline represents the full potential of Agentic RAG, where the whole process is adaptive and responsive to query needs. Keep in mind that this workflow is just an example, and can be tailored to suit specific needs.
 

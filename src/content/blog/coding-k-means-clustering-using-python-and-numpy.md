@@ -188,9 +188,9 @@ p.plot_in_2d(X, y_preds, title="K-Means Clustering")
 p.plot_in_2d(X, y, title="Actual Clustering")
 ```
 
-![coding-k-means-clustering](@assets/images/blog/coding-k-means-clustering/k-means-clustering-output.png)
+![coding-k-means-clustering](/images/blog/coding-k-means-clustering/k-means-clustering-output.png)
 
-![coding-k-means-clustering](@assets/images/blog/coding-k-means-clustering/actual-clustering-output.png)
+![coding-k-means-clustering](/images/blog/coding-k-means-clustering/actual-clustering-output.png)
 
 Again, the clusters can depend on the initialization points of centroids, but this time it looks like our implementation was able to find the correct clusters.
 
