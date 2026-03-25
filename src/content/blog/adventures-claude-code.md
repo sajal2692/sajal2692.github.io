@@ -46,7 +46,7 @@ I've been using Claude Code heavily for the past couple of months, primarily on 
 
 We built a proof of concept for a risk assessment system that's now moving into production phases. From the start, we designed the system with future extensions and productionization in mind. The architecture includes several interconnected components that Claude Code helped design and implement, often suggesting architectural patterns and best practices I wouldn't have considered on my own.
 
-![basic_arch.png](@assets/images/blog/adventures-claude-code/basic_arch.png)
+![basic_arch.png](/images/blog/adventures-claude-code/basic_arch.png)
 _A high level architecture of the POC we built using Claude Code_
 
 ### Frontend Journey

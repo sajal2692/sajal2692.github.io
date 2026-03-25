@@ -44,7 +44,7 @@ This approach worked fine for simple use cases, but it came with significant lim
 
 As products grew in scope - whether building multiple features within a single product or developing different products entirely - this approach quickly became unwieldy, leading to what's known as the **M×N integration problem**: connecting M AI applications with N external tools required M×N custom integrations.
 
-![MxN integrations](@assets/images/blog/understanding-mcp/mxn_integrations.png)
+![MxN integrations](/images/blog/understanding-mcp/mxn_integrations.png)
 
 #### Fragmented AI Development
 
@@ -88,7 +88,7 @@ With MCP-enabled Claude Desktop, this friction is minimised. Claude can directly
 
 MCP follows a client-server architecture that consists of three main components that work together to create a bridge between AI applications and external tools.
 
-![MCP Architecture](@assets/images/blog/understanding-mcp/mcp_architecture.png)
+![MCP Architecture](/images/blog/understanding-mcp/mcp_architecture.png)
 
 **Hosts** are the LLM applications that want to access data through MCP - think Claude Desktop, IDEs, or the custom AI agents you've built. These hosts contain **MCP Clients** that maintain 1:1 connections with servers, handling the protocol details so the host application doesn't need to worry about the underlying communication mechanics.
 
@@ -117,7 +117,7 @@ MCP Servers expose three fundamental types of capabilities that work together to
 
 **Prompt Templates** might be the most underrated feature of MCP. These are pre-defined templates for AI interactions that shift the prompt engineering burden from AI application developers to MCP server builders. Instead of every developer having to figure out the optimal way to prompt for document Q&A or transcript summarization, the server can provide battle-tested templates that work consistently across different use cases.
 
-![MCP Server Capabilities](@assets/images/blog/understanding-mcp/mcp_server.png)
+![MCP Server Capabilities](/images/blog/understanding-mcp/mcp_server.png)
 
 ### MCP Concepts
 
@@ -129,21 +129,21 @@ A transport handles the underlying mechanics of how messages are sent and receiv
 
 For servers running locally, **stdio** transport is the simplest option. It uses standard input and output streams, making it perfect for desktop applications and command-line tools with zero network overhead.
 
-![STDIO Transport](@assets/images/blog/understanding-mcp/mcp_transport_stdio.png)
+![STDIO Transport](/images/blog/understanding-mcp/mcp_transport_stdio.png)
 _Sequence diagram showcasing the Stdio Transport for MCP._
 
 For remote servers, MCP supports two HTTP-based transports. **Server-Sent Events (SSE)** provides HTTP-based communication with real-time capabilities and bidirectional communication. At the time of writing, SSE has since been deprecated and is in the process of being phased out by most MCP Servers.
 
 **Streamable HTTP** is the modern replacement for SSE and offers better deployment flexibility and supports both stateless and streaming operations. This transport is useful when you need the reliability of HTTP but want to maintain the real-time characteristics that make MCP powerful.
 
-![Streamable HTTP Transport](@assets/images/blog/understanding-mcp/mcp_transport_streamable_http.png)
+![Streamable HTTP Transport](/images/blog/understanding-mcp/mcp_transport_streamable_http.png)
 _Sequence diagram showcasing the Streamable HTTP Transport for MCP._
 
 #### Sampling
 
 Sampling represents an inversion of the traditional client-server relationship. Instead of clients always requesting services from servers, sampling allows servers to request completions from clients, giving the user application full control over security, privacy, and cost.
 
-![Sampling](@assets/images/blog/understanding-mcp/sampling.png)
+![Sampling](/images/blog/understanding-mcp/sampling.png)
 
 The client handles LLM connections, model selection, and inference management, while the server can specify model preferences, system prompts, temperature settings, and token limits. This creates a powerful pattern where servers can leverage the intelligence of the connected LLM as part of their processing pipeline without needing to manage LLM infrastructure themselves.
 
@@ -151,7 +151,7 @@ The client handles LLM connections, model selection, and inference management, w
 
 An MCP client can also be a server, and vice versa. This composability enables complex, multi-layered architectures where different components can interact in sophisticated ways.
 
-![Composability](@assets/images/blog/understanding-mcp/composability.png)
+![Composability](/images/blog/understanding-mcp/composability.png)
 
 When you combine sampling with composability, you get truly powerful patterns. A server can receive a request, use sampling to get an LLM completion, process that result, and then forward it to another server in a chain. This creates processing pipelines that leverage both AI intelligence and traditional computational resources.
 
@@ -182,7 +182,7 @@ Enterprise adoption has followed, an example being [**Block (Square) deploying M
 
 MCP fundamentally changes how we architect AI applications by solving the M×N integration problem. Instead of requiring M AI applications × N external tools custom integrations (M×N complexity), MCP creates a standardized interface that reduces this to M + N: each AI application connects to MCP once, and each external system exposes one MCP server.
 
-![MCP Integration](@assets/images/blog/understanding-mcp/m+n_integrations.png)
+![MCP Integration](/images/blog/understanding-mcp/m+n_integrations.png)
 
 This architectural shift means rather than each AI application implementing its own database connectivity, file system access, or API integrations, we can leverage a shared ecosystem of standardized servers. The standardization extends beyond just tools - MCP servers can provide the entire integration package including prompts, resources, and tools that work consistently across different AI applications.
 
@@ -211,7 +211,7 @@ The primary MCP ecosystem centers around Anthropic's GitHub repository, which ho
 Several community-driven directories have emerged to organize the growing collection of MCP servers. Smithery (smithery.ai) has become the leading registry, hosting over 7,000 capabilities across thousands of servers with one-click CLI installation that integrates with Claude Desktop and Cursor. Other notable directories include MCP Registry (mcpregistry.click) as a unified ecosystem source and PulseMCP (pulsemcp.com), which curates over 1,700 servers with weekly updates on
 new releases.
 
-![Smithery](@assets/images/blog/understanding-mcp/smithery.png)
+![Smithery](/images/blog/understanding-mcp/smithery.png)
 _Smithery directory showcasing over 7,000 skills and extensions exposed through MCP servers_
 
 **Development Tools**

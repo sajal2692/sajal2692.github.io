@@ -68,7 +68,7 @@ im = Image.open(dest)
 im.to_thumb(256,256)
 ```
 
-![rotten_or_not](@assets/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_8_0.png)
+![rotten_or_not](/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_8_0.png)
 
 Doing something similar for fresh fruit.
 
@@ -81,7 +81,7 @@ Image.open('fresh.jpg').to_thumb(256,256)
 Searching for 'fresh fruit'
 ```
 
-![rotten_or_not](@assets/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_10_1.png)
+![rotten_or_not](/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_10_1.png)
 
 Now that we know what duckduckgo image search is working fine, we can download images for both rotten and fresh fruit and store them in their respective directories. We use time.sleep to avoid spamming the search API.
 
@@ -155,7 +155,7 @@ dls = DataBlock(
 dls.show_batch(max_n=6)
 ```
 
-![rotten_or_not](@assets/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_16_0.png)
+![rotten_or_not](/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_16_0.png)
 
 Above you can see a batch of images from our DataBlock, along with their labels. This is a nice way of quickly knowing if a sample from our data is correct (images/labels).
 
@@ -244,7 +244,7 @@ It's finally time to use our model and see how it does predicting if a fruit is 
 Image.open('rotten.jpg').to_thumb(256,256)
 ```
 
-![rotten_or_not](@assets/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_20_0.png)
+![rotten_or_not](/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_20_0.png)
 
 <br />
 
@@ -265,7 +265,7 @@ Probability it's rotten: 1.0000
 Image.open('fresh.jpg').to_thumb(256,256)
 ```
 
-![rotten_or_not](@assets/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_22_0.png)
+![rotten_or_not](/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_22_0.png)
 
 ```python
 is_rotten,_,probs = clf.predict(PILImage.create('fresh.jpg'))
@@ -287,7 +287,7 @@ download_url(search_images('fresh orange', max_images=1)[0], 'fresh orange.jpg',
 Image.open('fresh orange.jpg').to_thumb(256,256)
 ```
 
-![rotten_or_not](@assets/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_25_1.png)
+![rotten_or_not](/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_25_1.png)
 
 ```python
 is_rotten,_,probs = clf.predict(PILImage.create('fresh orange.jpg'))
@@ -307,7 +307,7 @@ download_url(search_images('rotten orange', max_images=1)[0], 'rotten orange.jpg
 Image.open('rotten orange.jpg').to_thumb(256,256)
 ```
 
-![rotten_or_not](@assets/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_27_1.png)
+![rotten_or_not](/images/blog/building-image-classifier-fastai/is-the-fruit-rotten-or-not_27_1.png)
 
 ```python
 is_rotten,_,probs = clf.predict(PILImage.create('rotten orange.jpg'))

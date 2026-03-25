@@ -51,7 +51,7 @@ The choice of framework is crucial in determining the system's scalability, auto
 
 [AutoGen](https://microsoft.github.io/autogen/) specializes in conversational agents, providing conversation as a high-level abstraction over multi agent collaboration. Its design ethos revolves around simulating group discussions where agents send and receive messages to initiate or continue a conversation, allowing for tool-use and human intervention as deemed necessary by the reasoning capabilities.
 
-![autogen-agents.png](@assets/images/blog/overview-multi-agent-frameworks/autogen-agents.png)
+![autogen-agents.png](/images/blog/overview-multi-agent-frameworks/autogen-agents.png)
 
 **Key Features**
 
@@ -73,7 +73,7 @@ The choice of framework is crucial in determining the system's scalability, auto
 
 For now, it's usually preferred for custom-built systems requiring detailed scalability and control. LangGraph is built on top of, and heavily leverages Langchain, expanding the scope of applications that require cycles, or repetitions not usually possible just by using Langchain's [LCEL](https://python.langchain.com/docs/expression_language/).
 
-![langgraph-agents.png](@assets/images/blog/overview-multi-agent-frameworks/langgraph-agents.png)
+![langgraph-agents.png](/images/blog/overview-multi-agent-frameworks/langgraph-agents.png)
 
 [Here's a blog post](https://sajalsharma.com/posts/corrective-rag-langgraph/) written by me on using LangGraph for building a Corrective RAG workflow.
 

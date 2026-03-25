@@ -41,7 +41,7 @@ But there's a hidden cost. When you build a workflow, you're essentially encodin
 
 That's the deeper problem: workflows cap agent autonomy. The model can't surprise you, for better or worse.
 
-![Agentic Workflows: Planning Workflow and Reflection Workflow](@assets/images/blog/agentic-workflows-to-agent-harnesses/agentic-workflows-diagram.png)
+![Agentic Workflows: Planning Workflow and Reflection Workflow](/images/blog/agentic-workflows-to-agent-harnesses/agentic-workflows-diagram.png)
 _Planning Workflow and Reflection Workflow, two of the most commonly used workflow patterns_
 
 ### Why the Agentic Loop Is Fundamentally More Powerful
@@ -54,7 +54,7 @@ The loop doesn't need to be told what to do when a document format is unexpected
 
 Workflows are _open-loop_: they execute a plan. The agentic loop is _closed-loop_: it continuously corrects based on what it observes. That difference is qualitative, and it matters a lot in practice.
 
-![The Agentic Loop](@assets/images/blog/agentic-workflows-to-agent-harnesses/agentic-loop-diagram.png)
+![The Agentic Loop](/images/blog/agentic-workflows-to-agent-harnesses/agentic-loop-diagram.png)
 _The Agentic Loop — Perceive → Reason → Act → Observe_
 
 ### The Bitter Lesson, Applied
@@ -69,21 +69,21 @@ For truly agentic tasks, where the agent needs to reason, adapt, and recover on 
 
 At work, we built a feature extraction workflow using RAG. The task: given a vector database of financial documents (financial statements, balance sheets, etc.), extract specific data points like revenue, cost of goods sold, and current assets for a given year. Our data science team needed these features to run inference using their financial models.
 
-![Feature Extraction Workflow V1](@assets/images/blog/agentic-workflows-to-agent-harnesses/feature-extraction-v1.png)
+![Feature Extraction Workflow V1](/images/blog/agentic-workflows-to-agent-harnesses/feature-extraction-v1.png)
 _Feature Extraction Workflow V1 — the clean RAG workflow_
 
 **Version 1** was a clean workflow. A Prepare Queries step generates queries ("revenue for 2025", "cost of goods sold for 2025", etc.), feeds them into RAG-based extraction against the vector database, produces structured output (e.g., revenue: 52.34, unit: millions, currency: USD), and sends it to the feature store. The whole thing was linear and predictable, which is exactly what we wanted.
 
 The first assumption that broke: we assumed documents would always be available for the latest reported year. They weren't. The workflow couldn't handle it.
 
-![Feature Extraction Workflow V2](@assets/images/blog/agentic-workflows-to-agent-harnesses/feature-extraction-v2.png)
+![Feature Extraction Workflow V2](/images/blog/agentic-workflows-to-agent-harnesses/feature-extraction-v2.png)
 _Feature Extraction Workflow V2 — workflow with autonomous agent patched at front_
 
 **Version 2** patched this by adding an autonomous agent at the front. It uses Vector Search MCP to figure out the latest reported financial year in the collection, then passes that year to Prepare Queries. The rest of the workflow continues as before, so it was a fairly targeted fix.
 
 Then it kept breaking. The data science team started trying to extract non-financial data (feed stock inventory, etc.) from the same workflow. Synonyms the workflow didn't understand. The system needed the leeway to construct its own search queries and conduct as many searches as needed, refining and tweaking to get to the right answer. The workflow couldn't provide that.
 
-![Feature Extraction V3](@assets/images/blog/agentic-workflows-to-agent-harnesses/feature-extraction-v3.png)
+![Feature Extraction V3](/images/blog/agentic-workflows-to-agent-harnesses/feature-extraction-v3.png)
 _Feature Extraction V3 — autonomous agent at center with Skills, Tools, and Vector Search MCP_
 
 **Version 3** put an autonomous agent at the center, with access to skills, tools, and the Vector Search MCP. The agent figures out everything on its own: which year to look for, what features to extract, how to handle edge cases. On our evaluation datasets, this version performed better than the previous ones.
@@ -106,7 +106,7 @@ In my opinion, there's still some sort of workflow behind the scenes. The agenti
 
 Someone still has to build all of this: decide what tools the agent gets, how memory works, what constraints apply. That engineering work doesn't go away.
 
-![Agent Harness](@assets/images/blog/agentic-workflows-to-agent-harnesses/agent-harness-diagram.png)
+![Agent Harness](/images/blog/agentic-workflows-to-agent-harnesses/agent-harness-diagram.png)
 _Agent Harness — Agent at center surrounded by File System, Skills, Memory, Browser Control, Code Execution, Web Search & Fetch, Bash/Computer Control, MCPs_
 
 ### Where Harnesses Sit in the Tooling Landscape

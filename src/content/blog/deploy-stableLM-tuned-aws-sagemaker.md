@@ -26,7 +26,7 @@ We'll be deploying the StableLM-Tuned-Alpha 7b variant on the model on an ml.g5.
 This blog post is based on the [Deploy FLAN-UL2 20B on Amazon SageMaker](https://www.philschmid.de/deploy-flan-ul2-sagemaker) blog post by [Philipp Schmid](https://www.philschmid.de/), so please
 check out his website for excellent content about NLP and AWS.
 
-![StableLM](@assets/images/blog/deploying-stablelm/newparrot.png)
+![StableLM](/images/blog/deploying-stablelm/newparrot.png)
 
 <Caption text="StableLM" />
 
