@@ -1,7 +1,12 @@
-name: Send Newsletter
+name: Draft Newsletter
 
 on:
   workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Post slug to draft (leave empty for latest unsent post)'
+        required: false
+        default: ''
 
 jobs:
   send:
@@ -18,8 +23,8 @@ jobs:
       - name: Install script dependencies
         run: npm install gray-matter marked juice
 
-      - name: Create newsletter drafts
-        run: node .github/scripts/send-newsletter.mjs
+      - name: Create newsletter draft
+        run: node .github/scripts/send-newsletter.mjs ${{ inputs.slug && format('--slug={0}', inputs.slug) || '' }}
         env:
           KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
           NEWSLETTER_START_DATE: ${{ vars.NEWSLETTER_START_DATE }}
