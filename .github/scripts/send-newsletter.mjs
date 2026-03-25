@@ -33,6 +33,14 @@ const KIT_API_BASE = "https://api.kit.com/v4";
 const BLOG_DIR = path.resolve("src/content/blog");
 
 // ---------------------------------------------------------------------------
+// CLI flags
+// ---------------------------------------------------------------------------
+
+const args = process.argv.slice(2);
+const SLUG_FLAG = args.find(a => a.startsWith("--slug="));
+const TARGET_SLUG = SLUG_FLAG ? SLUG_FLAG.split("=")[1] : null;
+
+// ---------------------------------------------------------------------------
 // Kit API helpers
 // ---------------------------------------------------------------------------
 
@@ -54,6 +62,21 @@ async function kitFetch(endpoint, options = {}) {
   }
 
   return res.json();
+}
+
+async function listAllBroadcastSubjects() {
+  const subjects = new Set();
+  let page = 1;
+  while (true) {
+    const data = await kitFetch(`/broadcasts?per_page=50&page=${page}`);
+    const broadcasts = data.broadcasts || [];
+    if (broadcasts.length === 0) break;
+    for (const b of broadcasts) {
+      subjects.add(b.subject);
+    }
+    page++;
+  }
+  return subjects;
 }
 
 async function createBroadcast({ subject, content, description }) {
@@ -367,6 +390,7 @@ async function main() {
   console.log("=== Newsletter Draft Script ===");
   console.log(`Cutoff date: ${NEWSLETTER_START_DATE}`);
   console.log(`Site URL: ${SITE_URL}`);
+  if (TARGET_SLUG) console.log(`Target slug: ${TARGET_SLUG}`);
   console.log();
 
   if (!KIT_API_KEY) {
@@ -376,12 +400,21 @@ async function main() {
 
   // 1. Discover eligible posts
   console.log("Scanning blog posts...");
-  const posts = discoverPosts();
+  let posts = discoverPosts();
   console.log(`\nFound ${posts.length} eligible post(s).\n`);
 
   if (posts.length === 0) {
     console.log("No new posts to draft. Done.");
     return;
+  }
+
+  // 2. Filter to specific slug if provided
+  if (TARGET_SLUG) {
+    posts = posts.filter(p => p.slug === TARGET_SLUG);
+    if (posts.length === 0) {
+      console.error(`ERROR: Post with slug "${TARGET_SLUG}" not found among eligible posts.`);
+      process.exit(1);
+    }
   }
 
   for (const post of posts) {
@@ -391,10 +424,21 @@ async function main() {
   }
   console.log();
 
-  // 2. Create drafts
+  // 3. Check existing broadcasts to avoid duplicates
+  console.log("Checking existing broadcasts...");
+  const existingSubjects = await listAllBroadcastSubjects();
+  console.log(`  ${existingSubjects.size} existing broadcast(s) found.`);
+
+  // 4. Create drafts
   for (const post of posts) {
     const subject = `New post: ${post.title}`;
-    console.log(`Processing: "${post.title}"...`);
+
+    if (existingSubjects.has(subject)) {
+      console.log(`SKIP (already exists in Kit): "${post.title}"`);
+      continue;
+    }
+
+    console.log(`\nProcessing: "${post.title}"...`);
 
     const emailHtml = convertToEmailHtml(post);
     console.log(`  Generated email HTML (${emailHtml.length} bytes)`);
