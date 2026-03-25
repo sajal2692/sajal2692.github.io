@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * Newsletter send script for Kit (ConvertKit) API v4.
+ * Newsletter draft script for Kit (ConvertKit) API v4.
  *
  * Reads blog posts from src/content/blog/, converts them to email-friendly HTML,
- * and creates/sends broadcasts via the Kit API.
- *
- * Usage:
- *   node .github/scripts/send-newsletter.mjs [--dry-run] [--draft-only] [--tag=TAG_NAME]
+ * and creates draft broadcasts via the Kit API. Sending/scheduling is done
+ * manually from the Kit dashboard.
  *
  * Environment variables:
- *   KIT_API_KEY            - Kit v4 API key (required unless --dry-run)
+ *   KIT_API_KEY            - Kit v4 API key
  *   NEWSLETTER_START_DATE  - Only posts after this date are eligible (e.g. 2026-03-01)
  *   SITE_URL               - Base URL of the site (default: https://sajalsharma.com)
  */
@@ -33,17 +31,6 @@ const KIT_API_KEY = process.env.KIT_API_KEY || "";
 const NEWSLETTER_START_DATE = process.env.NEWSLETTER_START_DATE || "2026-03-01";
 const KIT_API_BASE = "https://api.kit.com/v4";
 const BLOG_DIR = path.resolve("src/content/blog");
-const SENT_FILE = path.resolve(".github/data/sent-newsletters.json");
-
-// ---------------------------------------------------------------------------
-// CLI flags
-// ---------------------------------------------------------------------------
-
-const args = process.argv.slice(2);
-const DRY_RUN = args.includes("--dry-run");
-const DRAFT_ONLY = args.includes("--draft-only");
-const TAG_FLAG = args.find(a => a.startsWith("--tag="));
-const TARGET_TAG = TAG_FLAG ? TAG_FLAG.split("=")[1] : null;
 
 // ---------------------------------------------------------------------------
 // Kit API helpers
@@ -69,43 +56,6 @@ async function kitFetch(endpoint, options = {}) {
   return res.json();
 }
 
-// ---------------------------------------------------------------------------
-// Sent tracking (JSON file)
-// ---------------------------------------------------------------------------
-
-function loadSentSlugs() {
-  try {
-    const data = JSON.parse(fs.readFileSync(SENT_FILE, "utf-8"));
-    return new Set((data.sent || []).map(e => e.slug));
-  } catch {
-    return new Set();
-  }
-}
-
-function markAsSent(slug, mode) {
-  let data;
-  try {
-    data = JSON.parse(fs.readFileSync(SENT_FILE, "utf-8"));
-  } catch {
-    data = { sent: [] };
-  }
-  data.sent.push({
-    slug,
-    sentAt: new Date().toISOString(),
-    mode,
-  });
-  fs.mkdirSync(path.dirname(SENT_FILE), { recursive: true });
-  fs.writeFileSync(SENT_FILE, JSON.stringify(data, null, 2) + "\n");
-}
-
-async function getTagByName(tagName) {
-  const data = await kitFetch("/tags?per_page=100");
-  const tags = data.tags || [];
-  return tags.find(
-    t => t.name.toLowerCase() === tagName.toLowerCase()
-  );
-}
-
 async function createBroadcast({ subject, content, description }) {
   return kitFetch("/broadcasts", {
     method: "POST",
@@ -116,25 +66,6 @@ async function createBroadcast({ subject, content, description }) {
       email_layout_template: "Text only",
       public: false,
     }),
-  });
-}
-
-async function sendBroadcast(broadcastId, { tagId } = {}) {
-  const sendAt = new Date(Date.now() + 60 * 1000).toISOString();
-  const body = {
-    public: true,
-    send_at: sendAt,
-  };
-
-  if (tagId) {
-    body.subscriber_filter = [
-      { type: "tag", id: tagId, state: "active" },
-    ];
-  }
-
-  return kitFetch(`/broadcasts/${broadcastId}`, {
-    method: "PUT",
-    body: JSON.stringify(body),
   });
 }
 
@@ -153,7 +84,6 @@ function discoverPosts() {
     const raw = fs.readFileSync(filePath, "utf-8");
     const { data: frontmatter, content } = matter(raw);
 
-    // Must have required fields
     if (!frontmatter.title || !frontmatter.pubDatetime) {
       console.log(`  SKIP (missing fields): ${file}`);
       continue;
@@ -161,26 +91,22 @@ function discoverPosts() {
 
     const pubDate = new Date(frontmatter.pubDatetime);
 
-    // Filter: drafts
     if (frontmatter.draft) {
       console.log(`  SKIP (draft): ${file}`);
       continue;
     }
 
-    // Filter: future-dated
     if (pubDate > now) {
       console.log(`  SKIP (future): ${file}`);
       continue;
     }
 
-    // Filter: before cutoff
     if (pubDate <= cutoff) {
       console.log(`  SKIP (before cutoff ${NEWSLETTER_START_DATE}): ${file}`);
       continue;
     }
 
-    const slug =
-      frontmatter.slug || file.replace(/\.md$/, "");
+    const slug = frontmatter.slug || file.replace(/\.md$/, "");
 
     posts.push({
       file,
@@ -193,7 +119,6 @@ function discoverPosts() {
     });
   }
 
-  // Sort newest first
   posts.sort((a, b) => b.pubDate - a.pubDate);
   return posts;
 }
@@ -203,19 +128,18 @@ function discoverPosts() {
 // ---------------------------------------------------------------------------
 
 function rewriteUrls(html) {
-  // Rewrite relative src and href attributes to absolute URLs
-  return html
-    .replace(/(src|href)="(?!https?:\/\/|mailto:|#)([^"]+)"/g, (match, attr, url) => {
+  return html.replace(
+    /(src|href)="(?!https?:\/\/|mailto:|#)([^"]+)"/g,
+    (match, attr, url) => {
       const absoluteUrl = url.startsWith("/")
         ? `${SITE_URL}${url}`
         : `${SITE_URL}/${url}`;
       return `${attr}="${absoluteUrl}"`;
-    });
+    }
+  );
 }
 
 function stripTableOfContents(markdown) {
-  // Remove "## Table of contents" heading (remark-toc generates content after it)
-  // The generated TOC is a list of links that follows the heading until the next heading
   return markdown.replace(
     /^## Table of contents\n(?:[\s\S]*?)(?=^## |\n$)/im,
     ""
@@ -223,26 +147,19 @@ function stripTableOfContents(markdown) {
 }
 
 function stripMath(markdown) {
-  // Replace display math blocks with a note
   let result = markdown.replace(
     /\$\$[\s\S]*?\$\$/g,
     "[Mathematical formula - view on web]"
   );
-  // Replace inline math
-  result = result.replace(
-    /\$([^$\n]+)\$/g,
-    (_, expr) => expr.trim()
-  );
+  result = result.replace(/\$([^$\n]+)\$/g, (_, expr) => expr.trim());
   return result;
 }
 
 function convertToEmailHtml(post) {
-  // Pre-process markdown
   let markdown = post.content;
   markdown = stripTableOfContents(markdown);
   markdown = stripMath(markdown);
 
-  // Convert to HTML
   const bodyHtml = marked.parse(markdown, { async: false });
   const rewrittenHtml = rewriteUrls(bodyHtml);
 
@@ -253,7 +170,6 @@ function convertToEmailHtml(post) {
     day: "numeric",
   });
 
-  // Email template with embedded styles (juice will inline them)
   const template = `<!DOCTYPE html>
 <html>
 <head>
@@ -432,7 +348,6 @@ function convertToEmailHtml(post) {
 </body>
 </html>`;
 
-  // Inline CSS for email client compatibility
   return juice(template);
 }
 
@@ -449,14 +364,13 @@ function escapeHtml(str) {
 // ---------------------------------------------------------------------------
 
 async function main() {
-  console.log("=== Newsletter Send Script ===");
-  console.log(`Mode: ${DRY_RUN ? "dry-run" : DRAFT_ONLY ? "draft-only" : TARGET_TAG ? `send-to-tag:${TARGET_TAG}` : "send-to-all"}`);
+  console.log("=== Newsletter Draft Script ===");
   console.log(`Cutoff date: ${NEWSLETTER_START_DATE}`);
   console.log(`Site URL: ${SITE_URL}`);
   console.log();
 
-  if (!DRY_RUN && !KIT_API_KEY) {
-    console.error("ERROR: KIT_API_KEY is required (unless --dry-run)");
+  if (!KIT_API_KEY) {
+    console.error("ERROR: KIT_API_KEY is required");
     process.exit(1);
   }
 
@@ -466,85 +380,43 @@ async function main() {
   console.log(`\nFound ${posts.length} eligible post(s).\n`);
 
   if (posts.length === 0) {
-    console.log("No new posts to send. Done.");
+    console.log("No new posts to draft. Done.");
     return;
   }
 
   for (const post of posts) {
-    console.log(`  - ${post.title} (${post.slug}, ${post.pubDate.toISOString().slice(0, 10)})`);
+    console.log(
+      `  - ${post.title} (${post.slug}, ${post.pubDate.toISOString().slice(0, 10)})`
+    );
   }
   console.log();
 
-  if (DRY_RUN) {
-    console.log("[DRY RUN] Would process the above posts. No API calls made.");
-    // Show a preview of what the email subject would be
-    for (const post of posts) {
-      console.log(`  Subject: "New post: ${post.title}"`);
-    }
-    return;
-  }
-
-  // 2. Load sent tracking file
-  console.log("Loading sent tracking file...");
-  const sentSlugs = loadSentSlugs();
-  console.log(`  ${sentSlugs.size} previously sent post(s) on record.`);
-
-  // 3. Resolve tag if needed
-  let tagId = null;
-  if (TARGET_TAG) {
-    console.log(`Looking up tag: ${TARGET_TAG}...`);
-    const tag = await getTagByName(TARGET_TAG);
-    if (!tag) {
-      console.error(`ERROR: Tag "${TARGET_TAG}" not found in Kit.`);
-      process.exit(1);
-    }
-    tagId = tag.id;
-    console.log(`Found tag "${TARGET_TAG}" (id: ${tagId})`);
-  }
-
-  // 4. Process each post
+  // 2. Create drafts
   for (const post of posts) {
-    if (sentSlugs.has(post.slug)) {
-      console.log(`SKIP (already sent): "${post.title}" (${post.slug})`);
-      continue;
-    }
-
     const subject = `New post: ${post.title}`;
-    console.log(`\nProcessing: "${post.title}"...`);
+    console.log(`Processing: "${post.title}"...`);
 
-    // Convert to email HTML
     const emailHtml = convertToEmailHtml(post);
     console.log(`  Generated email HTML (${emailHtml.length} bytes)`);
 
-    // Create broadcast
-    console.log("  Creating broadcast in Kit...");
+    console.log("  Creating draft broadcast in Kit...");
     const createResult = await createBroadcast({
       subject,
       content: emailHtml,
-      description: `Auto-sent: ${post.slug}`,
+      description: `Auto-drafted: ${post.slug}`,
     });
 
     const broadcastId = createResult.broadcast?.id;
     if (!broadcastId) {
-      console.error("  ERROR: Failed to get broadcast ID from response:", JSON.stringify(createResult));
+      console.error(
+        "  ERROR: Failed to get broadcast ID from response:",
+        JSON.stringify(createResult)
+      );
       continue;
     }
-    console.log(`  Created broadcast (id: ${broadcastId})`);
-
-    if (DRAFT_ONLY) {
-      console.log("  [DRAFT ONLY] Broadcast left as draft. Check Kit dashboard.");
-      continue;
-    }
-
-    // Send/schedule broadcast
-    console.log(`  Scheduling broadcast for send${tagId ? ` (tag: ${TARGET_TAG})` : " (all subscribers)"}...`);
-    await sendBroadcast(broadcastId, { tagId });
-
-    // Only mark as sent for send-to-all (not drafts or tag-targeted test sends)
-    if (!TARGET_TAG) {
-      markAsSent(post.slug, "send-to-all");
-    }
-    console.log("  Broadcast scheduled.");
+    console.log(
+      `  Created draft (id: ${broadcastId}). Send/schedule from Kit dashboard.`
+    );
   }
 
   console.log("\nDone.");

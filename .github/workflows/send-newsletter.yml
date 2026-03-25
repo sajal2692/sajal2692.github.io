@@ -2,24 +2,6 @@ name: Send Newsletter
 
 on:
   workflow_dispatch:
-    inputs:
-      mode:
-        description: 'Send mode'
-        required: true
-        default: 'draft-only'
-        type: choice
-        options:
-          - dry-run
-          - draft-only
-          - send-to-tag
-          - send-to-all
-      tag:
-        description: 'Kit subscriber tag to target (for send-to-tag mode)'
-        required: false
-        default: 'test'
-
-permissions:
-  contents: write
 
 jobs:
   send:
@@ -36,29 +18,8 @@ jobs:
       - name: Install script dependencies
         run: npm install gray-matter marked juice
 
-      - name: Determine send mode
-        id: mode
-        run: |
-          if [ "${{ inputs.mode }}" = "dry-run" ]; then
-            echo "flags=--dry-run" >> "$GITHUB_OUTPUT"
-          elif [ "${{ inputs.mode }}" = "draft-only" ]; then
-            echo "flags=--draft-only" >> "$GITHUB_OUTPUT"
-          elif [ "${{ inputs.mode }}" = "send-to-tag" ]; then
-            echo "flags=--tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "flags=" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Send newsletter
-        run: node .github/scripts/send-newsletter.mjs ${{ steps.mode.outputs.flags }}
+      - name: Create newsletter drafts
+        run: node .github/scripts/send-newsletter.mjs
         env:
           KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
           NEWSLETTER_START_DATE: ${{ vars.NEWSLETTER_START_DATE }}
-
-      - name: Commit sent tracking file
-        if: inputs.mode != 'dry-run'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .github/data/sent-newsletters.json
-          git diff --cached --quiet || git commit -m "update newsletter tracking: mark sent posts" && git push
