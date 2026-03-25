@@ -532,7 +532,6 @@ async function main() {
     console.log(`  Created broadcast (id: ${broadcastId})`);
 
     if (DRAFT_ONLY) {
-      markAsSent(post.slug, "draft-only");
       console.log("  [DRAFT ONLY] Broadcast left as draft. Check Kit dashboard.");
       continue;
     }
@@ -540,7 +539,11 @@ async function main() {
     // Send/schedule broadcast
     console.log(`  Scheduling broadcast for send${tagId ? ` (tag: ${TARGET_TAG})` : " (all subscribers)"}...`);
     await sendBroadcast(broadcastId, { tagId });
-    markAsSent(post.slug, TARGET_TAG ? `send-to-tag:${TARGET_TAG}` : "send-to-all");
+
+    // Only mark as sent for send-to-all (not drafts or tag-targeted test sends)
+    if (!TARGET_TAG) {
+      markAsSent(post.slug, "send-to-all");
+    }
     console.log("  Broadcast scheduled.");
   }
 
