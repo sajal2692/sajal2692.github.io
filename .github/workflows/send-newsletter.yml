@@ -1,9 +1,6 @@
 name: Send Newsletter
 
 on:
-  push:
-    branches: [main]
-    paths: ['src/content/blog/**']
   workflow_dispatch:
     inputs:
       mode:
@@ -21,14 +18,15 @@ on:
         required: false
         default: 'test'
 
+permissions:
+  contents: write
+
 jobs:
   send:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,9 +39,7 @@ jobs:
       - name: Determine send mode
         id: mode
         run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            echo "flags=" >> "$GITHUB_OUTPUT"
-          elif [ "${{ inputs.mode }}" = "dry-run" ]; then
+          if [ "${{ inputs.mode }}" = "dry-run" ]; then
             echo "flags=--dry-run" >> "$GITHUB_OUTPUT"
           elif [ "${{ inputs.mode }}" = "draft-only" ]; then
             echo "flags=--draft-only" >> "$GITHUB_OUTPUT"
@@ -58,3 +54,11 @@ jobs:
         env:
           KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
           NEWSLETTER_START_DATE: ${{ vars.NEWSLETTER_START_DATE }}
+
+      - name: Commit sent tracking file
+        if: inputs.mode != 'dry-run'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/data/sent-newsletters.json
+          git diff --cached --quiet || git commit -m "update newsletter tracking: mark sent posts" && git push

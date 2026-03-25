@@ -33,6 +33,7 @@ const KIT_API_KEY = process.env.KIT_API_KEY || "";
 const NEWSLETTER_START_DATE = process.env.NEWSLETTER_START_DATE || "2026-03-01";
 const KIT_API_BASE = "https://api.kit.com/v4";
 const BLOG_DIR = path.resolve("src/content/blog");
+const SENT_FILE = path.resolve(".github/data/sent-newsletters.json");
 
 // ---------------------------------------------------------------------------
 // CLI flags
@@ -68,9 +69,33 @@ async function kitFetch(endpoint, options = {}) {
   return res.json();
 }
 
-async function listRecentBroadcasts() {
-  const data = await kitFetch("/broadcasts?per_page=50");
-  return data.broadcasts || [];
+// ---------------------------------------------------------------------------
+// Sent tracking (JSON file)
+// ---------------------------------------------------------------------------
+
+function loadSentSlugs() {
+  try {
+    const data = JSON.parse(fs.readFileSync(SENT_FILE, "utf-8"));
+    return new Set((data.sent || []).map(e => e.slug));
+  } catch {
+    return new Set();
+  }
+}
+
+function markAsSent(slug, mode) {
+  let data;
+  try {
+    data = JSON.parse(fs.readFileSync(SENT_FILE, "utf-8"));
+  } catch {
+    data = { sent: [] };
+  }
+  data.sent.push({
+    slug,
+    sentAt: new Date().toISOString(),
+    mode,
+  });
+  fs.mkdirSync(path.dirname(SENT_FILE), { recursive: true });
+  fs.writeFileSync(SENT_FILE, JSON.stringify(data, null, 2) + "\n");
 }
 
 async function getTagByName(tagName) {
@@ -459,10 +484,10 @@ async function main() {
     return;
   }
 
-  // 2. Check existing broadcasts for idempotency
-  console.log("Checking existing broadcasts for duplicates...");
-  const existingBroadcasts = await listRecentBroadcasts();
-  const existingSubjects = new Set(existingBroadcasts.map(b => b.subject));
+  // 2. Load sent tracking file
+  console.log("Loading sent tracking file...");
+  const sentSlugs = loadSentSlugs();
+  console.log(`  ${sentSlugs.size} previously sent post(s) on record.`);
 
   // 3. Resolve tag if needed
   let tagId = null;
@@ -479,13 +504,12 @@ async function main() {
 
   // 4. Process each post
   for (const post of posts) {
-    const subject = `New post: ${post.title}`;
-
-    if (existingSubjects.has(subject)) {
-      console.log(`SKIP (already exists): "${subject}"`);
+    if (sentSlugs.has(post.slug)) {
+      console.log(`SKIP (already sent): "${post.title}" (${post.slug})`);
       continue;
     }
 
+    const subject = `New post: ${post.title}`;
     console.log(`\nProcessing: "${post.title}"...`);
 
     // Convert to email HTML
@@ -508,6 +532,7 @@ async function main() {
     console.log(`  Created broadcast (id: ${broadcastId})`);
 
     if (DRAFT_ONLY) {
+      markAsSent(post.slug, "draft-only");
       console.log("  [DRAFT ONLY] Broadcast left as draft. Check Kit dashboard.");
       continue;
     }
@@ -515,6 +540,7 @@ async function main() {
     // Send/schedule broadcast
     console.log(`  Scheduling broadcast for send${tagId ? ` (tag: ${TARGET_TAG})` : " (all subscribers)"}...`);
     await sendBroadcast(broadcastId, { tagId });
+    markAsSent(post.slug, TARGET_TAG ? `send-to-tag:${TARGET_TAG}` : "send-to-all");
     console.log("  Broadcast scheduled.");
   }
 
