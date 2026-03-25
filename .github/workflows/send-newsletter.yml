@@ -1,4 +1,4 @@
-name: Send Newsletter
+name: Draft Newsletter
 
 on:
   workflow_dispatch:
