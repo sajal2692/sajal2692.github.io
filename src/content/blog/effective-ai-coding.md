@@ -3,7 +3,7 @@ title: "Working Effectively with AI Coding Tools like Claude Code"
 author: "Sajal Sharma"
 pubDatetime: 2025-07-27T00:00:00Z
 slug: effective-ai-coding
-featured: true
+featured: false
 draft: false
 tags:
   - ai-engineering
