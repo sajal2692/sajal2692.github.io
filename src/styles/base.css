@@ -130,6 +130,7 @@
   pre > code {
     white-space: pre;
   }
+
 }
 
 @layer components {
@@ -139,4 +140,27 @@
   .focus-outline {
     @apply outline-2 outline-offset-1 outline-skin-fill focus-visible:no-underline focus-visible:outline-dashed;
   }
+}
+
+/* ===== Shiki dual-theme code blocks =====
+   Kept OUTSIDE @layer on purpose: Tailwind tree-shakes custom selectors inside
+   @layer whose classes never appear in source files, and .astro-code only
+   exists in shiki-generated HTML. */
+
+/* Light mode: github-light tokens on GitHub's cool light-gray code surface,
+   which suits the site's cool-toned light palette better than stark white
+   (shiki inlines background-color:#fff, hence !important). */
+html[data-theme="light"] pre.astro-code {
+  background-color: #f6f8fa !important;
+  border: 1px solid rgba(var(--color-card-muted), 0.55);
+}
+
+/* Dark mode: restore one-dark-pro via the --shiki-dark* vars shikiji emits. */
+html[data-theme="dark"] .astro-code,
+html[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }
