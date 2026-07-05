@@ -35,7 +35,13 @@ export default defineConfig({
     ],
     rehypePlugins: ["rehype-katex"],
     shikiConfig: {
-      theme: "one-dark-pro",
+      // Dual theme: light syntax palette in light mode, one-dark-pro in dark mode.
+      // shikiji applies the light theme's colors inline and exposes the dark
+      // theme via --shiki-dark* CSS variables, which base.css swaps in for dark mode.
+      experimentalThemes: {
+        light: "github-light",
+        dark: "one-dark-pro",
+      },
       wrap: true,
     },
   },
