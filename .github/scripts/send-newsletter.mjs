@@ -44,24 +44,45 @@ const TARGET_SLUG = SLUG_FLAG ? SLUG_FLAG.split("=")[1] : null;
 // Kit API helpers
 // ---------------------------------------------------------------------------
 
-async function kitFetch(endpoint, options = {}) {
-  const url = `${KIT_API_BASE}${endpoint}`;
-  const res = await fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      "X-Kit-Api-Key": KIT_API_KEY,
-      Accept: "application/json",
-      ...options.headers,
-    },
-  });
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-  if (!res.ok) {
+async function kitFetch(endpoint, options = {}, retries = 4) {
+  const url = `${KIT_API_BASE}${endpoint}`;
+
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Kit-Api-Key": KIT_API_KEY,
+        Accept: "application/json",
+        ...options.headers,
+      },
+    });
+
+    if (res.ok) return res.json();
+
+    // Retry on rate limiting (429) and transient server errors (5xx).
+    if ((res.status === 429 || res.status >= 500) && attempt < retries) {
+      const retryAfter = Number(res.headers.get("retry-after"));
+      const delayMs =
+        Number.isFinite(retryAfter) && retryAfter > 0
+          ? retryAfter * 1000
+          : Math.min(1000 * 2 ** attempt, 16000);
+      console.log(
+        `  Kit API ${res.status}; retrying in ${Math.round(
+          delayMs / 1000
+        )}s (attempt ${attempt + 1}/${retries})...`
+      );
+      await sleep(delayMs);
+      continue;
+    }
+
     const body = await res.text();
     throw new Error(`Kit API ${res.status} ${res.statusText}: ${body}`);
   }
-
-  return res.json();
 }
 
 async function listAllBroadcastSubjects() {
@@ -75,6 +96,8 @@ async function listAllBroadcastSubjects() {
       subjects.add(b.subject);
     }
     page++;
+    // Gentle throttle to stay under Kit's rate limit while paginating.
+    await sleep(300);
   }
   return subjects;
 }
@@ -408,13 +431,17 @@ async function main() {
     return;
   }
 
-  // 2. Filter to specific slug if provided
+  // 2. Select target post: a specific slug if provided, otherwise the latest only.
   if (TARGET_SLUG) {
     posts = posts.filter(p => p.slug === TARGET_SLUG);
     if (posts.length === 0) {
       console.error(`ERROR: Post with slug "${TARGET_SLUG}" not found among eligible posts.`);
       process.exit(1);
     }
+  } else if (posts.length > 1) {
+    // posts are sorted newest-first; draft only the most recent eligible post.
+    console.log("Multiple eligible posts found; drafting only the latest.\n");
+    posts = posts.slice(0, 1);
   }
 
   for (const post of posts) {
