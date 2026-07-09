@@ -113,11 +113,16 @@ const socialImageURL = new URL(
       <>
         <script type="text/partytown" async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.GA_TRACKING_ID}`}></script>
         <script type="text/partytown" define:vars={{ gaId: import.meta.env.GA_TRACKING_ID }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', gaId);
+          // Only configure GA on the production hostname so localhost and
+          // forks serving this HTML don't pollute the property.
+          if (window.location.hostname === "sajalsharma.com") {
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function () {
+              dataLayer.push(arguments);
+            };
+            gtag("js", new Date());
+            gtag("config", gaId);
+          }
         </script>
       </>
     )}

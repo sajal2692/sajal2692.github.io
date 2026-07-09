@@ -98,6 +98,14 @@
     forms.forEach(form => {
       // Handle form submissions
       form.addEventListener('submit', function() {
+        // GA4 conversion event; dataLayer.push is forwarded to the Partytown
+        // worker where gtag.js runs (see Layout.astro).
+        window.dataLayer = window.dataLayer || [];
+        var gtag = function () {
+          window.dataLayer.push(arguments);
+        };
+        gtag('event', 'newsletter_signup');
+
         // Get the form fields and success message elements
         const formFields = form.querySelector('#newsletter-form-fields');
         const successMessage = form.querySelector('#success-message');
