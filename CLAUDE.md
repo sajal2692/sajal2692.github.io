@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal website and blog built with **Astro v4.1.1** using the **AstroPaper theme**. The site showcases professional work in Machine Learning, NLP, and AI, with a focus on blog content and portfolio presentation.
+This is a personal website and blog built with **Astro v7** using the **AstroPaper theme**. The site showcases professional work in Machine Learning, NLP, and AI, with a focus on blog content and portfolio presentation.
 
 **Technology Stack:**
 - Astro.js (static site generator)
 - React (for interactive components)
-- TailwindCSS (styling with custom skin tokens)
+- TailwindCSS v3 (styling with custom skin tokens, wired via `postcss.config.mjs` — not the deprecated `@astrojs/tailwind` integration)
 - TypeScript
 - Markdown with MDX support
 
@@ -46,7 +46,7 @@ The site is highly configurable through `src/config.ts`:
 
 ### Content Collections
 
-Blog posts live in `src/content/blog/` as Markdown files with strict frontmatter schema defined in `src/content/config.ts`:
+Blog posts live in `src/content/blog/` as Markdown files, loaded with the `glob()` loader and validated against the schema in `src/content.config.ts`:
 
 **Required frontmatter fields:**
 - `title`: Post title
@@ -56,6 +56,7 @@ Blog posts live in `src/content/blog/` as Markdown files with strict frontmatter
 - `tags`: Array of strings, defaults to ["others"]
 
 **Optional fields:**
+- `slug`: Overrides the URL slug (otherwise derived from the filename). The `generateId` callback in `src/content.config.ts` makes entry ids honor this field, so existing post URLs must not change when files are renamed
 - `featured`: Boolean for featuring posts
 - `draft`: Boolean to exclude from production
 - `modDatetime`: Last modified date
@@ -79,10 +80,10 @@ TailwindCSS with **CSS variable-based theming** for light/dark mode:
 
 ### Markdown Processing
 
-Configured in `astro.config.ts`:
+Configured in `astro.config.ts` using the `unified()` processor from `@astrojs/markdown-remark` (not Astro 7's default Sätteri processor) so the remark/rehype plugins keep working:
 - **Remark plugins**: `remark-toc` (table of contents), `remark-collapse` (collapsible sections), `remark-math` (LaTeX math)
 - **Rehype plugins**: `rehype-katex` (math rendering)
-- **Syntax highlighting**: Shiki with "one-dark-pro" theme
+- **Syntax highlighting**: Shiki dual themes ("github-light" / "one-dark-pro"), swapped by CSS variables in `src/styles/base.css`
 
 ### Utility Functions (`src/utils/`)
 
