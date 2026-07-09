@@ -3,9 +3,9 @@ import type { Site, SocialObjects } from "./types";
 export const SITE: Site = {
   website: "https://sajalsharma.com/", // replace this with your deployed domain
   author: "Sajal Sharma",
-  desc: "Internet home of Sajal Sharma, a software engineer specializing in AI and ML.",
+  desc: "Internet home of Sajal Sharma — AI engineer and O'Reilly instructor specializing in agentic AI systems, LLMs, and machine learning.",
   title: "Sajal Sharma",
-  ogImage: "astropaper-og.jpg",
+  ogImage: "sajalsharma-og.png",
   lightAndDarkMode: true,
   postPerPage: 5,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
