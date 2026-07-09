@@ -178,7 +178,7 @@ The difference that matters is the billing model. [Daytona](https://www.daytona.
 
 Sandboxes are on their way to becoming a default layer of the agent stack, the way containers became the default unit of deployment. The interesting question is what happens after that.
 
-The long-horizon agents from the intro will want more than a throwaway box. Things get interesting when the sandbox stops being disposable: a persistent computer per agent means state, memory, and identity that survive across runs, which is the direction my [OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md) experiments keep pushing toward, giving an assistant its own machine to live on, one that persists across runs. That is a different security posture and a different design problem, and I do not think the answers are settled.
+The long-horizon agents from the intro will want more than a throwaway box. Things get interesting when the sandbox stops being disposable: a persistent computer per agent means state, memory, and identity that survive across runs, which is the direction my [OpenClaw experiments](https://sajalsharma.com/posts/openclaw-experiments) keep pushing toward, giving an assistant its own machine to live on, one that persists across runs. That is a different security posture and a different design problem, and I do not think the answers are settled.
 
 For now, the question I would leave you with is the smaller, more immediate one. The agents you are already running today, the ones with auto-approve flipped on: what computer are they running on?
 

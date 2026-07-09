@@ -1,13 +1,16 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import Tag from "@components/Tag.astro";
 import Datetime from "@components/Datetime";
+import Card from "@components/Card";
 import type { CollectionEntry } from "astro:content";
 import { slugifyStr } from "@utils/slugify";
 import ShareLinks from "@components/ShareLinks.astro";
 import Newsletter from "@components/Newsletter.astro";
+import getSortedPosts from "@utils/getSortedPosts";
 
 export interface Props {
   post: CollectionEntry<"blog">;
@@ -27,6 +30,17 @@ const {
 } = post.data;
 
 const { Content } = await post.render();
+
+const allPosts = await getCollection("blog");
+const relatedPosts = getSortedPosts(allPosts)
+  .filter(p => p.slug !== post.slug)
+  .map(p => ({
+    entry: p,
+    overlap: p.data.tags.filter(tag => tags.includes(tag)).length,
+  }))
+  .sort((a, b) => b.overlap - a.overlap)
+  .slice(0, 3)
+  .map(({ entry }) => entry);
 
 const ogImageUrl = typeof ogImage === "string" ? ogImage : ogImage?.src;
 const ogUrl = new URL(
@@ -84,6 +98,19 @@ const layoutProps = {
       {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
     </ul>
 
+    {
+      relatedPosts.length > 0 && (
+        <section id="related-posts">
+          <h2>Read Next</h2>
+          <ul>
+            {relatedPosts.map(({ slug, data }) => (
+              <Card href={`/posts/${slug}`} frontmatter={data} secHeading={false} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
     <Newsletter />
 
     <div
@@ -115,6 +142,12 @@ const layoutProps = {
   }
   .post-title {
     @apply text-2xl font-semibold text-skin-accent;
+  }
+  #related-posts {
+    @apply mb-2 mt-12;
+  }
+  #related-posts h2 {
+    @apply text-xl font-semibold tracking-wide;
   }
 </style>
 
