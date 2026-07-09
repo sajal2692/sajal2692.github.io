@@ -87,15 +87,24 @@ async function kitFetch(endpoint, options = {}, retries = 4) {
 
 async function listAllBroadcastSubjects() {
   const subjects = new Set();
-  let page = 1;
-  while (true) {
-    const data = await kitFetch(`/broadcasts?per_page=50&page=${page}`);
-    const broadcasts = data.broadcasts || [];
-    if (broadcasts.length === 0) break;
-    for (const b of broadcasts) {
+  // Kit v4 uses cursor-based pagination; the legacy `page` parameter is no
+  // longer supported and is silently ignored, so every request returns the
+  // same first page. Paging on `page` never reaches an empty result, so the
+  // loop spun forever and hammered the API until it hit the 120 req/min rate
+  // limit. Follow `pagination.end_cursor` instead, with a hard iteration cap
+  // as a guard against an unterminated cursor.
+  let after = null;
+  for (let i = 0; i < 100; i++) {
+    const query = after
+      ? `/broadcasts?per_page=500&after=${encodeURIComponent(after)}`
+      : "/broadcasts?per_page=500";
+    const data = await kitFetch(query);
+    for (const b of data.broadcasts || []) {
       subjects.add(b.subject);
     }
-    page++;
+    const pagination = data.pagination || {};
+    if (!pagination.has_next_page || !pagination.end_cursor) break;
+    after = pagination.end_cursor;
     // Gentle throttle to stay under Kit's rate limit while paginating.
     await sleep(300);
   }
