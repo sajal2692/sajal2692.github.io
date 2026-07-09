@@ -58,7 +58,7 @@ Blog posts live in `src/content/blog/` as Markdown files with strict frontmatter
 **Optional fields:**
 - `featured`: Boolean for featuring posts
 - `draft`: Boolean to exclude from production
-- `modDatetime`: Last modified date
+- `modDatetime`: Last modified date. Set/refresh this whenever a published post is materially updated (drives the "updated" timestamp and `article:modified_time` meta tag)
 - `ogImage`: Must be ≥1200x630px or string path
 - `canonicalURL`: For cross-posted content
 
@@ -130,9 +130,10 @@ Auto-generated at `/rss.xml` from all published posts.
 ## Development Workflow
 
 1. **Adding blog posts**: Create `.md` files in `src/content/blog/` with proper frontmatter
-2. **Styling changes**: Modify CSS variables in `src/styles/` or Tailwind config
-3. **Site config**: Edit `src/config.ts` for metadata, social links, etc.
-4. **Type safety**: Run `npm run build` to catch TypeScript and Astro errors before pushing
+2. **Updating blog posts**: When materially updating a published post, set/refresh `modDatetime` in its frontmatter
+3. **Styling changes**: Modify CSS variables in `src/styles/` or Tailwind config
+4. **Site config**: Edit `src/config.ts` for metadata, social links, etc.
+5. **Type safety**: Run `npm run build` to catch TypeScript and Astro errors before pushing
 
 ## Build Process
 
