@@ -2,7 +2,7 @@
 title: "An Overview of Multi Agent Frameworks: Autogen, CrewAI and LangGraph"
 author: "Sajal Sharma" # Replace with the actual author's name
 pubDatetime: 2024-04-08T00:00:00Z
-slug: overview-multi-agent-fameworks
+slug: overview-multi-agent-frameworks
 featured: false
 draft: false
 tags:

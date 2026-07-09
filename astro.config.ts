@@ -10,6 +10,15 @@ import partytown from "@astrojs/partytown";
 // https://astro.build/config
 export default defineConfig({
   site: SITE.website,
+  // Static redirects (emitted as meta-refresh pages, which GitHub Pages can serve)
+  redirects: {
+    // Legacy pre-Astro URL still linked from old external threads and bookmarks
+    "/coding-k-means-clustering-using-python-and-num-py":
+      "/posts/coding-kmeans-clustering-python-numpy/",
+    // The post's slug had a typo (missing "r") until July 2026
+    "/posts/overview-multi-agent-fameworks":
+      "/posts/overview-multi-agent-frameworks/",
+  },
   integrations: [
     tailwind({
       applyBaseStyles: false,
