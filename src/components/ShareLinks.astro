@@ -40,12 +40,12 @@ const shareLinks = [
 
 <div class={`social-icons`}>
   <span class="italic">Share this post on:</span>
-  <div class="text-center">
+  <div class="flex flex-wrap items-center justify-center gap-1">
     {
       shareLinks.map(social => (
         <LinkButton
           href={`${social.href + URL}`}
-          className="link-button"
+          className="scale-90 p-2 hover:rotate-6 sm:p-1"
           title={social.linkTitle}
         >
           <Fragment set:html={socialIcons[social.name]} />
@@ -57,10 +57,9 @@ const shareLinks = [
 </div>
 
 <style>
+  /* Scoped styles cannot reach the anchors rendered inside LinkButton, so
+     per-link utilities are passed via className above. */
   .social-icons {
     @apply flex flex-col flex-wrap items-center justify-center gap-1 sm:items-start;
-  }
-  .link-button {
-    @apply scale-90 p-2 hover:rotate-6 sm:p-1;
   }
 </style>
