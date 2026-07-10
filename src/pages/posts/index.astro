@@ -16,7 +16,7 @@ const sortedPosts = getSortedPosts(posts);
   <Main pageTitle="Posts" pageDesc="Here I document my experiments with AI engineering, insights from building intelligent systems and share deep dives on latest paradigms.">
     <ul class="posts-list">
       {
-        sortedPosts.map(({ data, slug }) => (
+        sortedPosts.map(({ data, id }) => (
           <li class="post-item">
             <span class="post-date">{data.pubDatetime.toLocaleDateString("en-US", { 
               day: "2-digit", 
@@ -24,7 +24,7 @@ const sortedPosts = getSortedPosts(posts);
               year: "numeric" 
             })}</span>
             <span class="post-separator">»</span>
-            <a href={`/posts/${slug}`} class="post-title">
+            <a href={`/posts/${id}`} class="post-title">
               {data.title}
             </a>
           </li>
