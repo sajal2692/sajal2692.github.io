@@ -10,12 +10,12 @@ export interface Props {
 const { centered = false } = Astro.props;
 ---
 
-<div class={`social-icons ${centered ? "flex" : ""}`}>
+<div class={`social-icons ${centered ? "justify-center" : ""}`}>
   {
     SOCIALS.filter(social => social.active).map(social => (
       <LinkButton
         href={social.href}
-        className="link-button"
+        className="p-2 hover:rotate-6 sm:p-1"
         title={social.linkTitle}
       >
         <Fragment set:html={socialIcons[social.name]} />
@@ -26,10 +26,9 @@ const { centered = false } = Astro.props;
 </div>
 
 <style>
+  /* Scoped styles cannot reach the anchors rendered inside LinkButton, so
+     per-link utilities are passed via className above. */
   .social-icons {
-    @apply flex-wrap justify-center gap-1;
-  }
-  .link-button {
-    @apply p-2 hover:rotate-6 sm:p-1;
+    @apply flex flex-wrap gap-1;
   }
 </style>
