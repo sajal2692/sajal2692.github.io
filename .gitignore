@@ -25,6 +25,12 @@ pnpm-debug.log*
 # ignore Jampack cache files
 .jampack/
 
+# related-posts embedding cache (regenerated from OpenAI on demand)
+.cache/
+
+# local agent tooling (launch config, local permissions, worktrees)
+.claude/
+
 # yarn
 .yarn/*
 !.yarn/patches

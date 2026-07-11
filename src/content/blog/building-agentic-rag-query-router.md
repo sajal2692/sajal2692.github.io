@@ -5,10 +5,13 @@ pubDatetime: 2025-05-12T00:00:00Z
 slug: agentic-rag-query-router-langgraph
 featured: false
 draft: false
+series: agentic-rag
+seriesOrder: 2
 tags:
   - llms
   - ai-engineering
   - langchain
+  - langgraph
   - rag
   - nlp
   - agentic-workflows

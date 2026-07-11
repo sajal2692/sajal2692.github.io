@@ -10,6 +10,8 @@ tags:
   - ai-tools
   - software-development
   - productivity
+  - claude-code
+  - ai-coding
 description: "Thoughts after Claude Code for building a full-stack system, covering the productivity gains, challenges, and lessons learned from the frontier of AI-assisted software development."
 canonicalURL: ""
 ---

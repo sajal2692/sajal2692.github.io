@@ -8,6 +8,7 @@ draft: false
 tags:
   - ai-engineering
   - ai-agents
+  - ai-tools
   - productivity
   - automation
 description: "I spent the last week running my own personal AI assistant with OpenClaw. Here's what I built, what broke, and whether any of this is actually worth the effort and tokens."

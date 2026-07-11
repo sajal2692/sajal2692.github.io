@@ -1,6 +1,6 @@
 import { SITE } from "@config";
 import { glob } from "astro/loaders";
-import { defineCollection, z } from "astro:content";
+import { defineCollection, reference, z } from "astro:content";
 import { slug as slugger } from "github-slugger";
 
 const blog = defineCollection({
@@ -21,6 +21,9 @@ const blog = defineCollection({
       slug: z.string().optional(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
+      series: z.string().optional(),
+      seriesOrder: z.number().int().positive().optional(),
+      relatedPosts: z.array(reference("blog")).max(3).optional(),
       tags: z.array(z.string()).default(["others"]),
       ogImage: image()
         .refine(img => img.width >= 1200 && img.height >= 630, {
