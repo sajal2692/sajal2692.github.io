@@ -137,7 +137,14 @@ Each post page shows up to 3 related posts (5 stored), precomputed at authoring 
 The `/og.png.ts` endpoint dynamically generates Open Graph images. Custom templates live in `src/utils/og-templates/`.
 
 ### RSS Feed
-Auto-generated at `/rss.xml` from all published posts.
+Auto-generated at `/rss.xml` from all published posts. Full-content feed: each item's `content:encoded` carries the whole post, rendered from raw markdown with `markdown-it` + `sanitize-html`. Autodiscoverable via `<link rel="alternate">` in `Layout.astro`.
+
+### llms.txt (AI assistant discovery)
+Two static endpoints make the content easy for AI assistants to discover and cite:
+- `/llms.txt` (`src/pages/llms.txt.ts`) — an [llmstxt.org](https://llmstxt.org)-format index: title + description + absolute URL for every published post, plus key pages
+- `/llms-full.txt` (`src/pages/llms-full.txt.ts`) — the full text of every post as clean markdown, one fetch for the whole corpus
+
+Both reuse `getSortedPosts`/`postFilter` (no draft/scheduled leakage) and share URL helpers: `getPostBody` (strips the injected `## Table of contents` heading) and `absolutizeUrls` (rewrites root-relative `/images` and `/posts` paths to absolute, also used by the RSS feed). Pure string-building, no API calls — generated statically at build.
 
 ### SEO
 - Sitemap auto-generated via `@astrojs/sitemap`
