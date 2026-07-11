@@ -108,7 +108,7 @@ export default function SearchBar({ searchList }: Props) {
         </div>
       )}
 
-      <ul>
+      <ul data-track="search-results">
         {searchResults &&
           searchResults.map(({ item, refIndex }) => (
             <Card

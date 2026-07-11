@@ -98,8 +98,8 @@
     forms.forEach(form => {
       // Handle form submissions
       form.addEventListener('submit', function() {
-        // GA4 conversion event; dataLayer.push is forwarded to the Partytown
-        // worker where gtag.js runs (see Layout.astro).
+        // GA4 conversion event; gtag.js runs on the main thread (see
+        // Layout.astro) and picks this up from the shared dataLayer.
         window.dataLayer = window.dataLayer || [];
         var gtag = function () {
           window.dataLayer.push(arguments);

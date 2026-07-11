@@ -81,13 +81,18 @@ const layoutProps = {
       size="lg"
       className="my-2"
     />
-    <article id="article" role="article" class="prose mx-auto mt-8 max-w-3xl">
+    <article
+      id="article"
+      role="article"
+      class="prose mx-auto mt-8 max-w-3xl"
+      data-track="post-body"
+    >
       <Content />
     </article>
 
     <RelatedPosts posts={relatedPosts} />
 
-    <ul class="my-8">
+    <ul class="my-8" data-track="post-tags">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
     </ul>
 
@@ -129,6 +134,9 @@ const layoutProps = {
   function addHeadingLinks() {
     let headings = Array.from(document.querySelectorAll("h2, h3, h4, h5, h6"));
     for (let heading of headings) {
+      // Headings outside the article body (e.g. Read Next card titles) have
+      // no id, so a permalink would be a dead "#" link.
+      if (!heading.id) continue;
       heading.classList.add("group");
       let link = document.createElement("a");
       link.innerText = "#";

@@ -107,7 +107,7 @@ Configured in `astro.config.ts` using the `unified()` processor from `@astrojs/m
 ### Component Structure
 
 **Layout Components:**
-- `Layout.astro`: Base layout with SEO, analytics (Google Analytics via Partytown)
+- `Layout.astro`: Base layout with SEO, analytics (Google Analytics gtag on the main thread, plus the delegated `link_click` listener)
 - `Main.astro`: Main content wrapper
 - `PostDetails.astro`: Blog post layout
 - `Posts.astro`: Blog listing layout
@@ -132,6 +132,12 @@ Each post page shows up to 3 related posts (5 stored), precomputed at authoring 
 - `scripts/related-posts.mjs` scores every pair with four signals, each producing its own per-source ranking: title+description embedding cosine (OpenAI `text-embedding-3-large`), symmetric body-chunk coverage (cleaned prose in ~375-word chunks; fenced code, HTML, and generic heading labels like "Introduction" are stripped first), symmetric BM25F lexical similarity (title/description/body fields, each direction normalized by its query's IDF mass), and IDF-weighted tag overlap. Rankings fuse via weighted RRF (0.45 title+description / 0.25 body / 0.25 BM25F / 0.05 tags, K=10); an absolute evidence gate then admits a candidate only on strong title+description cosine (>= 0.60) or body coverage and lexical similarity agreeing independently (>= 0.512 and >= 0.035). Tags never admit a candidate alone. Manual `relatedPosts` pins and series neighbors outrank automatic results and bypass the gate — posts may legitimately have fewer than 3 related posts or none. Recalibrate gate thresholds with `npm run related:report` after changing scoring; pin cross-topic pairs the signals undervalue via `relatedPosts` instead of lowering thresholds
 - Committed artifact: `src/generated/related-posts.json` (keys/values are entry ids, which mirror `generateId` in `src/content.config.ts`). Embedding vectors live in the gitignored `.cache/related-posts/`, cached per summary and per body chunk: title/description edits re-embed one summary, body edits re-embed only the changed chunks, and tag or config changes re-rank locally with no API call (fenced code never affects embeddings)
 - `npm run dev` and `npm run build` run `related:ensure`, which never fails a build: without `OPENAI_API_KEY` it warns and keeps the committed artifact. GitHub Actions therefore needs no OpenAI credentials and must not be given any — regeneration happens locally, enforced by the pre-commit `related:check`
+
+### Analytics (GA4 link-click tracking)
+GA4 loads as a plain async main-thread script in `Layout.astro`, gated on the build-time `GA_TRACKING_ID` env var and a runtime `sajalsharma.com` hostname check (Partytown was removed: its worker transport dropped most events, and main-thread cost measured at 0 Lighthouse points / +9-14ms TBT). A delegated listener in `Layout.astro` fires a `link_click` event for every anchor click (`click` + middle-click `auxclick`; same-document hash jumps skipped) with params `link_section`, `link_url`, `link_domain`, `link_text`, `outbound` — the last four reuse Enhanced Measurement's names so GA4's built-in dimensions pick them up; `link_section` is a registered event-scoped custom dimension:
+- `link_section` comes from the nearest `data-track` container attribute (`header`, `footer`, `socials`, `share-links`, `related-posts`, `pagination`, `breadcrumbs`, `search-results`, `home-hero`, `courses`, `featured-posts`, `home-all-posts`, `posts-list`, `post-body`, `post-tags`, `about`), falling back to `other`. When adding a new link-bearing section, put `data-track` on its container — never on individual anchors; `LinkButton.astro` does not forward extra props
+- Off-production hostnames log the payload via `console.debug("[link_click]", ...)` instead of sending — click through pages in the dev server to verify
+- Query from the terminal with the `ga4` CLI (see `.claude/skills/ga4-cli`), e.g. `ga4 report -m eventCount -d customEvent:link_section -f 'eventName==link_click' -r 28d`
 
 ### OG Image Generation
 The `/og.png.ts` endpoint dynamically generates Open Graph images. Custom templates live in `src/utils/og-templates/`.

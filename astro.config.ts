@@ -7,7 +7,6 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import sitemap from "@astrojs/sitemap";
 import { SITE } from "./src/config";
-import partytown from "@astrojs/partytown";
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,15 +20,7 @@ export default defineConfig({
     "/posts/overview-multi-agent-fameworks":
       "/posts/overview-multi-agent-frameworks/",
   },
-  integrations: [
-    react(),
-    sitemap(),
-    partytown({
-      config: {
-        forward: ["dataLayer.push"],
-      },
-    }),
-  ],
+  integrations: [react(), sitemap()],
   markdown: {
     // Keep the remark/rehype pipeline (TOC, collapsible sections, LaTeX math)
     // instead of Astro 7's default Sätteri processor.

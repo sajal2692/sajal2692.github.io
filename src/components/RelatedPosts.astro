@@ -11,7 +11,11 @@ const { posts } = Astro.props;
 
 {
   posts.length > 0 && (
-    <section id="related-posts" aria-labelledby="related-posts-heading">
+    <section
+      id="related-posts"
+      aria-labelledby="related-posts-heading"
+      data-track="related-posts"
+    >
       <h2
         id="related-posts-heading"
         class="border-l-4 border-skin-accent border-opacity-80 pl-4 text-2xl font-semibold"
