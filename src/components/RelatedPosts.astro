@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Card from "@components/Card";
+
+export interface Props {
+  posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section id="related-posts" aria-labelledby="related-posts-heading">
+      <h2
+        id="related-posts-heading"
+        class="border-l-4 border-skin-accent border-opacity-80 pl-4 text-2xl font-semibold"
+      >
+        Related Posts
+      </h2>
+      <ul>
+        {posts.map(post => (
+          <Card
+            href={`/posts/${post.id}/`}
+            frontmatter={post.data}
+            secHeading={false}
+          />
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  /* pt-12 gives the heading the same 48px rhythm article h2s get from
+     mt-12 (the article's last child carries no bottom margin). Cards below
+     bring their own my-6. px-0 cancels the global section px-4 (base.css),
+     which would double-pad inside main's own px-4 and shift the section
+     off the article edge. */
+  #related-posts {
+    @apply px-0 pb-2 pt-12;
+  }
+</style>

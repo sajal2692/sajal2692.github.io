@@ -9,6 +9,7 @@ tags:
   - ai-agents
   - ai-engineering
   - langgraph
+  - teaching
 description: "Slides from my guest lecture at Yale for Generative AI & Entrepreneurship class (MGT 899)."
 canonicalURL: "" # Add if the article is published elsewhere
 ---

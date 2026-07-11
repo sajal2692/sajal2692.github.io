@@ -5,6 +5,8 @@ pubDatetime: 2025-03-04T00:00:00Z
 slug: introduction-to-agentic-rag
 featured: false
 draft: false
+series: agentic-rag
+seriesOrder: 1
 tags:
   - llms
   - ai-engineering

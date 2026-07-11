@@ -9,8 +9,10 @@ tags:
   - llms
   - ai-engineering
   - langchain
+  - langgraph
   - rag
   - nlp
+  - agentic-workflows
 description: "A deep dive into the process building a corrective RAG workflow using langgraph to handle scenarios where the documents retrieved from a vector database in a traditional RAG workflow are not relevant to answer a question."
 canonicalURL: "" # Add if the article is published elsewhere
 ---

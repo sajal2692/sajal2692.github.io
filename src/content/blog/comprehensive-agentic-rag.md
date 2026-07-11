@@ -5,6 +5,8 @@ pubDatetime: 2025-05-31T00:00:00Z
 slug: comprehensive-agentic-rag
 featured: false
 draft: false
+series: agentic-rag
+seriesOrder: 3
 tags:
   - llms
   - ai-engineering

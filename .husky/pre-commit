@@ -1,4 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+npm run related:check
+if ! git diff --quiet -- src/generated/related-posts.json; then
+  echo "related-posts: src/generated/related-posts.json was regenerated but not staged; run: git add src/generated/related-posts.json" >&2
+  exit 1
+fi
 npx lint-staged

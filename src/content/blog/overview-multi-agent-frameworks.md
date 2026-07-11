@@ -9,7 +9,8 @@ tags:
   - llms
   - ai-engineering
   - langchain
-  - agents
+  - langgraph
+  - ai-agents
   - nlp
 description: "A brief look at the components of multi-agent frameworks and the current cutting edge options."
 canonicalURL: "" # Add if the article is published elsewhere

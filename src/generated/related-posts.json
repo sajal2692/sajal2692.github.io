@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "schemaVersion": 1,
+    "model": "text-embedding-3-large",
+    "dimensions": 1024,
+    "corpusHash": "sha256:eced5f20447b058d5f0945901567574d8a41ef13fb8a6f0dde4b650c0d030757",
+    "rankingConfigHash": "sha256:95e9fcc0007ef14e4a5c38ee5b226c5909947b384796b02ac565b18f760665c7"
+  },
+  "posts": {
+    "2025-career-in-review": [
+      "adventures-claude-code",
+      "effective-ai-coding",
+      "building-ai-agents-langgraph-oreilly",
+      "openclaw-experiments",
+      "yale-guest-lecture-february-2025-ai-agents-langgraph"
+    ],
+    "adventures-claude-code": [
+      "effective-ai-coding",
+      "2025-career-in-review",
+      "openclaw-experiments",
+      "product-defensibility-ai-applications",
+      "agentic-workflows-to-agent-harnesses"
+    ],
+    "agentic-rag-query-router-langgraph": [
+      "introduction-to-agentic-rag",
+      "comprehensive-agentic-rag",
+      "corrective-rag-langgraph",
+      "overview-multi-agent-frameworks",
+      "agentic-workflows-to-agent-harnesses"
+    ],
+    "agentic-workflows-to-agent-harnesses": [
+      "sandboxing-an-ai-agent",
+      "overview-multi-agent-frameworks",
+      "introduction-to-agentic-rag",
+      "effective-ai-coding",
+      "comprehensive-agentic-rag"
+    ],
+    "building-ai-agents-langgraph-oreilly": [
+      "yale-guest-lecture-february-2025-ai-agents-langgraph",
+      "2025-career-in-review",
+      "overview-multi-agent-frameworks"
+    ],
+    "building-image-classifier-fastai": [],
+    "coding-kmeans-clustering-python-numpy": [],
+    "comprehensive-agentic-rag": [
+      "agentic-rag-query-router-langgraph",
+      "introduction-to-agentic-rag",
+      "corrective-rag-langgraph",
+      "agentic-workflows-to-agent-harnesses",
+      "overview-multi-agent-frameworks"
+    ],
+    "corrective-rag-langgraph": [
+      "comprehensive-agentic-rag",
+      "agentic-rag-query-router-langgraph",
+      "introduction-to-agentic-rag",
+      "overview-multi-agent-frameworks"
+    ],
+    "deploy-stablelm-models-aws-sagemaker": [],
+    "effective-ai-coding": [
+      "adventures-claude-code",
+      "2025-career-in-review",
+      "agentic-workflows-to-agent-harnesses",
+      "understanding-mcp",
+      "openclaw-experiments"
+    ],
+    "introduction-to-agentic-rag": [
+      "agentic-rag-query-router-langgraph",
+      "comprehensive-agentic-rag",
+      "corrective-rag-langgraph",
+      "agentic-workflows-to-agent-harnesses",
+      "overview-multi-agent-frameworks"
+    ],
+    "openclaw-experiments": [
+      "adventures-claude-code",
+      "effective-ai-coding",
+      "2025-career-in-review",
+      "agentic-workflows-to-agent-harnesses",
+      "sandboxing-an-ai-agent"
+    ],
+    "overview-multi-agent-frameworks": [
+      "agentic-workflows-to-agent-harnesses",
+      "agentic-rag-query-router-langgraph",
+      "introduction-to-agentic-rag",
+      "comprehensive-agentic-rag",
+      "effective-ai-coding"
+    ],
+    "product-defensibility-ai-applications": [
+      "effective-ai-coding",
+      "adventures-claude-code",
+      "understanding-mcp",
+      "openclaw-experiments",
+      "agentic-workflows-to-agent-harnesses"
+    ],
+    "sandboxing-an-ai-agent": [
+      "agentic-workflows-to-agent-harnesses",
+      "openclaw-experiments",
+      "effective-ai-coding",
+      "overview-multi-agent-frameworks",
+      "adventures-claude-code"
+    ],
+    "understanding-mcp": [
+      "effective-ai-coding",
+      "overview-multi-agent-frameworks",
+      "adventures-claude-code",
+      "product-defensibility-ai-applications",
+      "agentic-workflows-to-agent-harnesses"
+    ],
+    "yale-guest-lecture-february-2025-ai-agents-langgraph": [
+      "building-ai-agents-langgraph-oreilly",
+      "2025-career-in-review"
+    ]
+  }
+}
