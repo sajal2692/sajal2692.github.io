@@ -22,7 +22,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
 <Layout title="Sajal Sharma | AI Engineer | O'Reilly Instructor">
   <Header />
   <main id="main-content">
-    <section id="hero">
+    <section id="hero" data-track="home-hero">
       <h1>Hello! 👋</h1>
       
       <!-- Uncomment below to include RSS icon. -->
@@ -49,7 +49,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
 
       <p>Explore my journey and insights on AI & ML through my <a href="/posts">blog</a>, or read more about my <a href="/about">professional experience</a>. 🚀</p>
 
-      <div class="courses-section">
+      <div class="courses-section" data-track="courses">
         <p><strong>Take my courses on O'Reilly:</strong></p>
         <ul>
           <li><a href="https://learning.oreilly.com/course/building-ai-agents/0642572077884/" target="_blank" rel="noopener noreferrer">Building AI Agents with LangGraph</a> (on-demand course)</li>
@@ -77,7 +77,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
     {
       featuredPosts.length > 0 && (
         <>
-          <section id="featured">
+          <section id="featured" data-track="featured-posts">
             <h2>Featured Posts</h2>
             <ul>
               {featuredPosts.map(({ data, id }) => (
@@ -94,7 +94,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
     }
 
 
-    <div class="all-posts-btn-wrapper">
+    <div class="all-posts-btn-wrapper" data-track="home-all-posts">
       <LinkButton href="/posts">
         All Posts
         <svg xmlns="http://www.w3.org/2000/svg"

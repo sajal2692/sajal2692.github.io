@@ -14,7 +14,7 @@ const sortedPosts = getSortedPosts(posts);
 <Layout title={`Posts | ${SITE.title}`}>
   <Header activeNav="posts" />
   <Main pageTitle="Posts" pageDesc="Here I document my experiments with AI engineering, insights from building intelligent systems and share deep dives on latest paradigms.">
-    <ul class="posts-list">
+    <ul class="posts-list" data-track="posts-list">
       {
         sortedPosts.map(({ data, id }) => (
           <li class="post-item">

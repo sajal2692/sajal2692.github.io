@@ -10,7 +10,10 @@ export interface Props {
 const { centered = false } = Astro.props;
 ---
 
-<div class={`social-icons ${centered ? "justify-center" : ""}`}>
+<div
+  class={`social-icons ${centered ? "justify-center" : ""}`}
+  data-track="socials"
+>
   {
     SOCIALS.filter(social => social.active).map(social => (
       <LinkButton

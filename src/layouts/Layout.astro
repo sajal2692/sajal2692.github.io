@@ -110,11 +110,14 @@ const socialImageURL = new URL(
       )
     }
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js). Runs on the main thread: Partytown's worker
+         proxying dropped most events (QwikDev/partytown#603), and gtag's
+         native beacon transport must live on the main thread to survive
+         same-tab navigations. -->
     {import.meta.env.GA_TRACKING_ID && (
       <>
-        <script type="text/partytown" async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.GA_TRACKING_ID}`}></script>
-        <script type="text/partytown" define:vars={{ gaId: import.meta.env.GA_TRACKING_ID }}>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.GA_TRACKING_ID}`}></script>
+        <script is:inline define:vars={{ gaId: import.meta.env.GA_TRACKING_ID }}>
           // Only configure GA on the production hostname so localhost and
           // forks serving this HTML don't pollute the property.
           if (window.location.hostname === "sajalsharma.com") {
@@ -128,6 +131,70 @@ const socialImageURL = new URL(
         </script>
       </>
     )}
+
+    <!-- Delegated link-click tracking: every anchor click becomes a GA4
+         "link_click" event attributed to the nearest [data-track] container. -->
+    <script is:inline>
+      (function () {
+        function trackLinkClick(e) {
+          // auxclick also fires for right-click; only middle-click follows the link.
+          if (e.type === "auxclick" && e.button !== 1) return;
+          var anchor =
+            e.target instanceof Element ? e.target.closest("a[href]") : null;
+          if (!anchor) return;
+          var url;
+          try {
+            url = new URL(anchor.href);
+          } catch (_) {
+            return;
+          }
+          var httpish = url.protocol === "http:" || url.protocol === "https:";
+          // Same-document hash jumps (heading permalinks, in-post TOC,
+          // skip-to-content) are not link clicks.
+          if (
+            httpish &&
+            url.hostname === window.location.hostname &&
+            url.pathname === window.location.pathname &&
+            url.search === window.location.search &&
+            url.hash
+          ) {
+            return;
+          }
+          var container = anchor.closest("[data-track]");
+          // GA4 truncates event parameter values beyond 100 characters;
+          // cutting here keeps the truncation deterministic.
+          var params = {
+            link_section: container
+              ? container.getAttribute("data-track")
+              : "other",
+            link_url: anchor.href.slice(0, 100),
+            link_domain: httpish ? url.hostname : url.protocol.replace(":", ""),
+            link_text: (
+              anchor.getAttribute("aria-label") ||
+              anchor.getAttribute("title") ||
+              anchor.textContent ||
+              ""
+            )
+              .trim()
+              .replace(/\s+/g, " ")
+              .slice(0, 100),
+            outbound: !httpish || url.hostname !== window.location.hostname,
+          };
+          if (window.location.hostname !== "sajalsharma.com") {
+            console.debug("[link_click]", params);
+            return;
+          }
+          window.dataLayer = window.dataLayer || [];
+          // gtag.js only processes arguments-object pushes, not arrays.
+          var gtag = function () {
+            window.dataLayer.push(arguments);
+          };
+          gtag("event", "link_click", params);
+        }
+        document.addEventListener("click", trackLinkClick);
+        document.addEventListener("auxclick", trackLinkClick);
+      })();
+    </script>
 
     <script is:inline src="/toggle-theme.js"></script>
   </head>
