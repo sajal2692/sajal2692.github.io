@@ -97,9 +97,17 @@
     @apply font-sans;
     letter-spacing: 0;
   }
-  /* The typography plugin zeroes the top margin of whatever follows a heading,
-     so each heading's own margin-bottom is the entire gap to its body copy —
-     hence the explicit, deliberately asymmetric values (more above than below). */
+  /* The typography plugin zeroes the top margin of whatever follows an h2, h3 or
+     h4 — but not h1, h5 or h6 — so for those three each heading's own
+     margin-bottom is the entire gap to its body copy. The rule below extends the
+     same normalisation to them, otherwise a following paragraph's 1.25em (22.5px)
+     wins and an h5 label ends up with more space below it than above.
+     Values are deliberately asymmetric: more above than below. */
+  .prose h1 + *,
+  .prose h5 + *,
+  .prose h6 + * {
+    margin-top: 0;
+  }
   .prose h1 {
     font-size: 2rem;
     line-height: 1.15;
@@ -196,11 +204,19 @@
   }
   /* Tables: hairline rows and a mono column head instead of a full grid of
      borders. display:block lets a wide table scroll inside the measure on narrow
-     screens rather than pushing the page sideways. */
+     screens rather than pushing the page sideways — the cost is that `width:100%`
+     then applies to the block wrapper, not to the anonymous table box inside it,
+     so a table whose content is narrower than the measure shrink-wraps. Row
+     groups take the width instead, which fills the column in both cases. */
   .prose table {
     @apply block w-full overflow-x-auto text-skin-base;
     border-collapse: collapse;
     font-size: 0.95em;
+  }
+  .prose thead,
+  .prose tbody,
+  .prose tfoot {
+    @apply w-full;
   }
   .prose th {
     @apply border-0 border-b border-skin-line text-left align-bottom font-mono font-medium text-skin-muted;
@@ -241,28 +257,44 @@
   .prose .heading-link:focus-visible {
     opacity: 1;
   }
+  /* Without hover there is nothing to reveal it, and an opacity-0 link is still
+     the top hit target after the heading's last word — a phone reader tapping
+     near a heading would silently navigate. */
+  @media (hover: none) {
+    .prose .heading-link {
+      display: none;
+    }
+  }
+
+  /* remark-collapse emits empty <p> elements around AND inside its <details>;
+     left in the flow they add 22.5px of collapsed margin wherever they land,
+     which beat the panel's own spacing from inside it. */
+  .prose p:empty {
+    @apply hidden;
+  }
 
   /* The in-body table of contents is the narrow-screen affordance; above the lg
-     breakpoint the sticky rail replaces it. remark-collapse emits an empty <p>
-     either side of the <details>, hence the sibling chain. */
+     breakpoint the sticky rail replaces it. */
   .prose h2#table-of-contents {
-    @apply mt-8 text-xl;
+    @apply mb-4 mt-8 text-xl;
   }
   .prose h2#table-of-contents::before {
     @apply hidden;
   }
   .prose h2#table-of-contents + p + details {
-    @apply rounded-md border border-skin-line px-4 py-3;
+    /* block and selectable: .prose details is inline-block with user-select:none,
+       which turned this panel into an unselectable content-width chip instead of
+       something spanning the reading column. */
+    @apply block select-text rounded-md border border-skin-line px-4 py-3;
   }
   .prose h2#table-of-contents + p + details summary {
-    @apply cursor-pointer font-mono text-sm text-skin-muted;
+    @apply cursor-pointer select-none font-mono text-sm text-skin-muted;
   }
   .prose h2#table-of-contents + p + details ul {
     @apply mb-0 mt-3;
   }
-  @media (min-width: 1080px) {
+  @media (min-width: theme("screens.lg")) {
     .prose h2#table-of-contents,
-    .prose h2#table-of-contents + p,
     .prose h2#table-of-contents + p + details {
       @apply hidden;
     }
@@ -270,20 +302,25 @@
   .prose img {
     @apply mx-auto my-2 border border-skin-line;
   }
+  /* Raw embeds carry their own width attribute (one post ships a 960px slide
+     deck), which pushed the whole document sideways once the measure narrowed. */
+  .prose iframe,
+  .prose video,
+  .prose embed,
+  .prose object {
+    @apply mx-auto block max-w-full;
+  }
   .prose hr {
     @apply border-skin-line;
   }
-  .prose h2#table-of-contents {
-    @apply mb-2;
-  }
+  /* The TOC heading and panel are styled in one place above; a second
+     `mb-2` block used to sit here and quietly won on source order, and the
+     `+ p { hidden }` rule it sat beside is now covered by `.prose p:empty`. */
   .prose details {
     @apply inline-block cursor-pointer select-none text-skin-base;
   }
   .prose summary {
     @apply focus-outline;
-  }
-  .prose h2#table-of-contents + p {
-    @apply hidden;
   }
 
   /* ===== scrollbar ===== */
@@ -354,11 +391,21 @@
   padding: 1rem 1.15rem;
   font-size: 0.9375rem;
   line-height: 1.65;
+  /* The <pre> must NOT be the scroll container: the label bar and the copy
+     button are positioned against it, and when it scrolled they slid out of
+     view with the code. Shiki sets overflow-x inline, hence !important. */
+  overflow: visible !important;
 }
-.prose pre.astro-code[data-language]:not([data-language="plaintext"]) {
+.prose pre.astro-code > code {
+  display: block;
+  overflow-x: auto;
+}
+/* Every block reserves the bar's height so the copy button never lands on line
+   one; only blocks with a real language print a label in it. */
+.prose pre.astro-code[data-language] {
   padding-top: 2.9rem;
 }
-.prose pre.astro-code[data-language]:not([data-language="plaintext"])::before {
+.prose pre.astro-code[data-language]::before {
   content: attr(data-language);
   position: absolute;
   inset: 0 0 auto 0;
@@ -371,7 +418,14 @@
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgb(var(--color-muted));
+  /* text-base, not muted: muted on the 7% wash over the code surface measures
+     4.4:1, under the 4.5 floor for 11px type. */
+  color: rgb(var(--color-text-base));
+}
+/* A bare fence has no language worth printing, but keeps the bar so the copy
+   button has somewhere to sit. Must follow the rule above to win on order. */
+.prose pre.astro-code[data-language="plaintext"]::before {
+  content: "";
 }
 .copy-code {
   position: absolute;

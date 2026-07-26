@@ -7,6 +7,7 @@ import { getCollection, render, type CollectionEntry } from "astro:content";
 import { slugifyStr } from "@utils/slugify";
 import getRelatedPosts from "@utils/getRelatedPosts";
 import getReadingTime from "@utils/getReadingTime";
+import getPostBody from "@utils/getPostBody";
 import ShareLinks from "@components/ShareLinks.astro";
 import Newsletter from "@components/Newsletter.astro";
 import RelatedPosts from "@components/RelatedPosts.astro";
@@ -51,14 +52,21 @@ const layoutProps = {
   scrollSmooth: true,
 };
 
-const readingTime = getReadingTime(post.body ?? "");
+// getPostBody drops the injected "## Table of contents" heading, which would
+// otherwise be counted as prose on every post.
+const readingTime = getReadingTime(getPostBody(post));
 
+// timeZone is pinned: post dates are authored as UTC midnight, so without it a
+// local dev build and the UTC CI build disagree about which day a post shipped.
 const formatDate = (value: string | Date) =>
   new Date(value).toLocaleDateString(LOCALE.langTag, {
     year: "numeric",
     month: "short",
     day: "numeric",
+    timeZone: "UTC",
   });
+
+const isoDate = (value: string | Date) => new Date(value).toISOString();
 
 // The kicker's topic is the first tag, hyphens out. It stays lowercase in the
 // markup and is uppercased by CSS, which keeps acronyms like "ai" correct.
@@ -66,8 +74,11 @@ const primaryTopic = tags?.[0]?.replace(/-/g, " ");
 
 // The in-body table of contents (remark-toc) stays for narrow screens; the rail
 // is built from render()'s headings so it can live outside the prose column.
+// Depth goes to 4 to match what remark-toc lists: capping the rail at 3 hid 13
+// of understanding-mcp's 20 entries, and all three of the framework comparisons
+// in overview-multi-agent-frameworks, from desktop readers only.
 const railHeadings = headings.filter(
-  ({ depth, slug }) => depth >= 2 && depth <= 3 && slug !== "table-of-contents"
+  ({ depth, slug }) => depth >= 2 && depth <= 4 && slug !== "table-of-contents"
 );
 ---
 
@@ -84,14 +95,20 @@ const railHeadings = headings.filter(
 
   <main id="main-content">
     <div class="article-shell">
-      <div data-track="post-nav">
-        <a href="/posts" class="back-link">&larr; All posts</a>
-      </div>
-
-      <div class="article-grid">
+      <div
+        class:list={["article-grid", { "has-rail": railHeadings.length > 0 }]}
+      >
         <div class="article-main">
+          <div data-track="post-nav">
+            <a href="/posts" class="back-link">&larr; All posts</a>
+          </div>
+
           <p class="post-kicker">
-            <span>{formatDate(pubDatetime)}</span>
+            <span
+              ><time datetime={isoDate(pubDatetime)}
+                >{formatDate(pubDatetime)}</time
+              ></span
+            >
             <span>{readingTime} min read</span>
             {primaryTopic && <span>{primaryTopic}</span>}
           </p>
@@ -111,14 +128,24 @@ const railHeadings = headings.filter(
             <Content />
           </article>
 
-          <p class="post-dates">
-            <span>Published {formatDate(pubDatetime)}</span>
-            {modDatetime && <span>Updated {formatDate(modDatetime)}</span>}
-          </p>
+          <footer class="post-meta">
+            {
+              /* The kicker already carries the publication date, so this line
+                 exists for the update record and renders only when there is one. */
+              modDatetime && (
+                <p class="post-dates">
+                  Updated{" "}
+                  <time datetime={isoDate(modDatetime)}>
+                    {formatDate(modDatetime)}
+                  </time>
+                </p>
+              )
+            }
 
-          <ul class="tag-list" data-track="post-tags">
-            {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
-          </ul>
+            <ul class="tag-list" data-track="post-tags">
+              {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
+            </ul>
+          </footer>
 
           <RelatedPosts posts={relatedPosts} />
 
@@ -151,7 +178,7 @@ const railHeadings = headings.filter(
                 <ol>
                   {railHeadings.map(({ depth, slug, text }) => (
                     <li>
-                      <a href={`#${slug}`} class={depth === 3 ? "sub" : ""}>
+                      <a href={`#${slug}`} class={`depth-${depth}`}>
                         {text}
                       </a>
                     </li>
@@ -180,20 +207,28 @@ const railHeadings = headings.filter(
     letter-spacing: 0.02em;
   }
 
-  /* The text column and the rail are centred together as a pair, so the reading
-     column sits a little left of centre on wide screens. */
+  /* Above the rail breakpoint the text column and the rail are centred together
+     as a pair, so the reading column sits a little left of centre. Everywhere
+     else — narrower viewports, and posts with no headings to put in a rail —
+     the column centres itself instead of pinning to the left edge of a shell
+     that was sized for two columns. */
   .article-grid {
     @apply grid;
     gap: 4.5rem;
     grid-template-columns: minmax(0, 1fr);
   }
-  @media (min-width: 1080px) {
-    .article-grid {
-      grid-template-columns: theme("maxWidth.measure") 14rem;
+  @media (min-width: theme("screens.lg")) {
+    .article-grid.has-rail {
+      grid-template-columns: minmax(0, theme("maxWidth.measure")) 14rem;
     }
   }
   .article-main {
-    @apply max-w-measure;
+    @apply mx-auto max-w-measure;
+  }
+  @media (min-width: theme("screens.lg")) {
+    .article-grid.has-rail .article-main {
+      @apply mx-0;
+    }
   }
 
   /* ===== Title block ===== */
@@ -226,17 +261,23 @@ const railHeadings = headings.filter(
     @apply mt-9;
   }
 
-  /* ===== Below the body ===== */
+  /* ===== Below the body =====
+     One rule carries the whole footer step: the dates line is conditional, so
+     hanging the border and the 48px gap off it left posts without a modDatetime
+     with no separator, and stacking the tag list's margin against Read Next's
+     padding produced an 88px gap where every other step is 48. */
+  .post-meta {
+    /* max-w-none/px-0 undo the global `section, footer` container in base.css,
+       which otherwise indents this block 16px out of line with the body copy. */
+    @apply mb-12 mt-12 max-w-none border-t border-skin-line px-0 pt-5;
+  }
   .post-dates {
-    @apply mt-12 flex flex-wrap gap-x-2 border-t border-skin-line pt-5 font-mono text-skin-muted;
+    @apply mb-4 font-mono text-skin-muted;
     font-size: 0.8125rem;
     font-variant-numeric: tabular-nums;
   }
-  .post-dates span:not(:last-child)::after {
-    content: " ·";
-  }
   .tag-list {
-    @apply mb-10 mt-4 flex flex-wrap gap-x-1;
+    @apply flex flex-wrap gap-1;
   }
   .post-footer-actions {
     @apply mb-8 mt-12 flex flex-col-reverse items-center justify-between gap-6 sm:flex-row-reverse sm:items-end sm:gap-4;
@@ -246,7 +287,7 @@ const railHeadings = headings.filter(
   .toc-rail {
     @apply hidden;
   }
-  @media (min-width: 1080px) {
+  @media (min-width: theme("screens.lg")) {
     .toc-rail {
       @apply block self-start;
       position: sticky;
@@ -269,8 +310,11 @@ const railHeadings = headings.filter(
     .toc-rail a:hover {
       @apply text-skin-base;
     }
-    .toc-rail a.sub {
+    .toc-rail a.depth-3 {
       @apply pl-6 text-[0.8125rem];
+    }
+    .toc-rail a.depth-4 {
+      @apply pl-9 text-[0.8125rem] opacity-90;
     }
     .toc-rail a[aria-current="true"] {
       @apply border-skin-accent text-skin-accent;
@@ -294,12 +338,14 @@ const railHeadings = headings.filter(
       if (!heading.id) continue;
       if (heading.querySelector(".heading-link")) continue;
       let link = document.createElement("a");
-      link.innerText = "#";
+      // The "#" is aria-hidden and the label is short: the link sits inside the
+      // heading, so anything it exposes is appended to the heading's own
+      // accessible name — screen readers were announcing "Introduction#" on
+      // every heading, and repeating the title would be worse.
+      link.innerHTML = '<span aria-hidden="true">#</span>';
       link.className = "heading-link";
       link.href = "#" + heading.id;
-      // Focusable on purpose (it appears on keyboard focus as well as hover),
-      // so it needs a real label rather than aria-hidden.
-      link.setAttribute("aria-label", `Permalink to “${heading.textContent}”`);
+      link.setAttribute("aria-label", "Permalink");
       heading.appendChild(link);
     }
   }
@@ -352,8 +398,19 @@ const railHeadings = headings.filter(
     const links = Array.from(document.querySelectorAll(".toc-rail a"));
     if (!links.length) return;
 
+    // decodeURIComponent throws URIError on a malformed escape ("#100%-gain",
+    // "#a%zz"), and an uncaught throw here would abort the rest of this script —
+    // taking the Back to Top binding with it.
+    const decodeHash = value => {
+      try {
+        return decodeURIComponent(value);
+      } catch {
+        return value;
+      }
+    };
+
     const byId = new Map(
-      links.map(link => [decodeURIComponent(link.hash.slice(1)), link])
+      links.map(link => [decodeHash(link.hash.slice(1)), link])
     );
     const targets = Array.from(byId.keys())
       .map(id => document.getElementById(id))
@@ -396,14 +453,14 @@ const railHeadings = headings.filter(
     // now would report the top of the article. Trust the hash instead, and let
     // the first scroll take over from there.
     const linked =
-      location.hash && byId.get(decodeURIComponent(location.hash.slice(1)));
+      location.hash && byId.get(decodeHash(location.hash.slice(1)));
     if (linked) setCurrent(linked);
     else update();
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     window.addEventListener("hashchange", () => {
-      const target = byId.get(decodeURIComponent(location.hash.slice(1)));
+      const target = byId.get(decodeHash(location.hash.slice(1)));
       if (target) setCurrent(target);
     });
   }
