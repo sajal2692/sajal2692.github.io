@@ -21,6 +21,7 @@ module.exports = {
       textColor: {
         skin: {
           base: withOpacity("--color-text-base"),
+          muted: withOpacity("--color-muted"),
           accent: withOpacity("--color-accent"),
           inverted: withOpacity("--color-fill"),
         },
@@ -31,7 +32,8 @@ module.exports = {
           accent: withOpacity("--color-accent"),
           inverted: withOpacity("--color-text-base"),
           card: withOpacity("--color-card"),
-          "card-muted": withOpacity("--color-card-muted"),
+          line: withOpacity("--color-border"),
+          code: withOpacity("--color-code-fill"),
         },
       },
       outlineColor: {
@@ -53,14 +55,38 @@ module.exports = {
         },
         transparent: "transparent",
       },
+      // Three self-hosted families (src/styles/fonts.css): Plex Serif for
+      // display, Source Sans 3 for everything read, Plex Mono for metadata and
+      // code. The sans fallbacks are the ones measured closest to Source Sans 3.
+      // Family names are quoted deliberately: "Source Sans 3" ends in a digit,
+      // and an unquoted CSS identifier cannot start with one, so the whole
+      // font-family declaration gets dropped as invalid without the quotes.
       fontFamily: {
-        mono: ["IBM Plex Mono", "monospace"],
-        poppins: ["Poppins", "sans-serif"],
+        sans: [
+          '"Source Sans 3"',
+          "system-ui",
+          "-apple-system",
+          '"Segoe UI"',
+          "sans-serif",
+        ],
+        serif: ['"IBM Plex Serif"', '"Iowan Old Style"', "Georgia", "serif"],
+        mono: [
+          '"IBM Plex Mono"',
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace",
+        ],
       },
 
       typography: {
         DEFAULT: {
           css: {
+            // Body copy at 18px/1.72. This has to live here rather than in
+            // base.css: the plugin sets font-size and line-height on `.prose`
+            // itself (not through :where()), and its styles land in a later
+            // layer, so a `.prose` rule in @layer base loses on source order.
+            fontSize: "1.125rem",
+            lineHeight: "1.72",
             pre: {
               color: false,
             },
