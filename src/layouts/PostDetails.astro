@@ -98,11 +98,11 @@ const railHeadings = headings.filter(
       <div
         class:list={["article-grid", { "has-rail": railHeadings.length > 0 }]}
       >
-        <div class="article-main">
-          <div data-track="post-nav">
-            <a href="/posts" class="back-link">&larr; All posts</a>
-          </div>
+        <div class="post-nav" data-track="post-nav">
+          <a href="/posts" class="back-link">&larr; All posts</a>
+        </div>
 
+        <div class="article-main">
           <p class="post-kicker">
             <span
               ><time datetime={isoDate(pubDatetime)}
@@ -214,18 +214,26 @@ const railHeadings = headings.filter(
      that was sized for two columns. */
   .article-grid {
     @apply grid;
-    gap: 4.5rem;
+    /* Column gap only: the back-link spans its own row, and the row spacing is
+       the back-link's own margins. */
+    gap: 0 4.5rem;
     grid-template-columns: minmax(0, 1fr);
   }
-  @media (min-width: theme("screens.lg")) {
-    .article-grid.has-rail {
-      grid-template-columns: minmax(0, theme("maxWidth.measure")) 14rem;
-    }
+  /* The back-link is a full-width row so the text column and the rail both start
+     below it — with the link inside the column, the rail's label began at the
+     grid's top edge and sat almost against the header rule. */
+  .post-nav {
+    @apply mx-auto w-full max-w-measure;
+    grid-column: 1 / -1;
   }
   .article-main {
     @apply mx-auto max-w-measure;
   }
   @media (min-width: theme("screens.lg")) {
+    .article-grid.has-rail {
+      grid-template-columns: minmax(0, theme("maxWidth.measure")) 14rem;
+    }
+    .article-grid.has-rail .post-nav,
     .article-grid.has-rail .article-main {
       @apply mx-0;
     }
