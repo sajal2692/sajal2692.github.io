@@ -2,7 +2,7 @@
 import { LOGO_IMAGE, SITE } from "@config";
 import Hr from "./Hr.astro";
 import LinkButton from "./LinkButton.astro";
-import LogoSVG from "@assets/logo"
+import LogoSVG from "@assets/logo";
 
 export interface Props {
   activeNav?: "posts" | "tags" | "about" | "search";
@@ -159,7 +159,8 @@ const { activeNav } = Astro.props;
     @apply col-span-1;
   }
   nav a.active {
-    @apply underline  decoration-dashed underline-offset-4;
+    @apply underline decoration-1 underline-offset-4;
+    text-decoration-color: rgb(var(--color-accent));
   }
   nav a.active svg {
     @apply fill-skin-accent;
