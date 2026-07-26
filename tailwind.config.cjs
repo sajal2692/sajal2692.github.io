@@ -23,9 +23,13 @@ module.exports = {
 
     extend: {
       maxWidth: {
-        // The reading measure: 600px is ~76 characters per line at Source Sans 3
-        // 18px. `ch` is a trap here — 68ch of this face is 86 characters.
-        measure: "600px",
+        // The reading measure: 640px is ~81 characters per line at Source Sans 3
+        // 18px (600px was ~76, 680px ~86). `ch` is a trap here — 68ch of this
+        // face measures 86 characters, not 68.
+        measure: "640px",
+        // The page shell: measure + gap + TOC rail + padding. The header uses it
+        // too, so the nav rule lines up with the article's outer edges.
+        shell: "61.5rem",
       },
       textColor: {
         skin: {
