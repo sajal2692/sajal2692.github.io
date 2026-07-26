@@ -16,10 +16,7 @@ const { posts } = Astro.props;
       aria-labelledby="related-posts-heading"
       data-track="related-posts"
     >
-      <h2
-        id="related-posts-heading"
-        class="border-l-4 border-skin-accent border-opacity-80 pl-4 text-2xl font-semibold"
-      >
+      <h2 id="related-posts-heading" class="section-label">
         Read Next
       </h2>
       <ul>
@@ -43,5 +40,17 @@ const { posts } = Astro.props;
      off the article edge. */
   #related-posts {
     @apply px-0 pb-2 pt-12;
+  }
+  /* A section outside the article gets the mono label treatment, not an article
+     h2 — the accent bar this used to carry is exactly the tell being retired. */
+  .section-label {
+    @apply flex items-center gap-4 font-mono font-medium text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .section-label::after {
+    content: "";
+    @apply h-px flex-1 bg-skin-line;
   }
 </style>

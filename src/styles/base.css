@@ -76,11 +76,8 @@
      Written as plain rules instead of prose-* variants: @tailwindcss/typography
      wraps its own styles in :where(), which contributes no specificity, so
      `.prose h2` wins outright and none of this needs !important. */
-  /* Size and leading come from the typography plugin's own theme (see
-     tailwind.config.cjs) — a `.prose { font-size }` here would lose to it. */
-  .prose {
-    @apply text-skin-base;
-  }
+  /* Size, leading, colour and max-width come from the typography plugin's own
+     theme (see tailwind.config.cjs) — set on `.prose` here they would lose. */
   .prose h1,
   .prose h2,
   .prose h3,
@@ -197,28 +194,84 @@
     @apply border-0 bg-transparent p-0;
     font-size: inherit;
   }
+  /* Tables: hairline rows and a mono column head instead of a full grid of
+     borders. display:block lets a wide table scroll inside the measure on narrow
+     screens rather than pushing the page sideways. */
   .prose table {
-    @apply text-skin-base;
+    @apply block w-full overflow-x-auto text-skin-base;
+    border-collapse: collapse;
+    font-size: 0.95em;
   }
   .prose th {
-    @apply border border-skin-line text-skin-base;
+    @apply border-0 border-b border-skin-line text-left align-bottom font-mono font-medium text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem;
   }
   .prose td {
-    @apply border border-skin-line;
+    @apply border-0 align-top;
+    border-bottom: 1px solid rgba(var(--color-border), 0.7);
+    padding: 0.7rem 0.75rem;
+  }
+  .prose tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .prose thead th:first-child,
+  .prose tbody td:first-child {
+    padding-left: 0;
+  }
+  .prose figure {
+    @apply my-8;
   }
   .prose figcaption {
-    @apply text-skin-muted;
+    @apply mt-3 text-center font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  /* Heading permalinks: visible on hover *and* on keyboard focus, which is why
+     they fade rather than display:none — a hidden element cannot be focused. */
+  .prose .heading-link {
+    @apply ml-2 font-normal text-skin-accent no-underline;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .prose :is(h2, h3, h4, h5, h6):hover .heading-link,
+  .prose .heading-link:focus-visible {
+    opacity: 1;
+  }
+
+  /* The in-body table of contents is the narrow-screen affordance; above the lg
+     breakpoint the sticky rail replaces it. remark-collapse emits an empty <p>
+     either side of the <details>, hence the sibling chain. */
+  .prose h2#table-of-contents {
+    @apply mt-8 text-xl;
+  }
+  .prose h2#table-of-contents::before {
+    @apply hidden;
+  }
+  .prose h2#table-of-contents + p + details {
+    @apply rounded-md border border-skin-line px-4 py-3;
+  }
+  .prose h2#table-of-contents + p + details summary {
+    @apply cursor-pointer font-mono text-sm text-skin-muted;
+  }
+  .prose h2#table-of-contents + p + details ul {
+    @apply mb-0 mt-3;
+  }
+  @media (min-width: 1080px) {
+    .prose h2#table-of-contents,
+    .prose h2#table-of-contents + p,
+    .prose h2#table-of-contents + p + details {
+      @apply hidden;
+    }
   }
   .prose img {
     @apply mx-auto my-2 border border-skin-line;
   }
   .prose hr {
     @apply border-skin-line;
-  }
-  .prose thead th:first-child,
-  tbody td:first-child,
-  tfoot td:first-child {
-    padding-left: 0.5714286em;
   }
   .prose h2#table-of-contents {
     @apply mb-2;
@@ -291,6 +344,69 @@
    Kept OUTSIDE @layer on purpose: Tailwind tree-shakes custom selectors inside
    @layer whose classes never appear in source files, and .astro-code only
    exists in shiki-generated HTML. */
+
+/* Block chrome: a language label bar built from the data-language attribute
+   shiki already emits, so it needs no JavaScript and no wrapper element. The
+   copy button is still JS-injected, and sits inside that bar. */
+.prose pre.astro-code {
+  position: relative;
+  border-radius: 6px;
+  padding: 1rem 1.15rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+.prose pre.astro-code[data-language]:not([data-language="plaintext"]) {
+  padding-top: 2.9rem;
+}
+.prose pre.astro-code[data-language]:not([data-language="plaintext"])::before {
+  content: attr(data-language);
+  position: absolute;
+  inset: 0 0 auto 0;
+  padding: 0.5rem 1.15rem;
+  border-bottom: 1px solid rgb(var(--color-border));
+  border-radius: 6px 6px 0 0;
+  background-color: rgba(var(--color-muted), 0.07);
+  font-family: theme("fontFamily.mono");
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(var(--color-muted));
+}
+.copy-code {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.6rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid rgb(var(--color-border));
+  border-radius: 4px;
+  background-color: transparent;
+  font-family: theme("fontFamily.mono");
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--color-muted));
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
+}
+.copy-code:hover {
+  color: rgb(var(--color-accent));
+  border-color: rgba(var(--color-accent), 0.45);
+}
+/* Quiet until wanted — but only where hover exists, or touch users would never
+   see it at all. */
+@media (hover: hover) {
+  .copy-code {
+    opacity: 0;
+  }
+  pre.astro-code:hover .copy-code,
+  pre.astro-code:focus-within .copy-code,
+  .copy-code:focus-visible {
+    opacity: 1;
+  }
+}
 
 /* Light mode: github-light tokens on a code surface warmed to sit on the paper
    fill — the old #f6f8fa belonged to the cool-toned palette (shiki inlines

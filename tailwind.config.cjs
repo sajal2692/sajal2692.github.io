@@ -15,9 +15,18 @@ module.exports = {
     // if one breakpoint is not enough for you
     screens: {
       sm: "640px",
+      // Deliberate second breakpoint: the article's sticky TOC rail needs the
+      // measure (600px) + gap + rail (216px) to fit beside the text without
+      // crowding it. 86% of readers are on desktop, so the rail earns its keep.
+      lg: "1080px",
     },
 
     extend: {
+      maxWidth: {
+        // The reading measure: 600px is ~76 characters per line at Source Sans 3
+        // 18px. `ch` is a trap here — 68ch of this face is 86 characters.
+        measure: "600px",
+      },
       textColor: {
         skin: {
           base: withOpacity("--color-text-base"),
@@ -81,12 +90,17 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            // Body copy at 18px/1.72. This has to live here rather than in
-            // base.css: the plugin sets font-size and line-height on `.prose`
-            // itself (not through :where()), and its styles land in a later
-            // layer, so a `.prose` rule in @layer base loses on source order.
+            // These four have to live here rather than in base.css: the plugin
+            // sets them on `.prose` itself (not through :where()), and its
+            // styles land in a later layer, so a `.prose` rule in @layer base
+            // loses on source order.
             fontSize: "1.125rem",
             lineHeight: "1.72",
+            // Ink, not the plugin's cool gray-700, which fights the warm paper.
+            color: "rgb(var(--color-text-base))",
+            // The measure comes from the article column (max-w-measure), not
+            // from the plugin's 65ch — which is 74 characters in this face.
+            maxWidth: "none",
             pre: {
               color: false,
             },
