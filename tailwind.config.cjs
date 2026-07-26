@@ -71,6 +71,7 @@ module.exports = {
       fill: {
         skin: {
           base: withOpacity("--color-text-base"),
+          muted: withOpacity("--color-muted"),
           accent: withOpacity("--color-accent"),
         },
         transparent: "transparent",

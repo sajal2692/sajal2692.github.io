@@ -49,13 +49,6 @@
     letter-spacing: -0.015em;
     text-wrap: balance;
   }
-  /* Metadata — dates, reading time, tags, kickers — is the one monospace voice. */
-  .metadata {
-    @apply font-mono text-skin-muted;
-    font-size: 0.8125rem;
-    letter-spacing: 0.02em;
-    font-variant-numeric: tabular-nums;
-  }
   section,
   footer {
     @apply mx-auto max-w-3xl px-4;
@@ -369,6 +362,27 @@
 }
 
 @layer components {
+  /* One section marker for everything that follows an article: a mono label with
+     a trailing hairline. Read Next and the newsletter both use it, so the post
+     footer has a single divider convention instead of a mix of bare rules,
+     labelled rules and unlabelled sections. */
+  .section-label {
+    @apply flex items-center gap-4 font-mono font-medium text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .section-label::after {
+    content: "";
+    @apply h-px flex-1 bg-skin-line;
+  }
+  /* Dates, reading time and tags all speak in the same monospace voice. */
+  .metadata {
+    @apply font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
   .display-none {
     @apply hidden;
   }

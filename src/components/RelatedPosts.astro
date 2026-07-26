@@ -42,16 +42,6 @@ const { posts } = Astro.props;
   #related-posts {
     @apply px-0 pb-2 pt-0;
   }
-  /* A section outside the article gets the mono label treatment, not an article
-     h2 — the accent bar this used to carry is exactly the tell being retired. */
-  .section-label {
-    @apply flex items-center gap-4 font-mono font-medium text-skin-muted;
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .section-label::after {
-    content: "";
-    @apply h-px flex-1 bg-skin-line;
-  }
+  /* .section-label itself lives in base.css @layer components — the newsletter
+     below uses the same marker, so the post footer reads as one system. */
 </style>

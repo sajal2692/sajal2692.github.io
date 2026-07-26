@@ -39,7 +39,8 @@ const shareLinks = [
 ---
 
 <div class={`social-icons`} data-track="share-links">
-  <span class="italic">Share this post on:</span>
+  <!-- mono, not italic: same metadata voice as the kicker, dates and tags -->
+  <span class="share-label">Share this post</span>
   <div class="flex flex-wrap items-center justify-center gap-1">
     {
       shareLinks.map(social => (
@@ -61,5 +62,11 @@ const shareLinks = [
      per-link utilities are passed via className above. */
   .social-icons {
     @apply flex flex-col flex-wrap items-center justify-center gap-1 sm:items-start;
+  }
+  .share-label {
+    @apply font-mono text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 </style>

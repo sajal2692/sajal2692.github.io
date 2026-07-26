@@ -11,7 +11,7 @@ import getPostBody from "@utils/getPostBody";
 import ShareLinks from "@components/ShareLinks.astro";
 import Newsletter from "@components/Newsletter.astro";
 import RelatedPosts from "@components/RelatedPosts.astro";
-import { LOCALE } from "@config";
+import { formatPostDate, toIsoDate } from "@utils/formatPostDate";
 
 export interface Props {
   post: CollectionEntry<"blog">;
@@ -56,18 +56,6 @@ const layoutProps = {
 // otherwise be counted as prose on every post.
 const readingTime = getReadingTime(getPostBody(post));
 
-// timeZone is pinned: post dates are authored as UTC midnight, so without it a
-// local dev build and the UTC CI build disagree about which day a post shipped.
-const formatDate = (value: string | Date) =>
-  new Date(value).toLocaleDateString(LOCALE.langTag, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    timeZone: "UTC",
-  });
-
-const isoDate = (value: string | Date) => new Date(value).toISOString();
-
 // The kicker's topic is the first tag, hyphens out. It stays lowercase in the
 // markup and is uppercased by CSS, which keeps acronyms like "ai" correct.
 const primaryTopic = tags?.[0]?.replace(/-/g, " ");
@@ -105,8 +93,8 @@ const railHeadings = headings.filter(
         <div class="article-main">
           <p class="post-kicker">
             <span
-              ><time datetime={isoDate(pubDatetime)}
-                >{formatDate(pubDatetime)}</time
+              ><time datetime={toIsoDate(pubDatetime)}
+                >{formatPostDate(pubDatetime)}</time
               ></span
             >
             <span>{readingTime} min read</span>
@@ -135,8 +123,8 @@ const railHeadings = headings.filter(
               modDatetime && (
                 <p class="post-dates">
                   Updated{" "}
-                  <time datetime={isoDate(modDatetime)}>
-                    {formatDate(modDatetime)}
+                  <time datetime={toIsoDate(modDatetime)}>
+                    {formatPostDate(modDatetime)}
                   </time>
                 </p>
               )
@@ -154,7 +142,7 @@ const railHeadings = headings.filter(
           <div class="post-footer-actions">
             <button
               id="back-to-top"
-              class="focus-outline whitespace-nowrap py-1 hover:text-skin-accent"
+              class="focus-outline back-to-top whitespace-nowrap py-1 hover:text-skin-accent"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="rotate-90">
                 <path
@@ -270,14 +258,14 @@ const railHeadings = headings.filter(
   }
 
   /* ===== Below the body =====
-     One rule carries the whole footer step: the dates line is conditional, so
-     hanging the border and the 48px gap off it left posts without a modDatetime
-     with no separator, and stacking the tag list's margin against Read Next's
-     padding produced an 88px gap where every other step is 48. */
+     The tags belong to the article, so they sit under it on spacing alone; the
+     sections that follow (Read Next, Newsletter) each carry the one section
+     marker. That leaves a single divider convention in the post footer instead
+     of a bare rule here plus a labelled rule there.
+     max-w-none/px-0 undo the global `section, footer` container in base.css,
+     which otherwise indents this block 16px out of line with the body copy. */
   .post-meta {
-    /* max-w-none/px-0 undo the global `section, footer` container in base.css,
-       which otherwise indents this block 16px out of line with the body copy. */
-    @apply mb-12 mt-12 max-w-none border-t border-skin-line px-0 pt-5;
+    @apply mb-12 mt-10 max-w-none px-0;
   }
   .post-dates {
     @apply mb-4 font-mono text-skin-muted;
@@ -289,6 +277,17 @@ const railHeadings = headings.filter(
   }
   .post-footer-actions {
     @apply mb-8 mt-12 flex flex-col-reverse items-center justify-between gap-6 sm:flex-row-reverse sm:items-end sm:gap-4;
+  }
+  /* Matches the share label opposite it — the row is a utility strip, so both
+     ends speak in the same small mono voice rather than one at body size. */
+  .back-to-top {
+    @apply font-mono text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .back-to-top :global(svg) {
+    @apply h-4 w-4 fill-skin-muted;
   }
 
   /* ===== Sticky TOC rail (>= lg only) ===== */

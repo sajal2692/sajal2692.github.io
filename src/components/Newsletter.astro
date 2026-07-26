@@ -3,9 +3,10 @@
 ---
 
 <section id="newsletter" class="mb-8 mt-8 p-0">
-  <p>
+  <h2 class="section-label">Newsletter</h2>
+  <p class="newsletter-intro">
     Sign up to get updates on my latest posts, projects and insights on AI & ML.
-    You'll only receive an email when I publish something new. 👇
+    You'll only receive an email when I publish something new.
   </p>
   <div class="mt-4">
     <script src="https://f.convertkit.com/ckjs/ck.5.js" is:inline></script>
@@ -56,7 +57,8 @@
         >
           <p class="text-center">
             Thanks for subscribing! <strong
-              >Please check your email to confirm your subscription.</strong>
+              >Please check your email to confirm your subscription.</strong
+            >
           </p>
         </div>
       </div>
@@ -67,6 +69,10 @@
 <style>
   /* Everything here is token-driven — the form used to hardcode five hex values
      (two blues, two greens and a grey) that matched neither theme. */
+  .newsletter-intro {
+    @apply mt-6;
+    max-width: 52ch;
+  }
   .subscribe-btn {
     background-color: rgb(var(--color-accent));
     color: rgb(var(--color-fill));
