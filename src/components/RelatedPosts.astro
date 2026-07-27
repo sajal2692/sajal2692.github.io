@@ -16,7 +16,7 @@ const { posts } = Astro.props;
       aria-labelledby="related-posts-heading"
       data-track="related-posts"
     >
-      <h2 id="related-posts-heading" class="section-label">
+      <h2 id="related-posts-heading" class="section-heading">
         Read Next
       </h2>
       <ul>
@@ -33,15 +33,15 @@ const { posts } = Astro.props;
 }
 
 <style>
-  /* No top padding: the 48px step above this section is owned by the preceding
-     .post-meta block's margin, so padding here would stack on top of it (margins
-     never collapse into padding) — that is where the old 88px gap came from.
-     Cards below bring their own my-6. px-0 cancels the global section px-4
-     (base.css), which would double-pad inside main's own px-4 and shift the
-     section off the article edge. */
+  /* No padding at all: the step above the rule and the rule itself belong to
+     .section-heading, and any padding here would block the margin collapse that
+     keeps that step equal to the newsletter's below (margins never collapse into
+     padding — that is where the old 88px gap came from). px-0 cancels the global
+     section px-4 (base.css), which would double-pad inside main's own px-4 and
+     shift the section off the article edge. */
   #related-posts {
-    @apply px-0 pb-2 pt-0;
+    @apply p-0;
   }
-  /* .section-label itself lives in base.css @layer components — the newsletter
+  /* .section-heading itself lives in base.css @layer components — the newsletter
      below uses the same marker, so the post footer reads as one system. */
 </style>

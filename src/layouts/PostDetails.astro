@@ -264,8 +264,11 @@ const railHeadings = headings.filter(
      of a bare rule here plus a labelled rule there.
      max-w-none/px-0 undo the global `section, footer` container in base.css,
      which otherwise indents this block 16px out of line with the body copy. */
+  /* No bottom margin: the space before whatever follows belongs to that
+     section's .section-heading, so the gap is identical whether the next thing
+     is Read Next or the newsletter. */
   .post-meta {
-    @apply mb-12 mt-10 max-w-none px-0;
+    @apply mb-0 mt-10 max-w-none px-0;
   }
   .post-dates {
     @apply mb-4 font-mono text-skin-muted;

@@ -362,19 +362,24 @@
 }
 
 @layer components {
-  /* One section marker for everything that follows an article: a mono label with
-     a trailing hairline. Read Next and the newsletter both use it, so the post
-     footer has a single divider convention instead of a mix of bare rules,
-     labelled rules and unlabelled sections. */
-  .section-label {
-    @apply flex items-center gap-4 font-mono font-medium text-skin-muted;
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .section-label::after {
-    content: "";
-    @apply h-px flex-1 bg-skin-line;
+  /* One section marker for everything that follows an article: a full-width rule
+     and a heading at the same rank as the article's own h2s. Read Next and the
+     newsletter both use it, so the post footer has a single convention.
+     It has to carry this much weight because it is the only thing telling the
+     reader the article has ended — as an 11px mono label it was the quietest
+     element in the footer while doing the most important job, so the cards below
+     it read as more article content until you noticed the label. Cards sit a
+     rank below (21px, see Card.tsx) so nothing competes with the boundary. */
+  /* The 48px step above the rule lives here rather than on each section, so
+     every footer section is spaced identically. It works out the same in all
+     three arrangements — tags then Read Next, Read Next then newsletter, and
+     tags straight to the newsletter when a post has no related posts — because
+     this margin escapes the padding-free section box and collapses with
+     whatever margin precedes it, taking the larger of the two. */
+  .section-heading {
+    @apply mt-12 border-t border-skin-line pt-7 font-serif font-semibold text-skin-base;
+    font-size: 1.75rem;
+    line-height: 1.2;
   }
   /* Dates, reading time and tags all speak in the same monospace voice. */
   .metadata {

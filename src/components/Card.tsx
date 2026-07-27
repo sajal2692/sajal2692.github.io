@@ -13,11 +13,15 @@ export default function Card({ href, frontmatter, secHeading = true }: Props) {
 
   const headerProps = {
     style: { viewTransitionName: slugifyStr(title) },
-    className: "text-[1.1875rem] leading-snug",
+    // 21px — the prose h3 rank, one step under the 28px .section-heading that
+    // introduces the list, so the section boundary always outranks its items.
+    // At the old 19px a title sat 1px above its own 18px description, so the
+    // summary carried more visual mass than the link it belonged to.
+    className: "text-[1.3125rem] leading-snug",
   };
 
   return (
-    <li className="my-7">
+    <li className="my-8">
       <a
         href={href}
         className="inline-block text-skin-base transition-colors hover:text-skin-accent"
@@ -33,7 +37,12 @@ export default function Card({ href, frontmatter, secHeading = true }: Props) {
         modDatetime={modDatetime}
         className="mt-1.5"
       />
-      <p className="mt-2 text-skin-base">{description}</p>
+      {/* 16px: a summary in a list is secondary text, not article body copy.
+          Leading is set explicitly because body's 1.72 is tuned for a 640px
+          measure at 18px and reads loose at this size. */}
+      <p className="mt-2 text-[1rem] leading-[1.6] text-skin-base">
+        {description}
+      </p>
     </li>
   );
 }
