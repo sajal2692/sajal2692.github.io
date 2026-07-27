@@ -3,13 +3,15 @@ import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import Tag from "@components/Tag.astro";
-import Datetime from "@components/Datetime";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import { slugifyStr } from "@utils/slugify";
 import getRelatedPosts from "@utils/getRelatedPosts";
+import getReadingTime from "@utils/getReadingTime";
+import getPostBody from "@utils/getPostBody";
 import ShareLinks from "@components/ShareLinks.astro";
 import Newsletter from "@components/Newsletter.astro";
 import RelatedPosts from "@components/RelatedPosts.astro";
+import { formatPostDate, toIsoDate } from "@utils/formatPostDate";
 
 export interface Props {
   post: CollectionEntry<"blog">;
@@ -28,7 +30,7 @@ const {
   tags,
 } = post.data;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 const allPosts = await getCollection("blog");
 const relatedPosts = getRelatedPosts(allPosts, post.id);
@@ -49,6 +51,23 @@ const layoutProps = {
   ogImage: ogUrl,
   scrollSmooth: true,
 };
+
+// getPostBody drops the injected "## Table of contents" heading, which would
+// otherwise be counted as prose on every post.
+const readingTime = getReadingTime(getPostBody(post));
+
+// The kicker's topic is the first tag, hyphens out. It stays lowercase in the
+// markup and is uppercased by CSS, which keeps acronyms like "ai" correct.
+const primaryTopic = tags?.[0]?.replace(/-/g, " ");
+
+// The in-body table of contents (remark-toc) stays for narrow screens; the rail
+// is built from render()'s headings so it can live outside the prose column.
+// Depth goes to 4 to match what remark-toc lists: capping the rail at 3 hid 13
+// of understanding-mcp's 20 entries, and all three of the framework comparisons
+// in overview-multi-agent-frameworks, from desktop readers only.
+const railHeadings = headings.filter(
+  ({ depth, slug }) => depth >= 2 && depth <= 4 && slug !== "table-of-contents"
+);
 ---
 
 <Layout {...layoutProps}>
@@ -61,70 +80,238 @@ const layoutProps = {
   />
 
   <Header />
-  <div class="mx-auto flex w-full max-w-3xl justify-start px-2">
-    <button
-      class="focus-outline mb-2 mt-8 flex hover:opacity-75"
-      onclick="history.back()"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg"
-        ><path
-          d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"
-        ></path>
-      </svg><span>Go back</span>
-    </button>
-  </div>
+
   <main id="main-content">
-    <h1 transition:name={slugifyStr(title)} class="post-title">{title}</h1>
-    <Datetime
-      pubDatetime={pubDatetime}
-      modDatetime={modDatetime}
-      size="lg"
-      className="my-2"
-    />
-    <article
-      id="article"
-      role="article"
-      class="prose mx-auto mt-8 max-w-3xl"
-      data-track="post-body"
-    >
-      <Content />
-    </article>
-
-    <RelatedPosts posts={relatedPosts} />
-
-    <ul class="my-8" data-track="post-tags">
-      {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
-    </ul>
-
-    <Newsletter />
-
-    <div
-      class="mb-8 flex flex-col-reverse items-center justify-between gap-6 sm:flex-row-reverse sm:items-end sm:gap-4"
-    >
-      <button
-        id="back-to-top"
-        class="focus-outline whitespace-nowrap py-1 hover:opacity-75"
+    <div class="article-shell">
+      <div
+        class:list={["article-grid", { "has-rail": railHeadings.length > 0 }]}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="rotate-90">
-          <path
-            d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"
-          ></path>
-        </svg>
-        <span>Back to Top</span>
-      </button>
+        <div class="post-nav" data-track="post-nav">
+          <a href="/posts" class="back-link">&larr; All posts</a>
+        </div>
 
-      <ShareLinks />
+        <div class="article-main">
+          <p class="post-kicker">
+            <span
+              ><time datetime={toIsoDate(pubDatetime)}
+                >{formatPostDate(pubDatetime)}</time
+              ></span
+            >
+            <span>{readingTime} min read</span>
+            {primaryTopic && <span>{primaryTopic}</span>}
+            {
+              /* The update record belongs with the rest of the metadata rather
+                 than stranded on its own line below the article. */
+              modDatetime && (
+                <span>
+                  Updated{" "}
+                  <time datetime={toIsoDate(modDatetime)}>
+                    {formatPostDate(modDatetime)}
+                  </time>
+                </span>
+              )
+            }
+          </p>
+
+          <h1 transition:name={slugifyStr(title)} class="post-title">
+            {title}
+          </h1>
+
+          {description && <p class="post-deck">{description}</p>}
+
+          <ul class="tag-list" data-track="post-tags">
+            {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
+          </ul>
+
+          <article
+            id="article"
+            role="article"
+            class="prose"
+            data-track="post-body"
+          >
+            <Content />
+          </article>
+
+          <RelatedPosts posts={relatedPosts} />
+
+          <Newsletter />
+
+          <div class="post-footer-actions">
+            <button
+              id="back-to-top"
+              class="focus-outline back-to-top whitespace-nowrap py-1 hover:text-skin-accent"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="rotate-90">
+                <path
+                  d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"
+                ></path>
+              </svg>
+              <span>Back to Top</span>
+            </button>
+
+            <ShareLinks />
+          </div>
+        </div>
+
+        {
+          railHeadings.length > 0 && (
+            <aside class="toc-rail" aria-labelledby="toc-rail-label">
+              <p id="toc-rail-label" class="toc-rail-label">
+                On this page
+              </p>
+              <nav>
+                <ol>
+                  {railHeadings.map(({ depth, slug, text }) => (
+                    <li>
+                      <a href={`#${slug}`} class={`depth-${depth}`}>
+                        {text}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            </aside>
+          )
+        }
+      </div>
     </div>
   </main>
+
   <Footer />
 </Layout>
 
 <style>
-  main {
-    @apply mx-auto w-full max-w-3xl px-4 pb-12;
+  /* max-w-shell is sized to the grid it holds — measure (640) + gap (72) + rail
+     (224) + 48px of padding — so the pair centres with equal margins instead of
+     leaving slack to the right of the rail. */
+  .article-shell {
+    @apply mx-auto w-full max-w-shell px-4 pb-12 sm:px-6;
+  }
+  .back-link {
+    @apply mb-8 mt-8 inline-block font-mono text-sm text-skin-muted no-underline transition-colors hover:text-skin-accent;
+    letter-spacing: 0.02em;
+  }
+
+  /* Above the rail breakpoint the text column and the rail are centred together
+     as a pair, so the reading column sits a little left of centre. Everywhere
+     else — narrower viewports, and posts with no headings to put in a rail —
+     the column centres itself instead of pinning to the left edge of a shell
+     that was sized for two columns. */
+  .article-grid {
+    @apply grid;
+    /* Column gap only: the back-link spans its own row, and the row spacing is
+       the back-link's own margins. */
+    gap: 0 4.5rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* The back-link is a full-width row so the text column and the rail both start
+     below it — with the link inside the column, the rail's label began at the
+     grid's top edge and sat almost against the header rule. */
+  .post-nav {
+    @apply mx-auto w-full max-w-measure;
+    grid-column: 1 / -1;
+  }
+  .article-main {
+    @apply mx-auto max-w-measure;
+  }
+  @media (min-width: theme("screens.lg")) {
+    .article-grid.has-rail {
+      grid-template-columns: minmax(0, theme("maxWidth.measure")) 14rem;
+    }
+    .article-grid.has-rail .post-nav,
+    .article-grid.has-rail .article-main {
+      @apply mx-0;
+    }
+  }
+
+  /* ===== Title block ===== */
+  .post-kicker {
+    @apply mb-4 flex flex-wrap gap-x-2 gap-y-1 font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .post-kicker span:not(:last-child)::after {
+    content: " ·";
   }
   .post-title {
-    @apply text-2xl font-semibold text-skin-accent;
+    @apply font-serif font-semibold;
+    font-size: clamp(2rem, 5vw, 2.875rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.85rem;
+    text-wrap: balance;
+  }
+  .post-deck {
+    @apply text-skin-muted;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    max-width: 52ch;
+    text-wrap: pretty;
+  }
+  .article-main :global(.prose) {
+    @apply mt-9;
+  }
+
+  /* Tags are metadata about the article, so they live in the title block with
+     the rest of it rather than below the body. Down there they sat immediately
+     above Read Next in the same mono voice, which blurred the one boundary that
+     had to be legible: the end of the article. */
+  .tag-list {
+    @apply mt-7 flex flex-wrap gap-1;
+  }
+  .post-footer-actions {
+    @apply mb-8 mt-12 flex flex-col-reverse items-center justify-between gap-6 sm:flex-row-reverse sm:items-end sm:gap-4;
+  }
+  /* Matches the share label opposite it — the row is a utility strip, so both
+     ends speak in the same small mono voice rather than one at body size. */
+  .back-to-top {
+    @apply font-mono text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .back-to-top :global(svg) {
+    @apply h-4 w-4 fill-skin-muted;
+  }
+
+  /* ===== Sticky TOC rail (>= lg only) ===== */
+  .toc-rail {
+    @apply hidden;
+  }
+  @media (min-width: theme("screens.lg")) {
+    .toc-rail {
+      @apply block self-start;
+      position: sticky;
+      top: 3rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+    }
+    .toc-rail-label {
+      @apply mb-3 font-mono text-skin-muted;
+      font-size: 0.6875rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .toc-rail ol {
+      @apply m-0 list-none border-l border-skin-line p-0;
+    }
+    .toc-rail a {
+      @apply -ml-px block border-l-2 border-transparent py-1.5 pl-3 pr-1 text-sm leading-snug text-skin-muted no-underline transition-colors;
+    }
+    .toc-rail a:hover {
+      @apply text-skin-base;
+    }
+    .toc-rail a.depth-3 {
+      @apply pl-6 text-[0.8125rem];
+    }
+    .toc-rail a.depth-4 {
+      @apply pl-9 text-[0.8125rem] opacity-90;
+    }
+    .toc-rail a[aria-current="true"] {
+      @apply border-skin-accent text-skin-accent;
+    }
   }
 </style>
 
@@ -132,42 +319,47 @@ const layoutProps = {
   /** Attaches links to headings in the document,
    *  allowing sharing of sections easily */
   function addHeadingLinks() {
-    let headings = Array.from(document.querySelectorAll("h2, h3, h4, h5, h6"));
+    // Article sections only. Section headings elsewhere on the page (Read Next)
+    // have ids for aria-labelledby, not for sharing, and their styling lives
+    // outside .prose — a permalink there just renders a stray "#".
+    let headings = Array.from(
+      document.querySelectorAll(
+        "#article h2, #article h3, #article h4, #article h5, #article h6"
+      )
+    );
     for (let heading of headings) {
-      // Headings outside the article body (e.g. Read Next card titles) have
-      // no id, so a permalink would be a dead "#" link.
       if (!heading.id) continue;
-      heading.classList.add("group");
+      if (heading.querySelector(".heading-link")) continue;
       let link = document.createElement("a");
-      link.innerText = "#";
-      link.className = "heading-link hidden group-hover:inline-block ml-2";
+      // The "#" is aria-hidden and the label is short: the link sits inside the
+      // heading, so anything it exposes is appended to the heading's own
+      // accessible name — screen readers were announcing "Introduction#" on
+      // every heading, and repeating the title would be worse.
+      link.innerHTML = '<span aria-hidden="true">#</span>';
+      link.className = "heading-link";
       link.href = "#" + heading.id;
-      link.ariaHidden = true;
+      link.setAttribute("aria-label", "Permalink");
       heading.appendChild(link);
     }
   }
   addHeadingLinks();
+  document.addEventListener("astro:after-swap", addHeadingLinks);
 
   /** Attaches copy buttons to code blocks in the document,
-   * allowing users to copy code easily. */
+   * allowing users to copy code easily. The language label is CSS-only
+   * (pre[data-language]), so it survives without JS. */
   function attachCopyButtons() {
     let copyButtonLabel = "Copy";
-    let codeBlocks = Array.from(document.querySelectorAll("pre"));
+    let codeBlocks = Array.from(document.querySelectorAll("pre.astro-code"));
 
     for (let codeBlock of codeBlocks) {
-      let wrapper = document.createElement("div");
-      wrapper.style.position = "relative";
+      if (codeBlock.querySelector(".copy-code")) continue;
 
       let copyButton = document.createElement("button");
-      copyButton.className =
-        "copy-code absolute right-0 -top-0 rounded bg-skin-card px-2 py-1 text-xs leading-4 text-skin-base font-medium";
+      copyButton.className = "copy-code";
       copyButton.innerHTML = copyButtonLabel;
       codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);
-
-      // wrap codebock with relative parent element
-      codeBlock.parentNode.insertBefore(wrapper, codeBlock);
-      wrapper.appendChild(codeBlock);
 
       copyButton.addEventListener("click", async () => {
         await copyCode(codeBlock, copyButton);
@@ -190,6 +382,83 @@ const layoutProps = {
   }
   attachCopyButtons();
   document.addEventListener("astro:after-swap", attachCopyButtons);
+
+  /** Highlights the section currently being read in the TOC rail. Runs at every
+   * width even though the rail only shows above 1080px: gating on a media query
+   * at load time would leave the rail dead if the window is later widened, and
+   * one observer over a dozen headings costs nothing. */
+  function trackReadingPosition() {
+    const links = Array.from(document.querySelectorAll(".toc-rail a"));
+    if (!links.length) return;
+
+    // decodeURIComponent throws URIError on a malformed escape ("#100%-gain",
+    // "#a%zz"), and an uncaught throw here would abort the rest of this script —
+    // taking the Back to Top binding with it.
+    const decodeHash = value => {
+      try {
+        return decodeURIComponent(value);
+      } catch {
+        return value;
+      }
+    };
+
+    const byId = new Map(
+      links.map(link => [decodeHash(link.hash.slice(1)), link])
+    );
+    const targets = Array.from(byId.keys())
+      .map(id => document.getElementById(id))
+      .filter(Boolean);
+    if (!targets.length) return;
+
+    let current = null;
+    const setCurrent = link => {
+      if (current === link) return;
+      current?.removeAttribute("aria-current");
+      link?.setAttribute("aria-current", "true");
+      current = link;
+    };
+
+    // The last heading to have crossed the upper third of the viewport is the
+    // one being read. A scroll listener rather than IntersectionObserver: with
+    // IO, a section taller than the viewport can scroll past the threshold
+    // without any heading entering or leaving it, and the highlight goes stale.
+    const update = () => {
+      const line = window.innerHeight * 0.35;
+      let active = null;
+      for (const el of targets) {
+        if (el.getBoundingClientRect().top <= line) active = el;
+        else break;
+      }
+      setCurrent(active ? byId.get(active.id) : links[0]);
+    };
+
+    let queued = false;
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        update();
+      });
+    };
+
+    // On a deep link the browser scrolls after this script parses, so measuring
+    // now would report the top of the article. Trust the hash instead, and let
+    // the first scroll take over from there.
+    const linked =
+      location.hash && byId.get(decodeHash(location.hash.slice(1)));
+    if (linked) setCurrent(linked);
+    else update();
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("hashchange", () => {
+      const target = byId.get(decodeHash(location.hash.slice(1)));
+      if (target) setCurrent(target);
+    });
+  }
+  trackReadingPosition();
+  document.addEventListener("astro:after-swap", trackReadingPosition);
 
   /** Scrolls the document to the top when
    * the "Back to Top" button is clicked. */

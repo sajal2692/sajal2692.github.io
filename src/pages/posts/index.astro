@@ -5,6 +5,7 @@ import Main from "@layouts/Main.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import getSortedPosts from "@utils/getSortedPosts";
+import { formatPostDate, toIsoDate } from "@utils/formatPostDate";
 import { SITE } from "@config";
 
 const posts = await getCollection("blog");
@@ -13,16 +14,17 @@ const sortedPosts = getSortedPosts(posts);
 
 <Layout title={`Posts | ${SITE.title}`}>
   <Header activeNav="posts" />
-  <Main pageTitle="Posts" pageDesc="Here I document my experiments with AI engineering, insights from building intelligent systems and share deep dives on latest paradigms.">
+  <Main
+    pageTitle="Posts"
+    pageDesc="Here I document my experiments with AI engineering, insights from building intelligent systems and share deep dives on latest paradigms."
+  >
     <ul class="posts-list" data-track="posts-list">
       {
         sortedPosts.map(({ data, id }) => (
           <li class="post-item">
-            <span class="post-date">{data.pubDatetime.toLocaleDateString("en-US", { 
-              day: "2-digit", 
-              month: "short", 
-              year: "numeric" 
-            })}</span>
+            <time class="post-date" datetime={toIsoDate(data.pubDatetime)}>
+              {formatPostDate(data.pubDatetime)}
+            </time>
             <span class="post-separator">»</span>
             <a href={`/posts/${id}`} class="post-title">
               {data.title}
@@ -37,25 +39,25 @@ const sortedPosts = getSortedPosts(posts);
 
 <style>
   .posts-list {
-    @apply list-none p-0 m-0;
+    @apply m-0 list-none p-0;
   }
-  
+
   .post-item {
     @apply mb-2 flex items-start;
   }
-  
+
   .post-date {
-    @apply text-skin-base opacity-70 mr-2 whitespace-nowrap;
+    @apply mr-2 whitespace-nowrap text-skin-base opacity-70;
   }
-  
+
   .post-separator {
-    @apply text-skin-base opacity-70 mr-2;
+    @apply mr-2 text-skin-base opacity-70;
   }
-  
+
   .post-title {
     @apply text-skin-accent no-underline;
   }
-  
+
   .post-title:hover {
     @apply underline;
   }

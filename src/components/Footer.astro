@@ -11,8 +11,13 @@ export interface Props {
 const { noMarginTop = false } = Astro.props;
 ---
 
-<footer class={`${noMarginTop ? "" : "mt-auto"}`} data-track="footer">
-  <Hr noPadding />
+<footer
+  class={`footer-shell ${noMarginTop ? "" : "mt-auto"}`}
+  data-track="footer"
+>
+  <!-- wide + noPadding: the shell's own padding is already applied by
+       .footer-shell, so the rule spans its inner width, matching the header's. -->
+  <Hr wide noPadding />
   <div class="footer-wrapper">
     <Socials centered />
     <div class="copyright-wrapper">
@@ -26,6 +31,13 @@ const { noMarginTop = false } = Astro.props;
 <style>
   footer {
     @apply w-full;
+  }
+  /* The class (not the element) carries the width so it beats the global
+     `section, footer { max-w-3xl }` in base.css. Footer chrome spans the same
+     shell as the header, so the rules bracketing a page are the same length —
+     they were 936px at the top and 736px at the bottom. */
+  .footer-shell {
+    @apply mx-auto max-w-shell px-4 sm:px-6;
   }
   .footer-wrapper {
     @apply flex flex-col items-center justify-between py-6 sm:flex-row-reverse sm:py-4;

@@ -15,9 +15,29 @@ module.exports = {
     // if one breakpoint is not enough for you
     screens: {
       sm: "640px",
+      // Deliberate second breakpoint: the article's sticky TOC rail needs the
+      // measure (40rem) + gap (4.5rem) + rail (14rem) to fit beside the text
+      // without crowding it. 86% of readers are on desktop, so it earns its keep.
+      // rem (67.5rem = 1080px by default) so it scales with the reader's browser
+      // font size in step with the grid it gates — a px breakpoint let the rail
+      // appear at widths where the rem-sized columns no longer fit.
+      lg: "67.5rem",
     },
 
     extend: {
+      maxWidth: {
+        // The reading measure: 40rem is 640px at the default root size, ~81
+        // characters per line at Source Sans 3 18px (600px was ~76, 680px ~86).
+        // `ch` is a trap here — 68ch of this face measures 86 characters, not 68.
+        // rem, not px, so the article grid keeps its arithmetic when a reader
+        // raises the browser's default font size: with a px measure beside rem
+        // gaps, a 24px root pushed the rail 58px past the viewport.
+        measure: "40rem",
+        // The page shell: measure (40) + gap (4.5) + TOC rail (14) + padding (3).
+        // The header and footer use it too, so their rules line up with the
+        // article's outer edges.
+        shell: "61.5rem",
+      },
       textColor: {
         skin: {
           base: withOpacity("--color-text-base"),
@@ -51,6 +71,7 @@ module.exports = {
       fill: {
         skin: {
           base: withOpacity("--color-text-base"),
+          muted: withOpacity("--color-muted"),
           accent: withOpacity("--color-accent"),
         },
         transparent: "transparent",
@@ -81,12 +102,17 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            // Body copy at 18px/1.72. This has to live here rather than in
-            // base.css: the plugin sets font-size and line-height on `.prose`
-            // itself (not through :where()), and its styles land in a later
-            // layer, so a `.prose` rule in @layer base loses on source order.
+            // These four have to live here rather than in base.css: the plugin
+            // sets them on `.prose` itself (not through :where()), and its
+            // styles land in a later layer, so a `.prose` rule in @layer base
+            // loses on source order.
             fontSize: "1.125rem",
             lineHeight: "1.72",
+            // Ink, not the plugin's cool gray-700, which fights the warm paper.
+            color: "rgb(var(--color-text-base))",
+            // The measure comes from the article column (max-w-measure), not
+            // from the plugin's 65ch — which is 74 characters in this face.
+            maxWidth: "none",
             pre: {
               color: false,
             },
