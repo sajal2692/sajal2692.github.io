@@ -387,7 +387,7 @@
      so it never reads as content. 13px ink rather than 11px muted: legible
      enough to register, quiet enough not to claim a section of its own. */
   .section-label {
-    @apply flex items-center gap-4 font-mono font-semibold text-skin-base;
+    @apply flex items-center gap-4 font-mono font-normal text-skin-base;
     font-size: 0.8125rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
