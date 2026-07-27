@@ -2,14 +2,19 @@
    Latin subsets taken from Fontsource 5.3.0 and copied into public/fonts so the
    critical faces can be preloaded from a stable, unhashed URL (Layout.astro):
 
+     @fontsource/ibm-plex-serif          ibm-plex-serif-latin-400-normal.woff2
      @fontsource/ibm-plex-serif          ibm-plex-serif-latin-600-normal.woff2
      @fontsource-variable/source-sans-3  source-sans-3-latin-wght-normal.woff2
      @fontsource-variable/source-sans-3  source-sans-3-latin-wght-italic.woff2
      @fontsource/ibm-plex-mono           ibm-plex-mono-latin-400-normal.woff2
      @fontsource/ibm-plex-mono           ibm-plex-mono-latin-500-normal.woff2
 
-   116 KB for the five files, replacing a render-blocking Google Fonts request
+   136 KB for the six files, replacing a render-blocking Google Fonts request
    that shipped six IBM Plex Mono styles where two are used.
+
+   Serif 400 exists for list rows, where 600 read as emphasis on every line. It
+   is deliberately not preloaded: the display weight is above the fold on every
+   page, this one only appears in post indexes.
 
    No unicode-range: only the latin subset is shipped, so per-glyph fallback
    already handles anything outside it, and every page needs latin anyway.
@@ -34,6 +39,14 @@
   font-display: swap;
   src: url("/fonts/source-sans-3-latin-wght-italic.woff2")
     format("woff2-variations");
+}
+
+@font-face {
+  font-family: "IBM Plex Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-serif-latin-400.woff2") format("woff2");
 }
 
 @font-face {

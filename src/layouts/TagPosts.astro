@@ -12,21 +12,39 @@ export interface Props {
   currentPage: number;
   totalPages: number;
   paginatedPosts: CollectionEntry<"blog">[];
+  /** Every post carrying the tag, not just this page's slice — the kicker counts them. */
+  totalPosts: number;
   tag: string;
   tagName: string;
 }
 
-const { currentPage, totalPages, paginatedPosts, tag, tagName } = Astro.props;
+const {
+  currentPage,
+  totalPages,
+  paginatedPosts,
+  totalPosts,
+  tag,
+  tagName,
+} = Astro.props;
 ---
 
 <Layout title={`Tag: ${tagName} | ${SITE.title}`}>
   <Header activeNav="tags" />
+  <!-- The tag itself is the title: the kicker above already says what it is, so
+       a "Tag:" or "Tagged" prefix would only repeat it, and reads oddly against
+       a slug like ai-engineering. -->
   <Main
-    pageTitle={[`Tag:`, `${tagName}`]}
+    pageTitle={tagName}
     titleTransition={tag}
-    pageDesc={`All the articles with the tag "${tagName}".`}
+    kicker={[
+      "Tag",
+      `${totalPosts} ${totalPosts === 1 ? "post" : "posts"}`,
+      totalPages > 1 && `page ${currentPage} of ${totalPages}`,
+    ]}
   >
-    <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
+    <div slot="backlink" class="tag-nav" data-track="post-nav">
+      <a href="/tags/" class="back-link">&larr; All tags</a>
+    </div>
     <ul data-track="posts-list">
       {
         paginatedPosts.map(({ data, id }) => (
@@ -35,6 +53,15 @@ const { currentPage, totalPages, paginatedPosts, tag, tagName } = Astro.props;
       }
     </ul>
   </Main>
+
+  <style>
+    /* Same treatment as a post page's "All posts" link, so every page that can
+       be backed out of does it the same way. */
+    .back-link {
+      @apply -mt-2 mb-6 inline-block font-mono text-sm text-skin-muted no-underline transition-colors hover:text-skin-accent;
+      letter-spacing: 0.02em;
+    }
+  </style>
 
   <Pagination
     {currentPage}
