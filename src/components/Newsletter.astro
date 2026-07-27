@@ -2,10 +2,10 @@
 
 ---
 
-<!-- mt-0: the step above this section belongs to its .section-heading, which
-     keeps it equal to Read Next's above it. -->
-<section id="newsletter" class="mb-8 mt-0 p-0">
-  <h2 class="section-heading">Newsletter</h2>
+<!-- mt-16 (collapsing with the last card's mb-8, so 64px) puts real distance
+     between the article's own sections and this one, which is page furniture. -->
+<section id="newsletter" class="mb-8 mt-16 p-0">
+  <h2 class="section-label">Newsletter</h2>
   <p class="newsletter-intro">
     Sign up to get updates on my latest posts, projects and insights on AI & ML.
     You'll only receive an email when I publish something new.
@@ -74,7 +74,7 @@
   /* Full measure, no 52ch clamp: at this column width the clamp broke two
      sentences into three short ragged lines under a 28px heading. */
   .newsletter-intro {
-    @apply mt-5;
+    @apply mt-4;
     text-wrap: pretty;
   }
   .subscribe-btn {

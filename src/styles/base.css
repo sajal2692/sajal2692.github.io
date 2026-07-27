@@ -362,24 +362,39 @@
 }
 
 @layer components {
-  /* One section marker for everything that follows an article: a full-width rule
-     and a heading at the same rank as the article's own h2s. Read Next and the
-     newsletter both use it, so the post footer has a single convention.
-     It has to carry this much weight because it is the only thing telling the
-     reader the article has ended — as an 11px mono label it was the quietest
-     element in the footer while doing the most important job, so the cards below
-     it read as more article content until you noticed the label. Cards sit a
-     rank below (21px, see Card.tsx) so nothing competes with the boundary. */
-  /* The 48px step above the rule lives here rather than on each section, so
-     every footer section is spaced identically. It works out the same in all
-     three arrangements — tags then Read Next, Read Next then newsletter, and
-     tags straight to the newsletter when a post has no related posts — because
-     this margin escapes the padding-free section box and collapses with
-     whatever margin precedes it, taking the larger of the two. */
+  /* Read Next is a continuation of the article, not a footer appendage, so it
+     wears the article's own section marker: the same accent dash, size, face and
+     rhythm as a .prose h2 (see the h2::before rule above). A reader who has just
+     passed "References" reads this as the next section rather than as the start
+     of some other page furniture — which is what an 11px mono label failed to
+     say. Its items sit a rank below at 21px (Card.tsx). */
   .section-heading {
-    @apply mt-12 border-t border-skin-line pt-7 font-serif font-semibold text-skin-base;
+    @apply font-serif font-semibold text-skin-base;
     font-size: 1.75rem;
     line-height: 1.2;
+    margin: 3.2rem 0 1.1rem;
+  }
+  .section-heading::before {
+    content: "";
+    display: block;
+    width: 2.25rem;
+    height: 2px;
+    margin-bottom: 0.9rem;
+    background-color: rgb(var(--color-accent));
+  }
+  /* Utility blocks that are not part of the article — the newsletter — keep the
+     quiet mono label with its trailing hairline, one rank under .section-heading
+     so it never reads as content. 13px ink rather than 11px muted: legible
+     enough to register, quiet enough not to claim a section of its own. */
+  .section-label {
+    @apply flex items-center gap-4 font-mono font-semibold text-skin-base;
+    font-size: 0.8125rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .section-label::after {
+    content: "";
+    @apply h-px flex-1 bg-skin-line;
   }
   /* Dates, reading time and tags all speak in the same monospace voice. */
   .metadata {

@@ -33,15 +33,15 @@ const { posts } = Astro.props;
 }
 
 <style>
-  /* No padding at all: the step above the rule and the rule itself belong to
-     .section-heading, and any padding here would block the margin collapse that
-     keeps that step equal to the newsletter's below (margins never collapse into
-     padding — that is where the old 88px gap came from). px-0 cancels the global
+  /* No padding at all: the step above this section belongs to .section-heading's
+     own margin (the same 3.2rem a .prose h2 gets), and padding here would block
+     the collapse and stack on top of it — margins never collapse into padding,
+     which is where the old 88px gap came from. px-0 also cancels the global
      section px-4 (base.css), which would double-pad inside main's own px-4 and
      shift the section off the article edge. */
   #related-posts {
     @apply p-0;
   }
-  /* .section-heading itself lives in base.css @layer components — the newsletter
-     below uses the same marker, so the post footer reads as one system. */
+  /* .section-heading lives in base.css @layer components, alongside the quieter
+     .section-label the newsletter below uses. */
 </style>

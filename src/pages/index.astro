@@ -190,14 +190,9 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   #recent-posts {
     @apply pb-6 pt-12;
   }
-  /* Same 28px as .section-heading: the newsletter above these sections uses it,
-     and a 24px heading here would leave the page's own sections outranked by it.
-     No border-top, because these sections already sit under a wide <Hr />. */
   #featured h2,
   #recent-posts h2 {
-    @apply font-semibold;
-    font-size: 1.75rem;
-    line-height: 1.2;
+    @apply text-2xl font-semibold tracking-wide;
   }
   .all-posts-btn-wrapper {
     @apply my-8 text-center;

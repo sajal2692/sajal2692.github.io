@@ -99,6 +99,18 @@ const railHeadings = headings.filter(
             >
             <span>{readingTime} min read</span>
             {primaryTopic && <span>{primaryTopic}</span>}
+            {
+              /* The update record belongs with the rest of the metadata rather
+                 than stranded on its own line below the article. */
+              modDatetime && (
+                <span>
+                  Updated{" "}
+                  <time datetime={toIsoDate(modDatetime)}>
+                    {formatPostDate(modDatetime)}
+                  </time>
+                </span>
+              )
+            }
           </p>
 
           <h1 transition:name={slugifyStr(title)} class="post-title">
@@ -106,6 +118,10 @@ const railHeadings = headings.filter(
           </h1>
 
           {description && <p class="post-deck">{description}</p>}
+
+          <ul class="tag-list" data-track="post-tags">
+            {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
+          </ul>
 
           <article
             id="article"
@@ -115,25 +131,6 @@ const railHeadings = headings.filter(
           >
             <Content />
           </article>
-
-          <footer class="post-meta">
-            {
-              /* The kicker already carries the publication date, so this line
-                 exists for the update record and renders only when there is one. */
-              modDatetime && (
-                <p class="post-dates">
-                  Updated{" "}
-                  <time datetime={toIsoDate(modDatetime)}>
-                    {formatPostDate(modDatetime)}
-                  </time>
-                </p>
-              )
-            }
-
-            <ul class="tag-list" data-track="post-tags">
-              {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
-            </ul>
-          </footer>
 
           <RelatedPosts posts={relatedPosts} />
 
@@ -257,26 +254,12 @@ const railHeadings = headings.filter(
     @apply mt-9;
   }
 
-  /* ===== Below the body =====
-     The tags belong to the article, so they sit under it on spacing alone; the
-     sections that follow (Read Next, Newsletter) each carry the one section
-     marker. That leaves a single divider convention in the post footer instead
-     of a bare rule here plus a labelled rule there.
-     max-w-none/px-0 undo the global `section, footer` container in base.css,
-     which otherwise indents this block 16px out of line with the body copy. */
-  /* No bottom margin: the space before whatever follows belongs to that
-     section's .section-heading, so the gap is identical whether the next thing
-     is Read Next or the newsletter. */
-  .post-meta {
-    @apply mb-0 mt-10 max-w-none px-0;
-  }
-  .post-dates {
-    @apply mb-4 font-mono text-skin-muted;
-    font-size: 0.8125rem;
-    font-variant-numeric: tabular-nums;
-  }
+  /* Tags are metadata about the article, so they live in the title block with
+     the rest of it rather than below the body. Down there they sat immediately
+     above Read Next in the same mono voice, which blurred the one boundary that
+     had to be legible: the end of the article. */
   .tag-list {
-    @apply flex flex-wrap gap-1;
+    @apply mt-7 flex flex-wrap gap-1;
   }
   .post-footer-actions {
     @apply mb-8 mt-12 flex flex-col-reverse items-center justify-between gap-6 sm:flex-row-reverse sm:items-end sm:gap-4;
