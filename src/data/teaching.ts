@@ -3,9 +3,14 @@
  *
  * Course titles, formats and dates were duplicated between the homepage and
  * the About page, which is how the homepage came to advertise a live session
- * that had already run. Everything that renders a course — homepage, /teaching,
- * About — reads from here, and dates are filtered against build time, so an
- * expired session disappears on the next deploy instead of sitting there.
+ * that had already run. The homepage and /teaching both read from here, and
+ * dates are filtered against build time, so an expired session disappears on
+ * the next deploy instead of sitting there.
+ *
+ * About still hardcodes its own copy of the course list. That is deliberate for
+ * now — About is being rewritten wholesale in the content epic — but until it
+ * reads from this file the drift this module exists to prevent is only half
+ * prevented.
  *
  * Sessions are stored as ISO 8601 with an explicit offset. O'Reilly schedules
  * in Pacific time; writing the offset out means the comparison is unambiguous
@@ -15,7 +20,7 @@
 export interface CourseSession {
   /** Start of the live session, ISO 8601 with offset. */
   start: string;
-  /** End, same format — used for the "9:00am-1:00pm" range on /teaching. */
+  /** End, same format and offset. Renders the "9:00am-1:00pm" range. */
   end: string;
 }
 
@@ -32,11 +37,36 @@ export interface Course {
   sessions?: CourseSession[];
 }
 
+/**
+ * An invited talk inside someone else's class — the opposite shape to a Course,
+ * which is Sajal's own material, bookable and forward-looking. A lecture has
+ * already happened, has no URL to enrol through, and does not repeat.
+ */
 export interface Lecture {
   venue: string;
-  course: string;
+  /**
+   * The host's course the talk was given inside — Yale's MGT 899, not one of
+   * COURSES. Named `hostCourse` because a bare `course` in this module reads as
+   * the other kind.
+   */
+  hostCourse: string;
+  /** The talk's own title. */
   title: string;
   year: number;
+  /** What it covered. Optional so a bare listing is still valid. */
+  summary?: string;
+}
+
+/**
+ * Long-running mentoring, which is neither a course nor a talk: no URL, no
+ * single date, and its weight comes from a quantity rather than a schedule.
+ */
+export interface Mentorship {
+  org: string;
+  /** Inclusive range, e.g. "2017-2023". */
+  years: string;
+  /** One line carrying the number that makes it a receipt. */
+  summary: string;
 }
 
 export const COURSES: Course[] = [
@@ -85,15 +115,35 @@ export const COURSES: Course[] = [
 export const LECTURES: Lecture[] = [
   {
     venue: "Yale University",
-    course: "MGT 899: Generative AI & Entrepreneurship",
+    hostCourse: "MGT 899: Generative AI & Entrepreneurship",
     title: "From Agentic Workflows to Agent Harness",
     year: 2026,
+    summary:
+      "The architectural shift from agentic workflows to agent harnesses, and what it changes about building AI applications.",
   },
   {
     venue: "Yale University",
-    course: "MGT 899: Generative AI & Entrepreneurship",
+    hostCourse: "MGT 899: Generative AI & Entrepreneurship",
     title: "Building Agentic Systems with LangGraph",
     year: 2025,
+    summary:
+      "How entrepreneurs can use graph-based AI workflows to build agentic products.",
+  },
+];
+
+/** Mentoring, oldest engagement last. Community proof, not the headline. */
+export const MENTORSHIP: Mentorship[] = [
+  {
+    org: "Udacity",
+    years: "2017-2023",
+    summary:
+      "Reviewed more than 1,000 projects across the Machine Learning and Data Science programs, rated A+ by Udacity's internal audit.",
+  },
+  {
+    org: "University of Melbourne",
+    years: "2020-2023",
+    summary:
+      "STEM Mentorship Program: career and technical guidance for students moving into technology and AI.",
   },
 ];
 
@@ -158,4 +208,24 @@ export function formatSessionDate(session: CourseSession): string {
     day: "numeric",
     timeZone: "America/Los_Angeles",
   });
+}
+
+const PACIFIC_TIME = new Intl.DateTimeFormat("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: "America/Los_Angeles",
+});
+
+/**
+ * The full "27 Aug, 9:00 AM - 1:00 PM PT" line for a live sitting. This is what
+ * `CourseSession.end` is stored for; the compact card shows only the date.
+ *
+ * The zone label is spelled out because a reader in another timezone otherwise
+ * has no way to know which 9:00 AM is meant — and one sitting runs 9:00 PM to
+ * 1:00 AM, so the times alone can span two calendar days.
+ */
+export function formatSessionRange(session: CourseSession): string {
+  return `${formatSessionDate(session)}, ${PACIFIC_TIME.format(
+    new Date(session.start)
+  )} - ${PACIFIC_TIME.format(new Date(session.end))} PT`;
 }

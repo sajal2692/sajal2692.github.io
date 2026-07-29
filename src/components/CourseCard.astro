@@ -1,0 +1,91 @@
+---
+import {
+  formatSessionDate,
+  formatSessionRange,
+  nextSession,
+} from "@data/teaching";
+import type { Course } from "@data/teaching";
+
+export interface Props {
+  course: Course;
+  /**
+   * `compact` shows the next date only — the homepage grid, where four cards
+   * share a viewport with everything else. `full` shows the whole schedule with
+   * times, for /teaching where the schedule is the point of the page.
+   */
+  detail?: "compact" | "full";
+}
+
+const { course, detail = "compact" } = Astro.props;
+
+const next = nextSession(course);
+const upcoming = course.sessions
+  ? course.sessions.filter(session => new Date(session.start) > new Date())
+  : [];
+---
+
+<li class="course-card">
+  <a
+    href={course.url}
+    class="course-title"
+    target="_blank"
+    rel="noopener noreferrer">{course.title}</a
+  >
+  <p class="course-meta">
+    <span class="badge">{course.format}</span>
+    {course.duration && <span>{course.duration}</span>}
+    {
+      detail === "compact" && next && (
+        <span>next {formatSessionDate(next)}</span>
+      )
+    }
+  </p>
+  <p class="course-summary">{course.summary}</p>
+  {
+    detail === "full" && upcoming.length > 0 && (
+      <ul class="session-list">
+        {upcoming.map(session => (
+          <li>{formatSessionRange(session)}</li>
+        ))}
+      </ul>
+    )
+  }
+</li>
+
+<style>
+  /* The card lives here rather than in either page so the two surfaces cannot
+     drift — the same reason the course data itself was centralised. It is
+     hairline-topped rather than a filled panel, matching every other card on
+     the redesigned site. */
+  .course-card {
+    @apply border-t border-skin-line pt-3;
+  }
+  .course-title {
+    @apply font-serif font-normal text-skin-base no-underline transition-colors hover:text-skin-accent;
+    font-size: 1.0625rem;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+  .course-meta {
+    @apply mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-skin-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+  .badge {
+    @apply rounded-sm border border-skin-line px-1.5 py-0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.6875rem;
+  }
+  .course-summary {
+    @apply mt-2 text-skin-base;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .session-list {
+    @apply mt-3 flex flex-col gap-1 font-mono text-skin-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
