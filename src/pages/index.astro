@@ -3,216 +3,262 @@ import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import LinkButton from "@components/LinkButton.astro";
-import Hr from "@components/Hr.astro";
-import Card from "@components/Card";
-import Socials from "@components/Socials.astro";
 import Newsletter from "@components/Newsletter.astro";
 import getSortedPosts from "@utils/getSortedPosts";
-import { SOCIALS } from "@config";
+import { formatPostDate, toIsoDate } from "@utils/formatPostDate";
+import {
+  coursesByNextSession,
+  formatSessionDate,
+  nextSession,
+} from "@data/teaching";
 
-const posts = await getCollection("blog");
+const sorted = getSortedPosts(await getCollection("blog"));
 
-const sortedPosts = getSortedPosts(posts);
-const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-
-const socialCount = SOCIALS.filter(social => social.active).length;
+/**
+ * The lead is the newest featured post, falling back to the newest post so the
+ * section never empties. Rows are simply the next most recent pieces: the old
+ * homepage rendered `featured` posts only, so a new post could be published and
+ * never appear here at all until someone remembered to flag it.
+ */
+const lead = sorted.find(({ data }) => data.featured) ?? sorted[0];
+const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
 ---
 
 <Layout title="Sajal Sharma | AI Engineer | O'Reilly Instructor">
   <Header />
   <main id="main-content">
+    <!-- Hero copy is provisional. The kicker, headline and link labels are
+         settled; the body paragraph is a placeholder Sajal intends to rewrite
+         in the content epic, which will revisit this page. It is factually
+         correct as it stands — no current-employer claim — so it is safe to
+         ship in the meantime, but do not treat it as final wording. -->
     <section id="hero" data-track="home-hero">
-      <h1>Hello! 👋</h1>
-
-      <!-- Uncomment below to include RSS icon. -->
-      <!-- <a
-        target="_blank"
-        href="/rss.xml"
-        class="rss-link"
-        aria-label="rss feed"
-        title="RSS Feed"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="rss-icon"
-          ><path
-            d="M19 20.001C19 11.729 12.271 5 4 5v2c7.168 0 13 5.832 13 13.001h2z"
-          ></path><path
-            d="M12 20.001h2C14 14.486 9.514 10 4 10v2c4.411 0 8 3.589 8 8.001z"
-          ></path><circle cx="6" cy="18" r="2"></circle>
-        </svg>
-        <span class="sr-only">RSS Feed</span>
-      </a> -->
-
-      <p>
-        I'm Sajal, AI Engineer and Technology Leader specializing in Generative
-        AI, Machine Learning, and Natural Language Processing.
+      <p class="hero-kicker">AI Engineer &middot; O'Reilly Instructor</p>
+      <h1 class="hero-title">I build AI systems and teach engineers how.</h1>
+      <p class="hero-body">
+        Eight years shipping machine learning and NLP &mdash; search ranking,
+        natural-language interfaces to databases, and chatbots serving tens of
+        thousands daily, most recently agents and RAG at a Temasek-backed
+        venture studio. I teach what I ship: four O'Reilly courses on agents and
+        RAG.
       </p>
-
-      <p>
-        I’m passionate about building AI systems that amplify human
-        potential—bridging the gap between human and artificial intelligence.
+      <p class="hero-ctas">
+        <a href="/posts">Read my blog</a>
+        <a href="#teaching">Take my courses</a>
+        <a href="/about">About</a>
       </p>
-
-      <p>
-        Explore my journey and insights on AI & ML through my <a href="/posts"
-          >blog</a
-        >, or read more about my <a href="/about">professional experience</a>.
-        🚀
-      </p>
-
-      <div class="courses-section" data-track="courses">
-        <p><strong>Take my courses on O'Reilly:</strong></p>
-        <ul>
-          <li>
-            <a
-              href="https://learning.oreilly.com/course/building-ai-agents/0642572077884/"
-              target="_blank"
-              rel="noopener noreferrer">Building AI Agents with LangGraph</a
-            > (on-demand course)
-          </li>
-          <li>
-            <a
-              href="https://www.oreilly.com/live-events/agentic-rag-with-langgraph/0642572176174/"
-              target="_blank"
-              rel="noopener noreferrer">Agentic RAG with LangGraph</a
-            > (live course, July 9, 9:00pm-1:00am or August 27, 9:00am-1:00pm Pacific
-            Time)
-          </li>
-          <li>
-            <a
-              href="https://learning.oreilly.com/live-events/building-integrated-ai-agents-with-openclaw/0642572350437/0642572350420/"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Building Integrated AI Agents with OpenClaw</a
-            > (live course, August 25 at 8:00am Pacific Time)
-          </li>
-          <li>
-            <a
-              href="https://learning.oreilly.com/live-events/getting-started-with-claude-agent-sdk/0642572273255/0642572273248/"
-              target="_blank"
-              rel="noopener noreferrer">Getting Started with Claude Agent SDK</a
-            > (live course, August 26, 9:00am-1:00pm Pacific Time)
-          </li>
-        </ul>
-      </div>
-
-      <Newsletter />
-
-      {
-        // only display if at least one social link is enabled
-        socialCount > 0 && (
-          <div class="social-wrapper">
-            <div class="social-links">Social Links:</div>
-            <Socials />
-          </div>
-        )
-      }
     </section>
 
-    <!-- wide: matches the header and footer rules, which span the page shell -->
-    <Hr wide />
+    <section id="writing" data-track="featured-posts">
+      <h2 class="section-heading">Writing</h2>
+      {
+        lead && (
+          <a class="lead" href={`/posts/${lead.id}`}>
+            <h3 class="lead-title">{lead.data.title}</h3>
+            <p class="lead-deck">{lead.data.description}</p>
+          </a>
+        )
+      }
+      <ul class="rows">
+        {
+          rows.map(post => (
+            <li>
+              <a href={`/posts/${post.id}`}>
+                <time class="row-date" datetime={toIsoDate(post.data.pubDatetime)}>
+                  {formatPostDate(post.data.pubDatetime)}
+                </time>
+                <span class="row-title">{post.data.title}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="more" data-track="home-all-posts">
+        <a href="/posts">All writing &rarr;</a>
+      </p>
+    </section>
 
-    {
-      featuredPosts.length > 0 && (
-        <>
-          <section id="featured" data-track="featured-posts">
-            <h2>Featured Posts</h2>
-            <ul>
-              {featuredPosts.map(({ data, id }) => (
-                <Card
-                  href={`/posts/${id}`}
-                  frontmatter={data}
-                  secHeading={false}
-                />
-              ))}
-            </ul>
-          </section>
-        </>
-      )
-    }
+    <section id="teaching" data-track="courses">
+      <h2 class="section-heading">Teaching</h2>
+      <ul class="course-grid">
+        {
+          coursesByNextSession().map(course => {
+            const next = nextSession(course);
+            return (
+              <li class="course-card">
+                <a
+                  href={course.url}
+                  class="course-title"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {course.title}
+                </a>
+                <p class="course-meta">
+                  <span class="badge">{course.format}</span>
+                  {course.duration && <span>{course.duration}</span>}
+                  {next && <span>next {formatSessionDate(next)}</span>}
+                </p>
+                <p class="course-summary">{course.summary}</p>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
 
-    <div class="all-posts-btn-wrapper" data-track="home-all-posts">
-      <LinkButton href="/posts">
-        All Posts
-        <svg xmlns="http://www.w3.org/2000/svg"
-          ><path
-            d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z"
-          ></path>
-        </svg>
-      </LinkButton>
-    </div>
+    <Newsletter />
   </main>
 
   <Footer />
 </Layout>
 
 <style>
-  /* ===== Hero Section ===== */
-  #hero {
-    @apply pb-6 pt-8;
+  /* The homepage sits at the same measure as an article and the archive. It ran
+     at max-w-3xl, which put summaries near 100 characters a line against the
+     article's 81 — the widest text on the site was the least readable. */
+  #main-content {
+    @apply mx-auto w-full px-4 pb-4 pt-8;
+    max-width: theme("maxWidth.measure");
   }
-  /* ===== Hero Section Link Styles ===== */
-  #hero a {
-    @apply underline decoration-1 underline-offset-4 outline-2 outline-offset-1
-      outline-skin-fill focus-visible:no-underline focus-visible:outline-dashed;
-    text-decoration-color: rgba(var(--color-accent), 0.5);
-    transition:
-      color 0.15s ease,
-      text-decoration-color 0.15s ease;
+  /* base.css gives every `section` its own max-width and padding; here the main
+     element already owns both, and leaving the section padding on would indent
+     the content 16px inside a column that is already the right width. */
+  #main-content > section {
+    @apply max-w-none px-0;
   }
 
-  #hero a:hover {
+  /* ===== Hero ===== */
+  .hero-kicker {
+    @apply mb-4 font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+  }
+  .hero-body {
+    font-size: 1.125rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  /* Mono, underlined in accent: the same voice the post kicker and the archive
+     rows speak in, so the page's first interactive elements read as navigation
+     rather than as prose links. No arrow — these are destinations, not "more". */
+  .hero-ctas {
+    @apply mt-7 flex flex-wrap gap-x-6 gap-y-2 font-mono;
+    font-size: 0.875rem;
+  }
+  .hero-ctas a {
+    @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
+    border-bottom: 1px solid rgba(var(--color-accent), 0.4);
+    padding-bottom: 2px;
+  }
+  .hero-ctas a:hover {
+    border-bottom-color: rgb(var(--color-accent));
+  }
+
+  /* ===== Writing ===== */
+  .lead {
+    @apply block no-underline;
+  }
+  .lead-title {
+    @apply text-skin-base transition-colors;
+    font-size: 1.625rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .lead:hover .lead-title {
     @apply text-skin-accent;
-    text-decoration-color: rgb(var(--color-accent));
+  }
+  .lead-deck {
+    @apply mt-2 text-skin-muted;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  .rows {
+    @apply mt-8 border-t border-skin-line;
+  }
+  .rows li {
+    @apply border-b border-skin-line;
+  }
+  /* The date column carries the year here, unlike the archive, whose rows sit
+     under a year heading. This list spans years with no such grouping, so a
+     2025 post showed as "Jul 27" directly beneath "Jan 2" and read as though
+     the sort was broken. 6.75rem fits "Sep 27, 2025" without wrapping. */
+  .rows a {
+    @apply grid items-baseline gap-x-5 gap-y-1 py-3 no-underline;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Two columns only where there is room for both. On a 375px screen the date
+     column took 31% of the width and squeezed titles to three lines, so below
+     the breakpoint the date sits above the title instead. */
+  @media (min-width: 640px) {
+    .rows a {
+      grid-template-columns: 6.75rem minmax(0, 1fr);
+    }
+  }
+  .row-date {
+    @apply font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .row-title {
+    @apply font-serif font-normal text-skin-base transition-colors;
+    font-size: 1.1875rem;
+    line-height: 1.35;
+  }
+  .rows a:hover .row-title {
+    @apply text-skin-accent;
+  }
+  .more {
+    @apply mt-6 font-mono;
+    font-size: 0.875rem;
+  }
+  .more a {
+    @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
+    border-bottom: 1px solid rgba(var(--color-accent), 0.4);
+    padding-bottom: 2px;
   }
 
-  #hero h1 {
-    @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
+  /* ===== Teaching ===== */
+  .course-grid {
+    @apply grid gap-x-8 gap-y-6;
+    grid-template-columns: minmax(0, 1fr);
   }
-  #hero .rss-link {
-    @apply mb-6;
+  @media (min-width: 640px) {
+    .course-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
-  #hero .rss-icon {
-    @apply mb-2 h-6 w-6 scale-110 fill-skin-accent sm:mb-3 sm:scale-125;
+  .course-card {
+    @apply border-t border-skin-line pt-3;
   }
-  #hero p {
-    @apply my-2;
+  .course-title {
+    @apply font-serif font-normal text-skin-base no-underline transition-colors hover:text-skin-accent;
+    font-size: 1.0625rem;
+    line-height: 1.3;
+    text-wrap: balance;
   }
-  .social-wrapper {
-    @apply mt-4 flex flex-col sm:flex-row sm:items-center;
+  .course-meta {
+    @apply mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-skin-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
   }
-  .social-links {
-    @apply mb-1 mr-2 whitespace-nowrap sm:mb-0;
+  .badge {
+    @apply rounded-sm border border-skin-line px-1.5 py-0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.6875rem;
   }
-
-  /* ===== Featured & Recent Posts Sections ===== */
-  #featured,
-  #recent-posts {
-    @apply pb-6 pt-12;
-  }
-  #featured h2,
-  #recent-posts h2 {
-    @apply text-2xl font-semibold tracking-wide;
-  }
-  .all-posts-btn-wrapper {
-    @apply my-8 text-center;
-  }
-
-  /* add some top padding for newsletter */
-  #newsletter {
-    @apply pl-0 pt-6;
-  }
-
-  /* ===== Courses Section ===== */
-  .courses-section {
-    @apply mb-4 mt-6;
-  }
-
-  .courses-section p {
-    @apply mb-2;
-  }
-
-  .courses-section ul {
-    @apply ml-6 list-inside list-disc space-y-1;
+  .course-summary {
+    @apply mt-2 text-skin-base;
+    font-size: 0.9375rem;
+    line-height: 1.5;
   }
 </style>

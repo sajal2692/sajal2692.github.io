@@ -7,7 +7,10 @@ export const SITE: Site = {
   title: "Sajal Sharma",
   ogImage: "sajalsharma-og.png",
   lightAndDarkMode: true,
-  postPerPage: 5,
+  // Tag pages only — the post archive is a single unpaginated index. 20 is
+  // above every tag's current count, so nothing splits today; the pagination
+  // machinery stays wired for when one genuinely grows past a page.
+  postPerPage: 20,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
 };
 
