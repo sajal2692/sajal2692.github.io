@@ -57,13 +57,22 @@
     @apply outline-2 outline-offset-1 outline-skin-fill 
     focus-visible:no-underline focus-visible:outline-dashed;
   }
-  svg {
-    @apply inline-block h-6 w-6 fill-skin-base group-hover:fill-skin-accent;
+  /* Every icon on the site: one 24 grid, one 1.5 stroke, no fill. Colour is
+     inherited from the parent's `color`, so an icon darkens with the link that
+     holds it instead of carrying a hover of its own — which is what let the
+     chrome hover two ways at once, links resolving to ink while the icons
+     beside them flashed accent. Nothing but this block decides how an icon
+     looks; the markup carries geometry only. */
+  .icon {
+    @apply h-5 w-5 flex-none fill-none stroke-current;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
-  svg.icon-tabler {
-    @apply inline-block h-6 w-6 scale-125 fill-transparent 
-    stroke-current stroke-2 opacity-90 group-hover:fill-transparent 
-    sm:scale-110;
+  /* Bare <svg> is now only the in-post visualiser, which sets fill and stroke
+     on every shape it draws, and sizes itself. */
+  svg {
+    @apply inline-block;
   }
   /* ===== Article prose =====
      Written as plain rules instead of prose-* variants: @tailwindcss/typography

@@ -1,5 +1,3 @@
-import type socialIcons from "@assets/socialIcons";
-
 export type Site = {
   website: string;
   githubRepoName?: string;
@@ -12,8 +10,10 @@ export type Site = {
   scheduledPostMargin: number;
 };
 
+// No longer keyed to the icon set: the footer renders these as words, so a
+// social link needs a label to print rather than a mark to look up.
 export type SocialObjects = {
-  name: keyof typeof socialIcons;
+  label: string;
   href: string;
   active: boolean;
   linkTitle: string;

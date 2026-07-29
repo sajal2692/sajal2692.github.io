@@ -8,6 +8,11 @@ export interface Props {
 }
 
 const { href, className, ariaLabel, title, disabled = false } = Astro.props;
+
+// No hover colour is baked in here. It used to resolve to the accent for every
+// caller, which put the icon rows on a different hover from the links beside
+// them; each caller now states its own, and a caller that wants the accent
+// (see 404) passes it.
 ---
 
 {
@@ -23,7 +28,7 @@ const { href, className, ariaLabel, title, disabled = false } = Astro.props;
   ) : (
     <a
       {href}
-      class={`group inline-block hover:text-skin-accent ${className}`}
+      class={`group inline-block ${className}`}
       aria-label={ariaLabel}
       title={title}
     >

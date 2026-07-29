@@ -139,12 +139,14 @@ const railHeadings = headings.filter(
           <div class="post-footer-actions">
             <button
               id="back-to-top"
-              class="focus-outline back-to-top whitespace-nowrap py-1 hover:text-skin-accent"
+              class="focus-outline back-to-top whitespace-nowrap py-1 text-skin-muted transition-colors hover:text-skin-base"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="rotate-90">
-                <path
-                  d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"
-                ></path>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="icon"
+              >
+                <path d="M6 15l6 -6l6 6"></path>
               </svg>
               <span>Back to Top</span>
             </button>
@@ -266,14 +268,19 @@ const railHeadings = headings.filter(
   }
   /* Matches the share label opposite it — the row is a utility strip, so both
      ends speak in the same small mono voice rather than one at body size. */
+  /* Colour lives on the button's own classes, not here: a scoped `text-skin-*`
+     would tie with the hover utility on the element and win or lose by
+     stylesheet order. */
   .back-to-top {
-    @apply font-mono text-skin-muted;
+    @apply font-mono;
     font-size: 0.6875rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
-  .back-to-top :global(svg) {
-    @apply h-4 w-4 fill-skin-muted;
+  /* 16px rather than the standard 20: this label is 11px mono, and the chevron
+     should not out-measure it. */
+  .back-to-top :global(.icon) {
+    @apply h-4 w-4;
   }
 
   /* ===== Sticky TOC rail (>= lg only) ===== */
