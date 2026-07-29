@@ -14,7 +14,7 @@ let tags = getUniqueTags(posts);
 ---
 
 <Layout title={`Tags | ${SITE.title}`}>
-  <Header activeNav="tags" />
+  <Header activeNav="posts" />
   <!-- No deck: the kicker counts them and the chips below speak for themselves. -->
   <Main pageTitle="Tags" kicker={["Index", `${tags.length} tags`]}>
     <ul class="flex flex-wrap gap-2">

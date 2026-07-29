@@ -9,6 +9,18 @@ export interface Props {
 }
 
 const { noMarginTop = false } = Astro.props;
+
+// Tags and the feed live down here rather than in the header: both are ways
+// back into the writing for someone who already reads it, not destinations the
+// primary nav has to advertise. Tags left the nav in this redesign and would
+// otherwise be reachable only from the chips on a post.
+const FOOTER_NAV = [
+  { href: "/posts", label: "Writing" },
+  { href: "/teaching", label: "Teaching" },
+  { href: "/about", label: "About" },
+  { href: "/tags", label: "Tags" },
+  { href: "/rss.xml", label: "RSS" },
+];
 ---
 
 <footer
@@ -19,11 +31,23 @@ const { noMarginTop = false } = Astro.props;
        .footer-shell, so the rule spans its inner width, matching the header's. -->
   <Hr wide noPadding />
   <div class="footer-wrapper">
-    <Socials centered />
-    <div class="copyright-wrapper">
-      <span>Copyright &#169; {currentYear}</span>
-      <span class="separator">&nbsp;|&nbsp;</span>
-      <span>All rights reserved.</span>
+    <div class="footer-top">
+      <!-- Provisional copy: the content epic owns the positioning line. It says
+           what the site is for, which the copyright line never did. -->
+      <p class="positioning">
+        AI engineer and O'Reilly instructor. I build agentic systems and write
+        about what breaks when they meet the real world.
+      </p>
+      <Socials />
+    </div>
+    <div class="footer-bottom">
+      <!-- Socials carry their own data-track, so every link left under the
+           footer section is one of these — no extra attribute needed to tell
+           the nav echo apart in GA4. -->
+      <nav class="footer-nav" aria-label="Footer">
+        {FOOTER_NAV.map(item => <a href={item.href}>{item.label}</a>)}
+      </nav>
+      <p class="copyright">&copy; {currentYear} Sajal Sharma</p>
     </div>
   </div>
 </footer>
@@ -40,12 +64,40 @@ const { noMarginTop = false } = Astro.props;
     @apply mx-auto max-w-shell px-4 sm:px-6;
   }
   .footer-wrapper {
-    @apply flex flex-col items-center justify-between py-6 sm:flex-row-reverse sm:py-4;
+    @apply py-8;
   }
-  .copyright-wrapper {
-    @apply my-2 flex flex-col items-center whitespace-nowrap sm:flex-row;
+  .footer-top {
+    @apply flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-10;
   }
-  .separator {
-    @apply hidden sm:inline;
+  .positioning {
+    @apply text-skin-muted;
+    /* Shorter than the article measure on purpose: two lines beside the socials
+       at the shell width, and the eye is not meant to settle here. */
+    max-width: 30rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+  /* Space, not a second hairline. The rule above the footer already closes the
+     page — a divider inside it put two full-shell lines about 100px apart with
+     a thin band of small type between them, which read as a stripe rather than
+     as two parts of a colophon. */
+  .footer-bottom {
+    @apply mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between;
+  }
+  .footer-nav {
+    @apply flex flex-wrap gap-x-5 gap-y-2;
+  }
+  /* Mono uppercase: the same furniture voice as section labels, post dates and
+     the hero kicker. */
+  .footer-nav a {
+    @apply font-mono uppercase text-skin-muted no-underline transition-colors hover:text-skin-base;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+  .copyright {
+    @apply font-mono text-skin-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
   }
 </style>
