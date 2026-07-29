@@ -18,6 +18,19 @@ export const formatPostDate = (value: string | Date): string =>
     timeZone: "UTC",
   });
 
+/**
+ * Day and month only, for list rows that sit under a year heading. Same UTC
+ * pinning as `formatPostDate` and for the same reason — this started life as a
+ * private helper in the archive page, and the first other page to want it
+ * promptly rebuilt it without the timeZone, printing dates a day early.
+ */
+export const formatPostDayMonth = (value: string | Date): string =>
+  new Date(value).toLocaleDateString(LOCALE.langTag, {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+
 /** Machine-readable form for <time datetime>. */
 export const toIsoDate = (value: string | Date): string =>
   new Date(value).toISOString();

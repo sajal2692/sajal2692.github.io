@@ -5,8 +5,8 @@ import Main from "@layouts/Main.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import getSortedPosts from "@utils/getSortedPosts";
-import { toIsoDate } from "@utils/formatPostDate";
-import { LOCALE, SITE } from "@config";
+import { formatPostDayMonth, toIsoDate } from "@utils/formatPostDate";
+import { SITE } from "@config";
 
 const posts = getSortedPosts(await getCollection("blog"));
 
@@ -26,14 +26,6 @@ const byYear = posts.reduce(
 const years = Object.keys(byYear)
   .map(Number)
   .sort((a, b) => b - a);
-
-/** Day and month only — the year group above the rows carries the year. */
-const dayMonth = (value: Date) =>
-  new Date(value).toLocaleDateString(LOCALE.langTag, {
-    month: "short",
-    day: "numeric",
-    timeZone: "UTC",
-  });
 ---
 
 <Layout title={`Posts | ${SITE.title}`}>
@@ -55,7 +47,7 @@ const dayMonth = (value: Date) =>
                     class="index-date"
                     datetime={toIsoDate(post.data.pubDatetime)}
                   >
-                    {dayMonth(post.data.pubDatetime)}
+                    {formatPostDayMonth(post.data.pubDatetime)}
                   </time>
                   <a href={`/posts/${post.id}/`} class="index-title">
                     {post.data.title}
