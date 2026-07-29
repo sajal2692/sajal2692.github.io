@@ -6,11 +6,16 @@ import { SOCIALS } from "@config";
      size or weight, and the footer already speaks in one voice a few pixels
      away — so these join the mono row instead of sitting above it in a
      different alphabet. Kept as its own component for the data-track boundary:
-     GA4 tells the socials apart from the nav echo beside them. -->
+     GA4 tells the socials apart from the nav echo beside them.
+
+     No title attribute: the label is visible now, so a tooltip would only
+     repeat it — and Layout's link_click listener reads title before text, so
+     these three would have reported "Sajal Sharma on GitHub" while Tags and RSS
+     beside them reported their own words. -->
 <nav class="social-links" aria-label="Elsewhere" data-track="socials">
   {
     SOCIALS.filter(social => social.active).map(social => (
-      <a href={social.href} title={social.linkTitle}>
+      <a href={social.href} class="footer-link">
         {social.label}
       </a>
     ))
@@ -18,14 +23,11 @@ import { SOCIALS } from "@config";
 </nav>
 
 <style>
+  /* Gap comes from --footer-gap, set on .footer-links in Footer.astro. Custom
+     properties inherit across the scope boundary even though rules do not, so
+     this is how the two halves of the row stay one row. */
   .social-links {
-    @apply flex flex-wrap gap-x-5 gap-y-2;
-  }
-  /* Identical to .footer-nav a in Footer.astro — these sit in the same row and
-     any difference would read as a mistake rather than a distinction. */
-  .social-links a {
-    @apply font-mono uppercase text-skin-muted no-underline transition-colors hover:text-skin-base;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
+    @apply flex flex-wrap;
+    gap: 0.5rem var(--footer-gap);
   }
 </style>

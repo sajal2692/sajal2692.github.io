@@ -30,20 +30,17 @@ export const SOCIALS: SocialObjects = [
   {
     label: "GitHub",
     href: "https://github.com/sajal2692",
-    linkTitle: `${SITE.title} on GitHub`,
     active: true,
   },
   {
     label: "LinkedIn",
     href: "https://linkedin.com/in/sajals",
-    linkTitle: `${SITE.title} on LinkedIn`,
     active: true,
   },
   {
     // "Email", not "Mail": it is a word in a row of words now, not an envelope.
     label: "Email",
     href: "mailto:contact@sajalsharma.com",
-    linkTitle: `Send an email to ${SITE.title}`,
     active: true,
   },
 ];

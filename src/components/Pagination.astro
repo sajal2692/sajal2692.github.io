@@ -50,7 +50,9 @@ const arrowClass = (disabled: boolean) =>
         </svg>
         Prev
       </LinkButton>
-      {currentPage} / {totalPages}
+      <span class="counter">
+        {currentPage} / {totalPages}
+      </span>
       <LinkButton
         disabled={nextDisabled}
         href={nextUrl}
@@ -73,7 +75,16 @@ const arrowClass = (disabled: boolean) =>
 }
 
 <style>
+  /* Mono uppercase at 11px, like every other utility strip on the site — the
+     words were left in inherited 18px sans when the arrows became icons, and
+     the counter was the only ink in a row of muted. Tabular figures so the
+     page number does not shift width as it climbs. */
   .pagination-wrapper {
-    @apply mb-8 mt-auto flex justify-center;
+    @apply mb-8 mt-auto flex items-center justify-center font-mono uppercase text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+  }
+  .counter {
+    font-variant-numeric: tabular-nums;
   }
 </style>

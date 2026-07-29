@@ -35,7 +35,13 @@ const FOOTER_NAV = [
            tell the nav echo apart in GA4. -->
       <div class="footer-links">
         <nav class="footer-nav" aria-label="Footer">
-          {FOOTER_NAV.map(item => <a href={item.href}>{item.label}</a>)}
+          {
+            FOOTER_NAV.map(item => (
+              <a href={item.href} class="footer-link">
+                {item.label}
+              </a>
+            ))
+          }
         </nav>
         <Socials />
       </div>
@@ -65,21 +71,19 @@ const FOOTER_NAV = [
     @apply flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between;
   }
   /* Nav echo and socials read as one row of words. They stay two elements only
-     so GA4 can tell an outbound profile link from a link back into the site;
-     the gap between the groups matches the gap inside them, because a seam the
-     eye can see would be a distinction the reader does not need. */
+     so GA4 can tell an outbound profile link from a link back into the site.
+     One gap value, declared here and inherited by both — a seam the eye can see
+     would be a distinction the reader does not need, and three literal 1.25rems
+     across two files is how that seam eventually appears. The anchors
+     themselves are .footer-link in base.css, for the same reason.  */
   .footer-links {
-    @apply flex flex-wrap items-center gap-x-5 gap-y-2;
+    --footer-gap: 1.25rem;
+    @apply flex flex-wrap items-center;
+    gap: 0.5rem var(--footer-gap);
   }
   .footer-nav {
-    @apply flex flex-wrap gap-x-5 gap-y-2;
-  }
-  /* Mono uppercase: the same furniture voice as section labels, post dates and
-     the hero kicker. */
-  .footer-nav a {
-    @apply font-mono uppercase text-skin-muted no-underline transition-colors hover:text-skin-base;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
+    @apply flex flex-wrap;
+    gap: 0.5rem var(--footer-gap);
   }
   .copyright {
     @apply font-mono text-skin-muted;
