@@ -38,21 +38,30 @@ export interface Course {
 }
 
 /**
- * An invited talk inside someone else's class — the opposite shape to a Course,
- * which is Sajal's own material, bookable and forward-looking. A lecture has
- * already happened, has no URL to enrol through, and does not repeat.
+ * A one-off speaking engagement — a university guest lecture or a conference
+ * talk. The opposite shape to a Course, which is Sajal's own material,
+ * bookable and repeatable; a talk happens once and has nothing to enrol in.
+ *
+ * Covers both kinds because they differ only by which optional fields are
+ * filled: a guest lecture carries `hostCourse`, a conference talk does not.
  */
-export interface Lecture {
+export interface Talk {
   venue: string;
   /**
-   * The host's course the talk was given inside — Yale's MGT 899, not one of
-   * COURSES. Named `hostCourse` because a bare `course` in this module reads as
-   * the other kind.
+   * The host's class the talk sat inside — Yale's MGT 899, not one of COURSES.
+   * Named `hostCourse` because a bare `course` in this module reads as the
+   * other kind. Absent for conference talks.
    */
-  hostCourse: string;
-  /** The talk's own title. */
-  title: string;
+  hostCourse?: string;
+  /** The talk's own title, once it is known. */
+  title?: string;
   year: number;
+  /**
+   * Month, 1-12, when it is known. Only a talk with an explicit month can be
+   * identified as still ahead — a bare year is treated as past, so nothing is
+   * ever wrongly advertised as upcoming.
+   */
+  month?: number;
   /** What it covered. Optional so a bare listing is still valid. */
   summary?: string;
 }
@@ -111,8 +120,14 @@ export const COURSES: Course[] = [
   },
 ];
 
-/** Guest lectures, newest first. Two years running is the signal worth showing. */
-export const LECTURES: Lecture[] = [
+/** Guest lectures and conference talks, newest first. */
+export const TALKS: Talk[] = [
+  {
+    // TODO: talk title and abstract once ODSC publishes the schedule.
+    venue: "ODSC West",
+    year: 2026,
+    month: 10,
+  },
   {
     venue: "Yale University",
     hostCourse: "MGT 899: Generative AI & Entrepreneurship",
@@ -130,6 +145,29 @@ export const LECTURES: Lecture[] = [
       "How entrepreneurs can use graph-based AI workflows to build agentic products.",
   },
 ];
+
+/**
+ * Whether a talk is still ahead. Deliberately conservative: a talk with no
+ * `month` is treated as past, so an undated historical entry can never be
+ * advertised as upcoming. Compared at month granularity, which is as precise
+ * as the data goes.
+ */
+export function isUpcomingTalk(talk: Talk, now: Date = new Date()): boolean {
+  if (talk.month === undefined) return false;
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  return talk.year > year || (talk.year === year && talk.month >= month);
+}
+
+/** "October 2026" for a dated talk, or just the year when that is all there is. */
+export function formatTalkDate(talk: Talk): string {
+  if (talk.month === undefined) return String(talk.year);
+  const month = new Date(Date.UTC(talk.year, talk.month - 1, 1)).toLocaleString(
+    "en-GB",
+    { month: "long", timeZone: "UTC" }
+  );
+  return `${month} ${talk.year}`;
+}
 
 /** Mentoring, oldest engagement last. Community proof, not the headline. */
 export const MENTORSHIP: Mentorship[] = [

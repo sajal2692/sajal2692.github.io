@@ -5,15 +5,15 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import CourseCard from "@components/CourseCard.astro";
 import {
-  COURSES,
-  LECTURES,
   MENTORSHIP,
+  TALKS,
   coursesByNextSession,
+  formatTalkDate,
+  isUpcomingTalk,
 } from "@data/teaching";
 import { SITE } from "@config";
 
 const courses = coursesByNextSession();
-const liveCount = COURSES.filter(course => course.format === "live").length;
 ---
 
 <Layout
@@ -23,11 +23,6 @@ const liveCount = COURSES.filter(course => course.format === "live").length;
   <Header />
   <Main
     pageTitle="Teaching"
-    kicker={[
-      `${COURSES.length} courses`,
-      liveCount > 0 && `${liveCount} live`,
-      "Yale guest lecturer",
-    ]}
     pageDesc="These courses come from systems I have shipped — agent patterns running in production, not toy demos."
   >
     <section class="teaching-section" data-track="teaching-courses">
@@ -41,24 +36,27 @@ const liveCount = COURSES.filter(course => course.format === "live").length;
       </ul>
     </section>
 
-    <section class="teaching-section" data-track="teaching-lectures">
-      <h2 class="section-heading">Guest lectures</h2>
+    <section class="teaching-section" data-track="teaching-talks">
+      <h2 class="section-heading">Guest Lectures &amp; Talks</h2>
       <p class="section-intro">
         Invited into Yale's MGT 899 in 2025, and invited back in 2026.
       </p>
       <ul class="entry-list">
         {
-          LECTURES.map(lecture => (
+          TALKS.map(talk => (
             <li class="entry">
               <p class="entry-meta">
-                <span>{lecture.year}</span>
-                <span>{lecture.venue}</span>
+                <span>{formatTalkDate(talk)}</span>
+                {isUpcomingTalk(talk) && <span class="badge">upcoming</span>}
               </p>
-              <h3 class="entry-title">{lecture.title}</h3>
-              <p class="entry-host">{lecture.hostCourse}</p>
-              {lecture.summary && (
-                <p class="entry-summary">{lecture.summary}</p>
-              )}
+              {/* A talk announced before its programme is published has no
+                  title yet, so the venue carries the row instead. */}
+              <h3 class="entry-title">{talk.title ?? talk.venue}</h3>
+              <p class="entry-host">
+                {talk.title ? talk.venue : "Conference talk"}
+                {talk.hostCourse && ` · ${talk.hostCourse}`}
+              </p>
+              {talk.summary && <p class="entry-summary">{talk.summary}</p>}
             </li>
           ))
         }
@@ -82,12 +80,17 @@ const liveCount = COURSES.filter(course => course.format === "live").length;
       </ul>
     </section>
 
+    <!-- Names consulting directly rather than only handing it off: someone who
+         reaches this page already knows the work, and making them navigate to
+         About to find out that consulting is on the table loses them. About
+         still gets the fuller version, and the link is tracked so the handoff
+         is measurable. -->
     <section class="teaching-section" data-track="teaching-contact">
       <h2 class="section-label">Enquiries</h2>
       <p class="section-intro">
-        For speaking, workshops, or advisory work, email <a
+        For speaking, team workshops, or consulting work, email <a
           href="mailto:contact@sajalsharma.com">contact@sajalsharma.com</a
-        >.
+        >. There is more on what I take on over on <a href="/about">About</a>.
       </p>
     </section>
   </Main>
@@ -115,6 +118,10 @@ const liveCount = COURSES.filter(course => course.format === "live").length;
     border-bottom-color: rgb(var(--color-accent));
   }
 
+  /* Courses keep the two-column card grid the homepage uses; this page differs
+     by listing every sitting inside each card rather than just the next one.
+     Talks and mentoring below are full-width lists — neither has a link to
+     click, and both read as a short history rather than a schedule. */
   .course-grid {
     @apply mt-6 grid gap-x-8 gap-y-6;
     grid-template-columns: minmax(0, 1fr);
@@ -124,14 +131,16 @@ const liveCount = COURSES.filter(course => course.format === "live").length;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-
-  /* Lectures and mentoring are single-column: both are read as a short history
-     rather than scanned for a date, and neither has a link to click. */
   .entry-list {
     @apply mt-6 flex flex-col;
   }
   .entry {
     @apply border-t border-skin-line py-4;
+  }
+  .badge {
+    @apply rounded-sm border border-skin-line px-1.5 py-0.5;
+    letter-spacing: 0.08em;
+    font-size: 0.6875rem;
   }
   .entry-meta {
     @apply flex flex-wrap items-center gap-x-3 font-mono text-skin-muted;

@@ -9,11 +9,11 @@ title: "About Me"
 
 I'm an AI Engineer and Technology Leader passionate about building cutting-edge Generative AI, Machine Learning, and Natural Language Processing systems.
 
-With over eight years of experience in product development and consulting across various industries, I've worked on AI-driven solutions that push the boundaries of what's possible. Currently, I’m part of **Menyala, a venture studio backed by Temasek** in Singapore, where I focus on developing AI-powered ventures designed to transform industries.
+With over eight years of experience in product development and consulting across various industries, I've built AI-driven systems that run in production. Most recently I was part of **Menyala, a venture studio backed by Temasek**, developing AI-powered ventures.
 
 Here's a bit more about my professional milestones:
 
-- **AI Engineer / Technologist at Menyala (Temasek-backed Venture Studio in Singapore)**: My role involves architecting AI-first products, developing scalable systems, shaping technology strategy with product and business teams, and consulting on AI strategy across Menyala’s ventures.
+- **AI Engineer / Technologist at Menyala (Temasek-backed Venture Studio)**: Architected AI-first products, developed scalable systems, shaped technology strategy with product and business teams, and consulted on AI strategy across Menyala’s ventures.
 - **Lead AI Engineer at OneByZero**: Led a team of 6, building AI solutions across telecom, marketing, and enterprise ventures, including RAG systems, AI agents, and image generation for product marketing. Designed and deployed scalable AI architectures, advancing Generative AI applications in real-world use cases.
 - **Senior AI Engineer at Splore, a Temasek-backed startup**: Enhanced AI-driven search by refining ranking algorithms and fine-tuning embedding models to improve relevance and user experience. My work combined Retrieval-Augmented Generation (RAG) with core NLP techniques to create a more intuitive and intelligent search system.
 - **Journey at Unscrambl India, from Data Scientist to Senior Machine Learning Engineer**: Built and deployed pre-GPT chatbots using traditional NLP—serving tens of thousands of users daily across Southeast Asia. Played a key role in core product innovation by developing advanced NL2SQL systems, enabling seamless natural language interactions with databases and enhancing Business Intelligence capabilities.
@@ -39,8 +39,12 @@ Here's a bit more about my professional milestones:
 
 ## 🤝 Let's Connect!
 
-Got an idea? A project? Or just wanna talk about the coolest AI trends over coffee (virtual or real)?
+<!-- Provisional copy. The tense fix above and this line ship now so /teaching
+     has an honest place to send consulting enquiries; the content epic rewrites
+     this page wholesale, including the heading and the emoji. -->
 
-Hit me up! You can find me on [LinkedIn](https://linkedin.com/in/sajals), or drop me an email at contact@sajalsharma.com.
+I'm open to **consulting and project work**, alongside speaking engagements and team workshops.
+
+Got an idea? A project? Or just wanna talk about the coolest AI trends over coffee (virtual or real)? Hit me up! You can find me on [LinkedIn](https://linkedin.com/in/sajals), or drop me an email at contact@sajalsharma.com.
 
 _Thanks for swinging by!_

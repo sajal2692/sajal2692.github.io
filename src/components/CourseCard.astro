@@ -2,6 +2,7 @@
 import {
   formatSessionDate,
   formatSessionRange,
+  upcomingSessions,
   nextSession,
 } from "@data/teaching";
 import type { Course } from "@data/teaching";
@@ -9,9 +10,10 @@ import type { Course } from "@data/teaching";
 export interface Props {
   course: Course;
   /**
-   * `compact` shows the next date only — the homepage grid, where four cards
-   * share a viewport with everything else. `full` shows the whole schedule with
-   * times, for /teaching where the schedule is the point of the page.
+   * `compact` shows the next date only — the homepage, where four cards share a
+   * viewport with everything else on the page. `full` lists every upcoming
+   * sitting with its times, for /teaching, where the schedule is the reason
+   * someone came.
    */
   detail?: "compact" | "full";
 }
@@ -19,9 +21,7 @@ export interface Props {
 const { course, detail = "compact" } = Astro.props;
 
 const next = nextSession(course);
-const upcoming = course.sessions
-  ? course.sessions.filter(session => new Date(session.start) > new Date())
-  : [];
+const upcoming = detail === "full" ? upcomingSessions(course) : [];
 ---
 
 <li class="course-card">
@@ -42,7 +42,7 @@ const upcoming = course.sessions
   </p>
   <p class="course-summary">{course.summary}</p>
   {
-    detail === "full" && upcoming.length > 0 && (
+    upcoming.length > 0 && (
       <ul class="session-list">
         {upcoming.map(session => (
           <li>{formatSessionRange(session)}</li>
@@ -53,10 +53,9 @@ const upcoming = course.sessions
 </li>
 
 <style>
-  /* The card lives here rather than in either page so the two surfaces cannot
-     drift — the same reason the course data itself was centralised. It is
-     hairline-topped rather than a filled panel, matching every other card on
-     the redesigned site. */
+  /* Both surfaces render courses through here so their type cannot drift — the
+     same reason the course data itself was centralised. Hairline-topped rather
+     than a filled panel, matching every other card on the redesigned site. */
   .course-card {
     @apply border-t border-skin-line pt-3;
   }
