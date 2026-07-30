@@ -19,6 +19,11 @@ export default defineConfig({
     // The post's slug had a typo (missing "r") until July 2026
     "/posts/overview-multi-agent-fameworks":
       "/posts/overview-multi-agent-frameworks/",
+    // The interactive backpropagation page was removed in July 2026. It was
+    // never a post and nothing on the site linked to it, but it was live and
+    // indexed, so anyone arriving from search lands on the writing instead of
+    // a 404. There is no successor post to point at.
+    "/backprop-visualization": "/posts/",
   },
   integrations: [react(), sitemap()],
   markdown: {
