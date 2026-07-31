@@ -90,6 +90,31 @@ const railHeadings = headings.filter(
           <a href="/posts" class="back-link">&larr; All posts</a>
         </div>
 
+        {
+          /* Ahead of the article in the DOM because that is where it belongs in
+             the tab order: a table of contents you only reach after tabbing
+             through the entire article, the newsletter form and the share row
+             is not a way to navigate anything. CSS puts it back in the right
+             column. The links are same-document jumps, which the analytics
+             listener skips, so it needs no data-track. */
+          railHeadings.length > 0 && (
+            <nav class="toc-rail" aria-labelledby="toc-rail-label">
+              <p id="toc-rail-label" class="toc-rail-label">
+                On this page
+              </p>
+              <ol>
+                {railHeadings.map(({ depth, slug, text }) => (
+                  <li>
+                    <a href={`#${slug}`} class={`depth-${depth}`}>
+                      {text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+
         <div class="article-main">
           <p class="post-kicker">
             <span
@@ -154,27 +179,6 @@ const railHeadings = headings.filter(
             <ShareLinks />
           </div>
         </div>
-
-        {
-          railHeadings.length > 0 && (
-            <aside class="toc-rail" aria-labelledby="toc-rail-label">
-              <p id="toc-rail-label" class="toc-rail-label">
-                On this page
-              </p>
-              <nav>
-                <ol>
-                  {railHeadings.map(({ depth, slug, text }) => (
-                    <li>
-                      <a href={`#${slug}`} class={`depth-${depth}`}>
-                        {text}
-                      </a>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-            </aside>
-          )
-        }
       </div>
     </div>
   </main>
@@ -216,8 +220,15 @@ const railHeadings = headings.filter(
     @apply mx-auto w-full max-w-measure;
     grid-column: 1 / -1;
   }
+  /* `w-full` is load-bearing, not decoration. Auto margins switch a grid item
+     off `stretch` and onto shrink-to-fit, and shrink-to-fit is floored by the
+     content's min-content width — so one wide code block or table sized this
+     column to 640px inside a 288px track and scrolled the whole page sideways
+     on every phone. An explicit width keeps the column tied to its track and
+     leaves the overflow to the scroll containers inside it. `.post-nav` above
+     has carried `w-full` for the same reason since it was written. */
   .article-main {
-    @apply mx-auto max-w-measure;
+    @apply mx-auto w-full max-w-measure;
   }
   @media (min-width: theme("screens.lg")) {
     .article-grid.has-rail {
@@ -226,6 +237,16 @@ const railHeadings = headings.filter(
     .article-grid.has-rail .post-nav,
     .article-grid.has-rail .article-main {
       @apply mx-0;
+    }
+    /* Explicit placement because the rail now precedes the article in source
+       order: auto-placement would drop it into the text column. */
+    .article-grid.has-rail .article-main {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .article-grid.has-rail .toc-rail {
+      grid-column: 2;
+      grid-row: 2;
     }
   }
 
@@ -316,8 +337,12 @@ const railHeadings = headings.filter(
     .toc-rail a.depth-3 {
       @apply pl-6 text-[0.8125rem];
     }
+    /* Indent alone carries the depth. The 0.9 opacity that used to sit here
+       composited muted-on-paper down to 4.13:1 at 13px — under the 4.5:1 the
+       rest of the site holds to — and dimmed the accent on the active entry
+       to 4.46:1 as well. */
     .toc-rail a.depth-4 {
-      @apply pl-9 text-[0.8125rem] opacity-90;
+      @apply pl-9 text-[0.8125rem];
     }
     .toc-rail a[aria-current="true"] {
       @apply border-skin-accent text-skin-accent;
@@ -368,7 +393,8 @@ const railHeadings = headings.filter(
       let copyButton = document.createElement("button");
       copyButton.className = "copy-code";
       copyButton.innerHTML = copyButtonLabel;
-      codeBlock.setAttribute("tabindex", "0");
+      // No tabindex on the <pre>: the scroll port is `pre > code`, and shiki's
+      // transformer in astro.config.ts puts the affordance there at build time.
       codeBlock.appendChild(copyButton);
 
       copyButton.addEventListener("click", async () => {

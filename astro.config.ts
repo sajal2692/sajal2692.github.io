@@ -5,6 +5,7 @@ import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import rehypeTableScroll from "./src/utils/rehypeTableScroll";
 import sitemap from "@astrojs/sitemap";
 import { SITE } from "./src/config";
 
@@ -56,7 +57,7 @@ export default defineConfig({
         ],
         remarkMath,
       ],
-      rehypePlugins: [rehypeKatex],
+      rehypePlugins: [rehypeKatex, rehypeTableScroll],
     }),
     shikiConfig: {
       // Dual theme: light syntax palette in light mode, one-dark-pro in dark mode.
@@ -67,6 +68,24 @@ export default defineConfig({
         dark: "one-dark-pro",
       },
       wrap: true,
+      // Shiki puts `tabindex="0"` on the <pre> because it assumes the <pre> is
+      // the scroll port. base.css moves the scroll to `pre > code` so the
+      // language bar and copy button do not slide out of view with the code,
+      // which left the focus stop on a box that no longer scrolls and made the
+      // code itself unreachable from the keyboard. Move the affordance to the
+      // box that actually scrolls. Done here rather than in a rehype plugin
+      // because shiki runs after those and would put the attribute back.
+      transformers: [
+        {
+          name: "scroll-affordance-on-code",
+          pre(node) {
+            delete node.properties.tabindex;
+          },
+          code(node) {
+            node.properties.tabindex = "0";
+          },
+        },
+      ],
     },
   },
   // Preserve pre-v7 whitespace handling between inline elements.
