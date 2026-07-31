@@ -1,0 +1,167 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import CourseCard from "@components/CourseCard.astro";
+import {
+  MENTORSHIP,
+  TALKS,
+  coursesByNextSession,
+  formatTalkDate,
+  isUpcomingTalk,
+} from "@data/teaching";
+import { SITE } from "@config";
+
+const courses = coursesByNextSession();
+---
+
+<Layout
+  title={`Teaching | ${SITE.title}`}
+  description="O'Reilly courses on AI agents and RAG, guest lectures at Yale, and mentoring — taught by an engineer who ships the systems behind them."
+>
+  <Header />
+  <Main
+    pageTitle="Teaching"
+    pageDesc="These courses come from systems I have shipped — agent patterns running in production, not toy demos."
+  >
+    <section class="teaching-section" data-track="teaching-courses">
+      <h2 class="section-heading">Courses</h2>
+      <p class="section-intro">
+        Published through O'Reilly. Live sittings are listed with their next
+        dates; the on-demand course is available any time.
+      </p>
+      <ul class="course-grid">
+        {courses.map(course => <CourseCard course={course} detail="full" />)}
+      </ul>
+    </section>
+
+    <section class="teaching-section" data-track="teaching-talks">
+      <h2 class="section-heading">Guest Lectures &amp; Talks</h2>
+      <p class="section-intro">
+        Invited into Yale's MGT 899 in 2025, and invited back in 2026.
+      </p>
+      <ul class="entry-list">
+        {
+          TALKS.map(talk => (
+            <li class="entry">
+              <p class="entry-meta">
+                <span>{formatTalkDate(talk)}</span>
+                {isUpcomingTalk(talk) && <span class="badge">upcoming</span>}
+              </p>
+              {/* A talk announced before its programme is published has no
+                  title yet, so the venue carries the row instead. */}
+              <h3 class="entry-title">{talk.title ?? talk.venue}</h3>
+              <p class="entry-host">
+                {talk.title ? talk.venue : "Conference talk"}
+                {talk.hostCourse && ` · ${talk.hostCourse}`}
+              </p>
+              {talk.summary && <p class="entry-summary">{talk.summary}</p>}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="teaching-section" data-track="teaching-mentorship">
+      <h2 class="section-heading">Mentoring</h2>
+      <ul class="entry-list">
+        {
+          MENTORSHIP.map(entry => (
+            <li class="entry">
+              <p class="entry-meta">
+                <span>{entry.years}</span>
+              </p>
+              <h3 class="entry-title">{entry.org}</h3>
+              <p class="entry-summary">{entry.summary}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Names consulting directly rather than only handing it off: someone who
+         reaches this page already knows the work, and making them navigate to
+         About to find out that consulting is on the table loses them. About
+         still gets the fuller version, and the link is tracked so the handoff
+         is measurable. -->
+    <section class="teaching-section" data-track="teaching-contact">
+      <h2 class="section-label">Enquiries</h2>
+      <p class="section-intro">
+        For speaking, team workshops, or consulting work, email <a
+          href="mailto:contact@sajalsharma.com">contact@sajalsharma.com</a
+        >. There is more on what I take on over on <a href="/about">About</a>.
+      </p>
+    </section>
+  </Main>
+  <Footer />
+</Layout>
+
+<style>
+  /* base.css gives every <section> its own max-width and padding; Main already
+     owns both. Padding here would also block the margin collapse that
+     .section-heading's 3.2rem top margin relies on for section spacing. */
+  .teaching-section {
+    @apply max-w-none p-0;
+  }
+  .section-intro {
+    @apply mt-3 text-skin-muted;
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+  .section-intro a {
+    @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
+    border-bottom: 1px solid rgba(var(--color-accent), 0.4);
+  }
+  .section-intro a:hover {
+    border-bottom-color: rgb(var(--color-accent));
+  }
+
+  /* Courses keep the two-column card grid the homepage uses; this page differs
+     by listing every sitting inside each card rather than just the next one.
+     Talks and mentoring below are full-width lists — neither has a link to
+     click, and both read as a short history rather than a schedule. */
+  .course-grid {
+    @apply mt-6 grid gap-x-8 gap-y-6;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 640px) {
+    .course-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .entry-list {
+    @apply mt-6 flex flex-col;
+  }
+  .entry {
+    @apply border-t border-skin-line py-4;
+  }
+  .badge {
+    @apply rounded-sm border border-skin-line px-1.5 py-0.5;
+    letter-spacing: 0.08em;
+    font-size: 0.6875rem;
+  }
+  .entry-meta {
+    @apply flex flex-wrap items-center gap-x-3 font-mono text-skin-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .entry-title {
+    @apply mt-2 font-serif font-normal text-skin-base;
+    font-size: 1.0625rem;
+    line-height: 1.3;
+  }
+  .entry-host {
+    @apply mt-1 text-skin-muted;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+  .entry-summary {
+    @apply mt-2 text-skin-base;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+</style>

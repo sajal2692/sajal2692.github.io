@@ -3,9 +3,14 @@
  *
  * Course titles, formats and dates were duplicated between the homepage and
  * the About page, which is how the homepage came to advertise a live session
- * that had already run. Everything that renders a course — homepage, /teaching,
- * About — reads from here, and dates are filtered against build time, so an
- * expired session disappears on the next deploy instead of sitting there.
+ * that had already run. The homepage and /teaching both read from here, and
+ * dates are filtered against build time, so an expired session disappears on
+ * the next deploy instead of sitting there.
+ *
+ * About still hardcodes its own copy of the course list. That is deliberate for
+ * now — About is being rewritten wholesale in the content epic — but until it
+ * reads from this file the drift this module exists to prevent is only half
+ * prevented.
  *
  * Sessions are stored as ISO 8601 with an explicit offset. O'Reilly schedules
  * in Pacific time; writing the offset out means the comparison is unambiguous
@@ -15,7 +20,7 @@
 export interface CourseSession {
   /** Start of the live session, ISO 8601 with offset. */
   start: string;
-  /** End, same format — used for the "9:00am-1:00pm" range on /teaching. */
+  /** End, same format and offset. Renders the "9:00am-1:00pm" range. */
   end: string;
 }
 
@@ -32,11 +37,45 @@ export interface Course {
   sessions?: CourseSession[];
 }
 
-export interface Lecture {
+/**
+ * A one-off speaking engagement — a university guest lecture or a conference
+ * talk. The opposite shape to a Course, which is Sajal's own material,
+ * bookable and repeatable; a talk happens once and has nothing to enrol in.
+ *
+ * Covers both kinds because they differ only by which optional fields are
+ * filled: a guest lecture carries `hostCourse`, a conference talk does not.
+ */
+export interface Talk {
   venue: string;
-  course: string;
-  title: string;
+  /**
+   * The host's class the talk sat inside — Yale's MGT 899, not one of COURSES.
+   * Named `hostCourse` because a bare `course` in this module reads as the
+   * other kind. Absent for conference talks.
+   */
+  hostCourse?: string;
+  /** The talk's own title, once it is known. */
+  title?: string;
   year: number;
+  /**
+   * Month, 1-12, when it is known. Only a talk with an explicit month can be
+   * identified as still ahead — a bare year is treated as past, so nothing is
+   * ever wrongly advertised as upcoming.
+   */
+  month?: number;
+  /** What it covered. Optional so a bare listing is still valid. */
+  summary?: string;
+}
+
+/**
+ * Long-running mentoring, which is neither a course nor a talk: no URL, no
+ * single date, and its weight comes from a quantity rather than a schedule.
+ */
+export interface Mentorship {
+  org: string;
+  /** Inclusive range, e.g. "2017-2023". */
+  years: string;
+  /** One line carrying the number that makes it a receipt. */
+  summary: string;
 }
 
 export const COURSES: Course[] = [
@@ -81,19 +120,68 @@ export const COURSES: Course[] = [
   },
 ];
 
-/** Guest lectures, newest first. Two years running is the signal worth showing. */
-export const LECTURES: Lecture[] = [
+/** Guest lectures and conference talks, newest first. */
+export const TALKS: Talk[] = [
   {
-    venue: "Yale University",
-    course: "MGT 899: Generative AI & Entrepreneurship",
-    title: "From Agentic Workflows to Agent Harness",
+    // TODO: talk title and abstract once ODSC publishes the schedule.
+    venue: "ODSC West",
     year: 2026,
+    month: 10,
   },
   {
     venue: "Yale University",
-    course: "MGT 899: Generative AI & Entrepreneurship",
+    hostCourse: "MGT 899: Generative AI & Entrepreneurship",
+    title: "From Agentic Workflows to Agent Harness",
+    year: 2026,
+    summary:
+      "The architectural shift from agentic workflows to agent harnesses, and what it changes about building AI applications.",
+  },
+  {
+    venue: "Yale University",
+    hostCourse: "MGT 899: Generative AI & Entrepreneurship",
     title: "Building Agentic Systems with LangGraph",
     year: 2025,
+    summary:
+      "How entrepreneurs can use graph-based AI workflows to build agentic products.",
+  },
+];
+
+/**
+ * Whether a talk is still ahead. Deliberately conservative: a talk with no
+ * `month` is treated as past, so an undated historical entry can never be
+ * advertised as upcoming. Compared at month granularity, which is as precise
+ * as the data goes.
+ */
+export function isUpcomingTalk(talk: Talk, now: Date = new Date()): boolean {
+  if (talk.month === undefined) return false;
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  return talk.year > year || (talk.year === year && talk.month >= month);
+}
+
+/** "October 2026" for a dated talk, or just the year when that is all there is. */
+export function formatTalkDate(talk: Talk): string {
+  if (talk.month === undefined) return String(talk.year);
+  const month = new Date(Date.UTC(talk.year, talk.month - 1, 1)).toLocaleString(
+    "en-GB",
+    { month: "long", timeZone: "UTC" }
+  );
+  return `${month} ${talk.year}`;
+}
+
+/** Mentoring, oldest engagement last. Community proof, not the headline. */
+export const MENTORSHIP: Mentorship[] = [
+  {
+    org: "Udacity",
+    years: "2017-2023",
+    summary:
+      "Reviewed more than 1,000 projects across the Machine Learning and Data Science programs, rated A+ by Udacity's internal audit.",
+  },
+  {
+    org: "University of Melbourne",
+    years: "2020-2023",
+    summary:
+      "STEM Mentorship Program: career and technical guidance for students moving into technology and AI.",
   },
 ];
 
@@ -158,4 +246,24 @@ export function formatSessionDate(session: CourseSession): string {
     day: "numeric",
     timeZone: "America/Los_Angeles",
   });
+}
+
+const PACIFIC_TIME = new Intl.DateTimeFormat("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: "America/Los_Angeles",
+});
+
+/**
+ * The full "27 Aug, 9:00 AM - 1:00 PM PT" line for a live sitting. This is what
+ * `CourseSession.end` is stored for; the compact card shows only the date.
+ *
+ * The zone label is spelled out because a reader in another timezone otherwise
+ * has no way to know which 9:00 AM is meant — and one sitting runs 9:00 PM to
+ * 1:00 AM, so the times alone can span two calendar days.
+ */
+export function formatSessionRange(session: CourseSession): string {
+  return `${formatSessionDate(session)}, ${PACIFIC_TIME.format(
+    new Date(session.start)
+  )} - ${PACIFIC_TIME.format(new Date(session.end))} PT`;
 }
