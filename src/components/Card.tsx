@@ -21,7 +21,12 @@ export default function Card({ href, frontmatter, secHeading = true }: Props) {
   };
 
   return (
-    <li className="my-8">
+    /* A card is title-over-summary — one block of prose, so the whole card
+       takes the measure rather than the shell width its list now spans. Split
+       the other way (long title to 936px, summary clamped to 640) the two
+       stopped reading as one item. The bare-title rows on /posts are the
+       opposite case and do run the full width. */
+    <li className="my-8 max-w-measure">
       <a
         href={href}
         className="inline-block text-skin-base transition-colors hover:text-skin-accent"

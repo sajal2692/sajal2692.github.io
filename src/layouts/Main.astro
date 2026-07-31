@@ -50,9 +50,15 @@ const kicker = (props.kicker ?? []).filter(Boolean) as string[];
      sans it outweighed the kicker directly beneath it, and said the same thing
      the kicker and the header's active nav item already say. Pages that need a
      way back up put a post-page-style link in the `backlink` slot. */
+  /* The shell, not the measure: this column holds indexes, chip clouds and card
+     grids, none of which are prose. Held at 40rem they sat 164px inside the
+     header and footer rules that bracket them — the left edge of the text
+     jumped inward the moment you left a post — and the archive wrapped 8 of its
+     18 titles into a 524px slot. The measure still governs everything actually
+     read as prose; it is applied per element (.page-deck here) rather than to
+     the whole page. Padding matches .article-shell so both start at 246px. */
   #main-content {
-    @apply mx-auto w-full px-4 pt-8 pb-4;
-    max-width: theme("maxWidth.measure");
+    @apply mx-auto w-full max-w-shell px-4 pb-4 pt-8 sm:px-6;
   }
   .page-head {
     @apply mb-12;
@@ -77,8 +83,10 @@ const kicker = (props.kicker ?? []).filter(Boolean) as string[];
     margin: 0 0 0.85rem;
     text-wrap: balance;
   }
+  /* Clamped where the shell is not: a deck is prose and reads at the same 81
+     characters an article does. */
   .page-deck {
-    @apply text-skin-muted;
+    @apply max-w-measure text-skin-muted;
     font-size: 1.25rem;
     line-height: 1.5;
     text-wrap: pretty;

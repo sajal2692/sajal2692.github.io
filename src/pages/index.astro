@@ -24,13 +24,12 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
 <Layout title="Sajal Sharma | AI Engineer | O'Reilly Instructor">
   <Header />
   <main id="main-content">
-    <!-- Hero copy is provisional. The kicker, headline and link labels are
-         settled; the body paragraph is a placeholder Sajal intends to rewrite
-         in the content epic, which will revisit this page. It is factually
-         correct as it stands — no current-employer claim — so it is safe to
-         ship in the meantime, but do not treat it as final wording. -->
+    <!-- Hero copy is provisional. The headline and link labels are settled;
+         the body paragraph is a placeholder Sajal intends to rewrite in the
+         content epic, which will revisit this page. It is factually correct as
+         it stands — no current-employer claim — so it is safe to ship in the
+         meantime, but do not treat it as final wording. -->
     <section id="hero" data-track="home-hero">
-      <p class="hero-kicker">AI Engineer &middot; O'Reilly Instructor</p>
       <h1 class="hero-title">I build AI systems and teach engineers how.</h1>
       <p class="hero-body">
         Eight years shipping machine learning and NLP &mdash; search ranking,
@@ -95,12 +94,14 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
 </Layout>
 
 <style>
-  /* The homepage sits at the same measure as an article and the archive. It ran
-     at max-w-3xl, which put summaries near 100 characters a line against the
-     article's 81 — the widest text on the site was the least readable. */
+  /* The page shell is the header's, so the hero starts on the same vertical as
+     the logo above it; the reading measure is applied to the prose inside it
+     (.hero-title, .hero-body, .lead-*) rather than to the page. Holding the
+     whole page at 40rem kept summaries honest but squeezed the row list and the
+     course grid — two 288px cards — into a column sized for one, and left the
+     content floating 172px inside the rules that bracket it. */
   #main-content {
-    @apply mx-auto w-full px-4 pb-4 pt-8;
-    max-width: theme("maxWidth.measure");
+    @apply mx-auto w-full max-w-shell px-4 pb-4 pt-8 sm:px-6;
   }
   /* base.css gives every `section` its own max-width and padding; here the main
      element already owns both, and leaving the section padding on would indent
@@ -110,19 +111,18 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
   }
 
   /* ===== Hero ===== */
-  .hero-kicker {
-    @apply mb-4 font-mono text-skin-muted;
-    font-size: 0.8125rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-  }
+  /* Both clamped to the measure inside the wider shell: the headline is written
+     to break after "and", and across the full shell it straightens into one
+     44px line that runs the width of the page. */
   .hero-title {
+    @apply max-w-measure;
     font-size: clamp(2rem, 4.5vw, 2.75rem);
     line-height: 1.08;
     letter-spacing: -0.02em;
     margin: 0 0 1rem;
   }
   .hero-body {
+    @apply max-w-measure;
     font-size: 1.125rem;
     line-height: 1.65;
     text-wrap: pretty;
@@ -147,8 +147,11 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
   .lead {
     @apply block no-underline;
   }
+  /* The lead post is a block of prose — title over summary — so both keep the
+     measure. Left unclamped the summary ran to 120 characters while the rows
+     beneath it stayed short, and the two stopped reading as one section. */
   .lead-title {
-    @apply text-skin-base transition-colors;
+    @apply max-w-measure text-skin-base transition-colors;
     font-size: 1.625rem;
     line-height: 1.2;
     letter-spacing: -0.01em;
@@ -157,7 +160,7 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
     @apply text-skin-accent;
   }
   .lead-deck {
-    @apply mt-2 text-skin-muted;
+    @apply mt-2 max-w-measure text-skin-muted;
     font-size: 1.0625rem;
     line-height: 1.55;
     text-wrap: pretty;
