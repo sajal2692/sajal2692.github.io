@@ -17,6 +17,8 @@
  * and no timezone maths happens at render.
  */
 
+import { LOCALE } from "@config";
+
 export interface CourseSession {
   /** Start of the live session, ISO 8601 with offset. */
   start: string;
@@ -238,10 +240,12 @@ export function coursesByNextSession(
  * next day in UTC, so a UTC-pinned format would advertise the wrong date.
  *
  * This is deliberately not `formatPostDate`, which pins UTC for the opposite
- * reason (post dates are authored as UTC midnight).
+ * reason (post dates are authored as UTC midnight). The locale is shared with
+ * it, though: a hardcoded "en-GB" here printed day-first "27 Aug" beside the
+ * month-first post dates on the same page.
  */
 export function formatSessionDate(session: CourseSession): string {
-  return new Date(session.start).toLocaleDateString("en-GB", {
+  return new Date(session.start).toLocaleDateString(LOCALE.langTag, {
     month: "short",
     day: "numeric",
     timeZone: "America/Los_Angeles",

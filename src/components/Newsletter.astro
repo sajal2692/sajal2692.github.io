@@ -97,8 +97,10 @@
     background-color: rgb(var(--color-fill));
     color: rgb(var(--color-text-base));
   }
+  /* Full-strength muted, not 0.9: the alpha composited to 4.13:1 on the light
+     paper, under WCAG AA for this 18px field. Muted on its own is 5.06:1. */
   .formkit-input::placeholder {
-    color: rgba(var(--color-muted), 0.9);
+    color: rgb(var(--color-muted));
   }
 
   /* Success state as a quiet accent tint rather than the old hardcoded greens,

@@ -20,9 +20,11 @@ export const GET: APIRoute = async () => {
   });
 
   const pageLines = [
-    `- [About Me](${new URL("about", SITE.website).href}): About ${SITE.author} — background, experience, and work.`,
-    `- [Teaching](${new URL("teaching", SITE.website).href}): O'Reilly courses on AI agents and RAG, Yale guest lectures, and mentoring.`,
-    `- [Blog](${new URL("posts", SITE.website).href}): All blog posts.`,
+    // Trailing slashes: these are the pages' own canonical URLs. Without them
+    // every link here costs a redirect hop and disagrees with the sitemap.
+    `- [About Me](${new URL("about/", SITE.website).href}): About ${SITE.author} — background, experience, and work.`,
+    `- [Teaching](${new URL("teaching/", SITE.website).href}): O'Reilly courses on AI agents and RAG, Yale guest lectures, and mentoring.`,
+    `- [Blog](${new URL("posts/", SITE.website).href}): All blog posts.`,
     `- [Full content](${new URL("llms-full.txt", SITE.website).href}): Every post's full text as markdown.`,
   ];
 

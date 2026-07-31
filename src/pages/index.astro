@@ -53,9 +53,17 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
 
     <section id="writing" data-track="featured-posts">
       <h2 class="section-heading">Writing</h2>
+      <!-- aria-label on the card links: the whole card stays one click target,
+           but the link announces the post title instead of "date + title +
+           deck", and the analytics link_text is the title rather than a deck
+           truncated mid-sentence at 100 characters. -->
       {
         lead && (
-          <a class="lead" href={`/posts/${lead.id}`}>
+          <a
+            class="lead"
+            href={`/posts/${lead.id}`}
+            aria-label={lead.data.title}
+          >
             <time class="lead-date" datetime={toIsoDate(lead.data.pubDatetime)}>
               {formatPostDate(lead.data.pubDatetime)}
             </time>
@@ -68,7 +76,7 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
         {
           rows.map(post => (
             <li>
-              <a href={`/posts/${post.id}`}>
+              <a href={`/posts/${post.id}`} aria-label={post.data.title}>
                 <time
                   class="row-date"
                   datetime={toIsoDate(post.data.pubDatetime)}
@@ -260,6 +268,11 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
     @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
     border-bottom: 1px solid rgba(var(--color-accent), 0.4);
     padding-bottom: 2px;
+  }
+  /* The other half of the same treatment, as on .hero-ctas: without it the text
+     goes accent on hover while its underline stays at 40%. */
+  .more a:hover {
+    border-bottom-color: rgb(var(--color-accent));
   }
 
   /* ===== Teaching ===== */
