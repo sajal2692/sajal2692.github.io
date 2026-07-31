@@ -34,10 +34,13 @@ const socialImageURL = new URL(
 ---
 
 <!doctype html>
-<html
-  lang=`${LOCALE.lang ?? "en"}`
-  class={`${scrollSmooth && "scroll-smooth"}`}
->
+<!-- class:list rather than a template literal: `scrollSmooth && "scroll-smooth"`
+     evaluates to the boolean false when the prop is off, and interpolating that
+     stringified it, so every page has been shipping `class="false"`. class:list
+     drops the attribute entirely when there is nothing to put in it.
+     `||`, not `??`, for the language: config documents an empty string as the
+     way to take the default, and `??` only catches null and undefined. -->
+<html lang={LOCALE.lang || "en"} class:list={[{ "scroll-smooth": scrollSmooth }]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -85,7 +88,8 @@ const socialImageURL = new URL(
       )
     }
 
-    <!-- Twitter -->
+    <!-- X. The property names stay `twitter:*` — that is what the Card spec
+         defines and what X still reads; renaming them loses the rich preview. -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />

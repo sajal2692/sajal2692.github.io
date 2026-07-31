@@ -16,9 +16,13 @@ const shareLinks = [
     linkTitle: `Share this post on Facebook`,
   },
   {
-    name: "Twitter",
-    href: "https://twitter.com/intent/tweet?url=",
-    linkTitle: `Tweet this post`,
+    // The mark, the destination and the label move together: an X glyph over a
+    // twitter.com link reading "Tweet this post" would be three different eras
+    // in one button. /intent/post is the current web intent; /intent/tweet
+    // still redirects, but there is no reason to ship the hop.
+    name: "X",
+    href: "https://x.com/intent/post?url=",
+    linkTitle: `Share this post on X`,
   },
   {
     name: "Telegram",
