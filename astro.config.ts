@@ -24,6 +24,22 @@ export default defineConfig({
     // indexed, so anyone arriving from search lands on the writing instead of
     // a 404. There is no successor post to point at.
     "/backprop-visualization": "/posts/",
+    // Pagination URLs main published and the redesign retired. postPerPage went
+    // 5 -> 20, and the archive stopped emitting a second, unlinked paginated
+    // copy of itself, so every numbered page below was live and in main's
+    // sitemap and would otherwise 404 for anyone holding a search result.
+    "/posts/1": "/posts/",
+    "/posts/2": "/posts/",
+    "/posts/3": "/posts/",
+    "/posts/4": "/posts/",
+    // Page 1 of every tag was always a duplicate of the bare tag URL.
+    "/tags/[tag]/1": "/tags/[tag]",
+    // Tags that ran past one page at the old 5-per-page setting.
+    "/tags/ai-engineering/2": "/tags/ai-engineering/",
+    "/tags/ai-engineering/3": "/tags/ai-engineering/",
+    "/tags/llms/2": "/tags/llms/",
+    "/tags/ai-agents/2": "/tags/ai-agents/",
+    "/tags/langgraph/2": "/tags/langgraph/",
   },
   integrations: [react(), sitemap()],
   markdown: {
