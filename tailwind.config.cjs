@@ -33,6 +33,10 @@ module.exports = {
         // raises the browser's default font size: with a px measure beside rem
         // gaps, a 24px root pushed the rail 58px past the viewport.
         measure: "40rem",
+        // Non-article page content: wide enough for archive rows and two useful
+        // card columns, but narrower than the article/header shell so the page
+        // does not feel anchored to the left edge of that wider frame.
+        content: "56rem",
         // The page shell: measure (40) + gap (4.5) + TOC rail (14) + padding (3).
         // The header and footer use it too, so their rules line up with the
         // article's outer edges.
