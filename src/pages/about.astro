@@ -1,0 +1,211 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import { SITE } from "@config";
+
+/**
+ * Roles, newest first. Inline rather than in `src/data/` because — unlike
+ * teaching, which the homepage and /teaching both render — nothing else on the
+ * site reads them. The shape mirrors a teaching entry so both pages render the
+ * same record: an org label, what I did there, the context, and the work.
+ *
+ * No dates. The resume has them, this page does not need them, and inventing
+ * them to fill the metadata slot would be worse than leaving the org there.
+ */
+const ROLES = [
+  {
+    org: "Menyala",
+    role: "AI Engineer / Technologist",
+    context: "Temasek-backed venture studio",
+    summary:
+      "Architected AI-first products, built the systems behind them, and shaped technology strategy with product and business teams across the studio's ventures.",
+  },
+  {
+    org: "OneByZero",
+    role: "Lead AI Engineer",
+    context: "Enterprise AI consultancy",
+    summary:
+      "Led a team of six delivering RAG systems, AI agents and generative imaging for product marketing to telecom, marketing and enterprise clients.",
+  },
+  {
+    org: "Splore",
+    role: "Senior AI Engineer",
+    context: "Temasek-backed search startup",
+    summary:
+      "Reworked ranking and fine-tuned embedding models to make AI-driven search more relevant, pairing retrieval-augmented generation with classical NLP.",
+  },
+  {
+    org: "Unscrambl",
+    role: "Data Scientist to Senior Machine Learning Engineer",
+    context: "Conversational analytics",
+    summary:
+      "Built pre-GPT chatbots on classical NLP serving tens of thousands of users a day across Southeast Asia, then NL2SQL systems that let people query business intelligence databases in plain language.",
+  },
+];
+
+const EDUCATION = [
+  {
+    org: "University of Melbourne",
+    qualification: "Master of Information Technology",
+  },
+  {
+    org: "Bharatiya Vidyapeeth University",
+    qualification: "Bachelor of Computer Applications",
+  },
+];
+---
+
+<Layout
+  title={`About Me | ${SITE.title}`}
+  description="AI engineer and O'Reilly instructor: eight years building production machine learning — search ranking, NL2SQL, chatbots at scale, and lately agents and RAG."
+>
+  <Header activeNav="about" />
+  <Main
+    pageTitle="About Me"
+    kicker={["AI Engineer", "O'Reilly Instructor"]}
+    pageDesc="Eight years of building machine learning systems that reached production, and teaching the engineers who build them."
+  >
+    <!-- One data-track for the page, on the container rather than the anchors:
+         `about` is the registered GA4 dimension value and the sections below it
+         are one surface, not four. -->
+    <div data-track="about">
+      <!-- The resume sits above the fold in the same mono voice the homepage
+           gives its CTAs, because it reads as navigation rather than as prose.
+           It was a blockquote — the article's pull-quote component, borrowed
+           for a utility link, which is why it announced itself louder than the
+           first paragraph of the page. -->
+      <p class="resume-link">
+        <a href="https://github.com/sajal2692/resume/blob/main/resume.pdf">
+          Resume
+        </a>
+      </p>
+
+      <div class="lede">
+        <p>
+          I am an AI engineer. Most of my work is retrieval systems, agents,
+          ranking models and natural-language interfaces to data, and most of my
+          time goes to the part that comes after the demo &mdash; evaluation,
+          latency, failure modes, and the unglamorous business of making a
+          system dependable enough to put in front of real users.
+        </p>
+        <p>
+          The teaching grew out of the same work. Every course I have written
+          started as something I had already shipped, which is why they spend
+          more time on what breaks than on what a framework's README shows you.
+        </p>
+      </div>
+
+      <section class="page-section">
+        <h2 class="section-heading">Experience</h2>
+        <p class="section-intro">
+          Newest first. Different industries and company sizes, but the same job
+          each time: getting a model out of a notebook and into something people
+          depend on.
+        </p>
+        <ul class="entry-list">
+          {
+            ROLES.map(role => (
+              <li class="entry">
+                <p class="entry-meta">
+                  <span>{role.org}</span>
+                </p>
+                <h3 class="entry-title">{role.role}</h3>
+                <p class="entry-host">{role.context}</p>
+                <p class="entry-summary">{role.summary}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- Summarised, not repeated. Every course, lecture and mentorship here
+           used to be retyped from /teaching, which renders them from
+           teaching.ts with live dates and upcoming badges — so this page was a
+           copy that could only ever go stale, and had already frozen two course
+           titles. Numbers and links only; /teaching owns the list. -->
+      <section class="page-section">
+        <h2 class="section-heading">Teaching</h2>
+        <p class="section-intro">
+          Four O'Reilly courses on agents and RAG, guest lectures in Yale's MGT
+          899 in 2025 and 2026, and mentoring at Udacity and the University of
+          Melbourne from 2017 to 2023 &mdash; more than 1,000 Udacity projects
+          reviewed, and an A+ rating from their internal audit. The full list,
+          with dates for the live sittings, is on <a href="/teaching"
+            >Teaching</a
+          >.
+        </p>
+        <p class="section-intro">
+          There is also a data science portfolio on <a
+            href="https://github.com/sajal2692/data-science-portfolio">GitHub</a
+          >, a set of classical machine learning projects that has collected
+          more than 1,000 stars.
+        </p>
+      </section>
+
+      <section class="page-section">
+        <h2 class="section-heading">Education</h2>
+        <ul class="entry-list">
+          {
+            EDUCATION.map(entry => (
+              <li class="entry">
+                <p class="entry-meta">
+                  <span>{entry.org}</span>
+                </p>
+                <h3 class="entry-title">{entry.qualification}</h3>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- The quiet mono label, matching the same block on /teaching: this is
+           the page's utility footer, not another section of content. /teaching
+           sends consulting enquiries here, so this is the fuller answer. -->
+      <section class="page-section">
+        <h2 class="section-label">Enquiries</h2>
+        <p class="section-intro">
+          I take on consulting and project work, alongside speaking engagements
+          and team workshops. The quickest way to reach me is email: <a
+            href="mailto:contact@sajalsharma.com">contact@sajalsharma.com</a
+          >.
+        </p>
+      </section>
+    </div>
+  </Main>
+  <Footer />
+</Layout>
+
+<style>
+  /* Mono, accent-underlined: the treatment the homepage gives its hero links,
+     so the one affordance above the page's prose reads as navigation. Local
+     because it is one link on one page — the shared vocabulary this page does
+     draw on (.page-section, .section-intro, .entry-*) lives in base.css. */
+  .resume-link {
+    @apply mb-9 font-mono;
+    font-size: 0.875rem;
+  }
+  .resume-link a {
+    @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
+    border-bottom: 1px solid rgba(var(--color-accent), 0.4);
+    padding-bottom: 2px;
+  }
+  .resume-link a:hover {
+    border-bottom-color: rgb(var(--color-accent));
+  }
+
+  /* The page's opening prose, one step above the section summaries below it and
+     clamped to the measure like every other block of real prose on the site. */
+  .lede {
+    @apply max-w-measure;
+  }
+  .lede p {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .lede p + p {
+    @apply mt-4;
+  }
+</style>

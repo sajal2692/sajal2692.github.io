@@ -7,10 +7,10 @@
  * dates are filtered against build time, so an expired session disappears on
  * the next deploy instead of sitting there.
  *
- * About still hardcodes its own copy of the course list. That is deliberate for
- * now — About is being rewritten wholesale in the content epic — but until it
- * reads from this file the drift this module exists to prevent is only half
- * prevented.
+ * About used to keep its own hardcoded copy of this list, which had already
+ * frozen two course titles. It now states the totals and links to /teaching
+ * instead of restating the entries, so this module is the only place a course,
+ * talk or mentorship is written down.
  *
  * Sessions are stored as ISO 8601 with an explicit offset. O'Reilly schedules
  * in Pacific time; writing the offset out means the comparison is unambiguous
