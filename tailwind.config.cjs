@@ -68,14 +68,12 @@ module.exports = {
           accent: withOpacity("--color-accent"),
         },
       },
-      fill: {
-        skin: {
-          base: withOpacity("--color-text-base"),
-          muted: withOpacity("--color-muted"),
-          accent: withOpacity("--color-accent"),
-        },
-        transparent: "transparent",
-      },
+      // No `fill` or `stroke` scale: the only SVG colouring left on the site is
+      // `.icon`, which uses core's `fill-none` and `stroke-current` and takes
+      // its colour from the parent's `color`. `fill-skin-*` and
+      // `fill-transparent` lost their last callers when the icons became one
+      // stroke set; `stroke` was never extended at all, which is how the
+      // visualiser's `stroke-skin-line` came to compile to nothing.
       // Three self-hosted families (src/styles/fonts.css): Plex Serif for
       // display, Source Sans 3 for everything read, Plex Mono for metadata and
       // code. The sans fallbacks are the ones measured closest to Source Sans 3.

@@ -41,12 +41,15 @@ const shareLinks = [
 <div class={`social-icons`} data-track="share-links">
   <!-- mono, not italic: same metadata voice as the kicker, dates and tags -->
   <span class="share-label">Share this post</span>
+  <!-- Same treatment as the footer socials: one line set, muted resolving to
+       ink, no rotate. The scale-90 went with it — these are the same marks at
+       the same size everywhere they appear. -->
   <div class="flex flex-wrap items-center justify-center gap-1">
     {
       shareLinks.map(social => (
         <LinkButton
           href={`${social.href + URL}`}
-          className="scale-90 p-2 hover:rotate-6 sm:p-1"
+          className="p-3 text-skin-muted transition-colors hover:text-skin-base sm:p-1"
           title={social.linkTitle}
         >
           <Fragment set:html={socialIcons[social.name]} />

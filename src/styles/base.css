@@ -57,13 +57,13 @@
     @apply outline-2 outline-offset-1 outline-skin-fill 
     focus-visible:no-underline focus-visible:outline-dashed;
   }
+  /* This rule used to also set `fill-skin-base` on every svg, which meant any
+     shape that named a fill token the Tailwind config never declared still
+     came out the right colour by inheritance — a blanket that hid the mistake
+     rather than a default anything should rely on. Every icon now carries
+     `.icon`, so nothing is left here but the display mode. */
   svg {
-    @apply inline-block h-6 w-6 fill-skin-base group-hover:fill-skin-accent;
-  }
-  svg.icon-tabler {
-    @apply inline-block h-6 w-6 scale-125 fill-transparent 
-    stroke-current stroke-2 opacity-90 group-hover:fill-transparent 
-    sm:scale-110;
+    @apply inline-block;
   }
   /* ===== Article prose =====
      Written as plain rules instead of prose-* variants: @tailwindcss/typography
@@ -362,6 +362,39 @@
 }
 
 @layer components {
+  /* Every icon on the site: one 24 grid, one 1.5 stroke, no fill. Colour is
+     inherited from the parent's `color`, so an icon darkens with the link that
+     holds it instead of carrying a hover of its own — which is what let the
+     chrome hover two ways at once, links resolving to ink while the icons
+     beside them flashed accent. Nothing but this block decides how an icon
+     looks; the markup carries geometry only.
+
+     Global, not scoped, on purpose: an Astro child's root element never
+     receives the parent's scope attribute, so this is the only kind of rule
+     that can reach an icon injected through `set:html` or passed into
+     LinkButton's slot. */
+  .icon {
+    @apply h-5 w-5 flex-none fill-none stroke-current;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* The footer's single row of words. The nav echo and the socials stay two
+     elements so GA4 can tell a link back into the site from an outbound
+     profile link, but they have to read as one list — and Footer cannot style
+     Socials' anchors, for the same scope reason as above. Declared once here
+     rather than copied into both files, where the copies were a constraint
+     nothing enforced and one edit would have left the row visibly ragged.
+
+     py-1.5 is not decoration: the words are 12px, which gave a 20.6px target,
+     under the 24px WCAG 2.5.8 asks for. They were 40px when they were icons. */
+  .footer-link {
+    @apply inline-block py-1.5 font-mono uppercase text-skin-muted no-underline transition-colors hover:text-skin-base;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
   /* Read Next is a continuation of the article, not a footer appendage, so it
      wears the article's own section marker: the same accent dash, size, face and
      rhythm as a .prose h2 (see the h2::before rule above). A reader who has just

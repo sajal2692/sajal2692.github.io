@@ -5,10 +5,20 @@ import LinkButton from "./LinkButton.astro";
 import LogoSVG from "@assets/logo";
 
 export interface Props {
-  activeNav?: "posts" | "tags" | "about" | "search";
+  activeNav?: "posts" | "teaching" | "about" | "search";
 }
 
 const { activeNav } = Astro.props;
+
+// Three destinations, in the order they matter: what I write, what I teach,
+// who I am. Tags left the nav — a tag index is a way to filter the writing,
+// not a fourth place to go — and is reachable from the footer and from the
+// tag chips on every post. Tag pages mark Writing active for that reason.
+const NAV_ITEMS = [
+  { href: "/posts", label: "Writing", key: "posts" },
+  { href: "/teaching", label: "Teaching", key: "teaching" },
+  { href: "/about", label: "About Me", key: "about" },
+] as const;
 ---
 
 <header data-track="header">
@@ -40,15 +50,8 @@ const { activeNav } = Astro.props;
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
             viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="menu-icon"
+            class="icon menu-icon"
           >
             <line x1="7" y1="12" x2="21" y2="12" class="line"></line>
             <line x1="3" y1="6" x2="21" y2="6" class="line"></line>
@@ -58,43 +61,47 @@ const { activeNav } = Astro.props;
           </svg>
         </button>
         <ul id="menu-items" class="display-none sm:flex">
-          <li>
-            <a href="/posts" class={activeNav === "posts" ? "active" : ""}>
-              Posts
-            </a>
-          </li>
-          <li>
-            <a href="/tags" class={activeNav === "tags" ? "active" : ""}>
-              Tags
-            </a>
-          </li>
-          <li>
-            <a href="/about" class={activeNav === "about" ? "active" : ""}>
-              About Me
-            </a>
-          </li>
-          <li>
+          {
+            NAV_ITEMS.map(item => (
+              <li>
+                <a
+                  href={item.href}
+                  class:list={["nav-link", { active: activeNav === item.key }]}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+          <!-- Search and the theme toggle share one row: they are controls, not
+               destinations, and grouping them keeps the mobile menu a plain
+               stack that any number of nav items can grow into. -->
+          <li class="menu-actions">
+            <!-- The active state has to ride a utility class, not a scoped
+                 descendant rule: LinkButton's anchor is another component's
+                 root, so it never receives this component's scope attribute and
+                 such a rule silently matches nothing. -->
             <LinkButton
               href="/search"
-              className={`focus-outline p-3 sm:p-1 ${
-                activeNav === "search" ? "active" : ""
-              } flex`}
+              className={`focus-outline flex p-3 transition-colors sm:p-1 ${
+                activeNav === "search"
+                  ? "text-skin-base"
+                  : "text-skin-muted hover:text-skin-base"
+              }`}
               ariaLabel="search"
               title="Search"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="scale-125 sm:scale-100"
-                ><path
-                  d="M19.023 16.977a35.13 35.13 0 0 1-1.367-1.384c-.372-.378-.596-.653-.596-.653l-2.8-1.337A6.962 6.962 0 0 0 16 9c0-3.859-3.14-7-7-7S2 5.141 2 9s3.14 7 7 7c1.763 0 3.37-.66 4.603-1.739l1.337 2.8s.275.224.653.596c.387.363.896.854 1.384 1.367l1.358 1.392.604.646 2.121-2.121-.646-.604c-.379-.372-.885-.866-1.391-1.36zM9 14c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"
-                ></path>
+                viewBox="0 0 24 24"
+                class="icon"
+                ><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"
+                ></path><path d="M21 21l-6 -6"></path>
               </svg>
               <span class="sr-only">Search</span>
             </LinkButton>
-          </li>
-          {
-            SITE.lightAndDarkMode && (
-              <li>
+            {
+              SITE.lightAndDarkMode && (
                 <button
                   id="theme-btn"
                   class="focus-outline"
@@ -102,16 +109,27 @@ const { activeNav } = Astro.props;
                   aria-label="auto"
                   aria-live="polite"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" id="moon-svg">
-                    <path d="M20.742 13.045a8.088 8.088 0 0 1-2.077.271c-2.135 0-4.14-.83-5.646-2.336a8.025 8.025 0 0 1-2.064-7.723A1 1 0 0 0 9.73 2.034a10.014 10.014 0 0 0-4.489 2.582c-3.898 3.898-3.898 10.243 0 14.143a9.937 9.937 0 0 0 7.072 2.93 9.93 9.93 0 0 0 7.07-2.929 10.007 10.007 0 0 0 2.583-4.491 1.001 1.001 0 0 0-1.224-1.224zm-2.772 4.301a7.947 7.947 0 0 1-5.656 2.343 7.953 7.953 0 0 1-5.658-2.344c-3.118-3.119-3.118-8.195 0-11.314a7.923 7.923 0 0 1 2.06-1.483 10.027 10.027 0 0 0 2.89 7.848 9.972 9.972 0 0 0 7.848 2.891 8.036 8.036 0 0 1-1.484 2.059z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="icon"
+                    id="moon-svg"
+                  >
+                    <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
                   </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" id="sun-svg">
-                    <path d="M6.993 12c0 2.761 2.246 5.007 5.007 5.007s5.007-2.246 5.007-5.007S14.761 6.993 12 6.993 6.993 9.239 6.993 12zM12 8.993c1.658 0 3.007 1.349 3.007 3.007S13.658 15.007 12 15.007 8.993 13.658 8.993 12 10.342 8.993 12 8.993zM10.998 19h2v3h-2zm0-17h2v3h-2zm-9 9h3v2h-3zm17 0h3v2h-3zM4.219 18.363l2.12-2.122 1.415 1.414-2.12 2.122zM16.24 6.344l2.122-2.122 1.414 1.414-2.122 2.122zM6.342 7.759 4.22 5.637l1.415-1.414 2.12 2.122zm13.434 10.605-1.414 1.414-2.122-2.122 1.414-1.414z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="icon"
+                    id="sun-svg"
+                  >
+                    <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                    <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" />
                   </svg>
                 </button>
-              </li>
-            )
-          }
+              )
+            }
+          </li>
         </ul>
       </nav>
     </div>
@@ -131,54 +149,55 @@ const { activeNav } = Astro.props;
   .top-nav-wrap {
     @apply relative flex w-full items-start justify-between p-4 sm:items-center sm:px-6 sm:py-8;
   }
+  /* Serif, like every page H1: the wordmark is display type, and it was the
+     only display element on the site still set in the body sans. */
   .logo {
-    @apply absolute py-1 text-xl font-semibold sm:static sm:text-2xl;
+    @apply absolute py-1 font-serif text-xl font-semibold sm:static sm:text-2xl;
+    letter-spacing: -0.01em;
   }
   .hamburger-menu {
-    @apply self-end p-2 sm:hidden;
-  }
-  .hamburger-menu svg {
-    @apply h-6 w-6 scale-125 fill-skin-base;
+    @apply self-end p-3 text-skin-base sm:hidden;
   }
 
   nav {
     @apply flex w-full flex-col items-center sm:ml-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0;
   }
+  /* Element selectors, not a class: `.display-none` toggles the mobile menu and
+     a class here would tie its specificity and win, leaving the menu open. */
   nav ul {
-    @apply mt-4 grid w-44 grid-cols-2 grid-rows-4 gap-x-2 gap-y-2 sm:ml-0 sm:mt-0 sm:w-auto sm:gap-x-5 sm:gap-y-0;
+    @apply mt-4 flex w-44 flex-col sm:ml-0 sm:mt-0 sm:w-auto sm:flex-row sm:items-center sm:gap-5;
   }
   nav ul li {
-    @apply col-span-2 flex items-center justify-center;
+    @apply flex items-center justify-center;
   }
-  nav ul li a {
-    @apply w-full px-4 py-3 text-center font-medium hover:text-skin-accent sm:my-0 sm:px-2 sm:py-1;
+  /* Was a two-column grid with a hardcoded row count, positioning the last two
+     cells by nth-last-child — so the layout silently depended on there being
+     exactly five items, and swapping one nav entry for another was the most
+     it could survive. A stack has no such arithmetic. */
+  .menu-actions {
+    @apply gap-1 sm:gap-2;
   }
-  nav ul li:nth-last-child(2) a {
-    @apply w-auto;
+  /* Muted at 16px, resolving to full ink on hover. These were 18px in ink —
+     body-copy size and body-copy weight — so the chrome read level with the
+     writing it frames. Hover goes to base rather than the accent used
+     elsewhere: a whole row of links flashing teal on every pass of the mouse
+     is exactly the noise this treatment is meant to remove.
+     Mobile keeps 18px; there the menu is the only thing on screen. */
+  .nav-link {
+    @apply block w-full px-4 py-3 text-center text-lg font-medium text-skin-muted transition-colors hover:text-skin-base sm:w-auto sm:px-2 sm:py-1 sm:text-base;
   }
-  nav ul li:nth-last-child(1),
-  nav ul li:nth-last-child(2) {
-    @apply col-span-1;
-  }
+  /* The active item is the one nav link in full ink; the accent is spent on the
+     underline alone. */
   nav a.active {
-    @apply underline decoration-1 underline-offset-4;
+    @apply text-skin-base underline decoration-1 underline-offset-4;
     text-decoration-color: rgb(var(--color-accent));
   }
-  nav a.active svg {
-    @apply fill-skin-accent;
-  }
 
-  nav button {
-    @apply p-1;
-  }
-  nav button svg {
-    @apply h-6 w-6 fill-skin-base hover:fill-skin-accent;
-  }
+  /* The toggle is a control, not a destination, so it takes the same muted ->
+     ink resolve as the links and the search glyph beside it. The 12deg rotate
+     on hover went with the socials' 6deg one. */
   #theme-btn {
-    @apply p-3 sm:p-1;
-  }
-  #theme-btn svg {
-    @apply scale-125 hover:rotate-12 sm:scale-100;
+    @apply p-3 text-skin-muted transition-colors hover:text-skin-base sm:p-1;
   }
 
   .menu-icon line {

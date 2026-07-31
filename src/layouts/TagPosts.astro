@@ -18,18 +18,12 @@ export interface Props {
   tagName: string;
 }
 
-const {
-  currentPage,
-  totalPages,
-  paginatedPosts,
-  totalPosts,
-  tag,
-  tagName,
-} = Astro.props;
+const { currentPage, totalPages, paginatedPosts, totalPosts, tag, tagName } =
+  Astro.props;
 ---
 
 <Layout title={`Tag: ${tagName} | ${SITE.title}`}>
-  <Header activeNav="tags" />
+  <Header activeNav="posts" />
   <!-- The tag itself is the title: the kicker above already says what it is, so
        a "Tag:" or "Tagged" prefix would only repeat it, and reads oddly against
        a slug like ai-engineering. -->
@@ -58,7 +52,7 @@ const {
     /* Same treatment as a post page's "All posts" link, so every page that can
        be backed out of does it the same way. */
     .back-link {
-      @apply -mt-2 mb-6 inline-block font-mono text-sm text-skin-muted no-underline transition-colors hover:text-skin-accent;
+      @apply -mt-2 mb-6 inline-block font-mono text-sm text-skin-muted no-underline transition-colors hover:text-skin-base;
       letter-spacing: 0.02em;
     }
   </style>

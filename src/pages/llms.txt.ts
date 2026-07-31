@@ -20,7 +20,7 @@ export const GET: APIRoute = async () => {
   });
 
   const pageLines = [
-    `- [About](${new URL("about", SITE.website).href}): About ${SITE.author} — background, experience, and work.`,
+    `- [About Me](${new URL("about", SITE.website).href}): About ${SITE.author} — background, experience, and work.`,
     `- [Teaching](${new URL("teaching", SITE.website).href}): O'Reilly courses on AI agents and RAG, Yale guest lectures, and mentoring.`,
     `- [Blog](${new URL("posts", SITE.website).href}): All blog posts.`,
     `- [Full content](${new URL("llms-full.txt", SITE.website).href}): Every post's full text as markdown.`,
