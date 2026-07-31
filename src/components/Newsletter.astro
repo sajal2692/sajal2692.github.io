@@ -4,7 +4,13 @@
 
 <!-- mt-16 (collapsing with the last card's mb-8, so 64px) puts real distance
      between the article's own sections and this one, which is page furniture. -->
-<section id="newsletter" class="mb-8 mt-16 p-0">
+<!-- max-w-none/px-0 undo base.css's `section` container from this component's
+     own markup rather than from the page's. The homepage's
+     `#main-content > section` override cannot reach here: Astro scopes that
+     rule to index.astro's elements, and this root section carries this
+     component's scope id, so it kept the centred max-w-3xl and sat indented
+     inside a shell-width page. Inside a post it fills the measure column. -->
+<section id="newsletter" class="mb-8 mt-16 max-w-none px-0">
   <h2 class="section-label">Newsletter</h2>
   <p class="newsletter-intro">
     Sign up to get updates on my latest posts, projects and insights on AI & ML.
@@ -71,10 +77,12 @@
 <style>
   /* Everything here is token-driven — the form used to hardcode five hex values
      (two blues, two greens and a grey) that matched neither theme. */
-  /* Full measure, no 52ch clamp: at this column width the clamp broke two
-     sentences into three short ragged lines under a 28px heading. */
+  /* The measure, no 52ch clamp: the tighter clamp broke two sentences into
+     three short ragged lines under a 28px heading. max-w-measure is a no-op
+     inside a post (that column already is the measure) and does the work on
+     the homepage, where this sits in a shell-width column. */
   .newsletter-intro {
-    @apply mt-4;
+    @apply mt-4 max-w-measure;
     text-wrap: pretty;
   }
   .subscribe-btn {

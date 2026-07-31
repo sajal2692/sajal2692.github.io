@@ -105,8 +105,10 @@ const courses = coursesByNextSession();
   .teaching-section {
     @apply max-w-none p-0;
   }
+  /* Prose inside a shell-width page keeps the measure; the grids and lists
+     below it take the full width. */
   .section-intro {
-    @apply mt-3 text-skin-muted;
+    @apply mt-3 max-w-measure text-skin-muted;
     font-size: 1rem;
     line-height: 1.6;
     text-wrap: pretty;
@@ -161,7 +163,7 @@ const courses = coursesByNextSession();
     line-height: 1.45;
   }
   .entry-summary {
-    @apply mt-2 text-skin-base;
+    @apply mt-2 max-w-measure text-skin-base;
     font-size: 0.9375rem;
     line-height: 1.5;
   }

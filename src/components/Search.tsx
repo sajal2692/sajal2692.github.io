@@ -75,7 +75,11 @@ export default function SearchBar({ searchList }: Props) {
 
   return (
     <>
-      <label className="relative block">
+      {/* The field keeps the measure inside a shell-width page: it sits
+          directly under a deck clamped to the same 640px, and stretched to the
+          full shell it read as a stray full-bleed element on an otherwise
+          left-anchored column. */}
+      <label className="relative block max-w-measure">
         <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-skin-muted">
           <svg
             xmlns="http://www.w3.org/2000/svg"
