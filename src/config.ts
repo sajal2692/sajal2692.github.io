@@ -5,7 +5,12 @@ export const SITE: Site = {
   author: "Sajal Sharma",
   desc: "Internet home of Sajal Sharma — AI engineer and O'Reilly instructor specializing in agentic AI systems, LLMs, and machine learning.",
   title: "Sajal Sharma",
-  ogImage: "sajalsharma-og.png",
+  // The generated card (src/pages/og.png.ts -> og-templates/site.tsx), not the
+  // hand-made public/sajalsharma-og.png: that one is still the pre-redesign
+  // dark-navy-and-neon card, and its footer advertises "Blog · Courses · About",
+  // none of which are what the nav calls those pages any more. Generating it
+  // keeps every share card — site and per-post — in one visual language.
+  ogImage: "og.png",
   lightAndDarkMode: true,
   // Tag pages only — the post archive is a single unpaginated index. 20 is
   // above every tag's current count, so nothing splits today; the pagination

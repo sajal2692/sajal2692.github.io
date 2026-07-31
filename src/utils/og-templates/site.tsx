@@ -1,86 +1,68 @@
 import { SITE } from "@config";
+import { OG } from "./theme";
 
 export default () => {
   return (
     <div
       style={{
-        background: "#fefbfb",
+        background: OG.paper,
         width: "100%",
         height: "100%",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        padding: "72px 80px",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: "-1px",
-          right: "-1px",
-          border: "4px solid #000",
-          background: "#ecebeb",
-          opacity: "0.9",
-          borderRadius: "4px",
-          display: "flex",
-          justifyContent: "center",
-          margin: "2.5rem",
-          width: "88%",
-          height: "80%",
-        }}
-      />
-
-      <div
-        style={{
-          border: "4px solid #000",
-          background: "#fefbfb",
-          borderRadius: "4px",
-          display: "flex",
-          justifyContent: "center",
-          margin: "2rem",
-          width: "88%",
-          height: "80%",
-        }}
-      >
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            margin: "20px",
-            width: "90%",
-            height: "90%",
+            width: "64px",
+            height: "4px",
+            background: OG.accent,
+            marginBottom: "44px",
+          }}
+        />
+        <p
+          style={{
+            fontFamily: OG.serif,
+            fontWeight: 600,
+            fontSize: 76,
+            lineHeight: 1.15,
+            letterSpacing: "-1px",
+            color: OG.ink,
+            margin: 0,
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "90%",
-              maxHeight: "90%",
-              overflow: "hidden",
-              textAlign: "center",
-            }}
-          >
-            <p style={{ fontSize: 72, fontWeight: "bold" }}>{SITE.title}</p>
-            <p style={{ fontSize: 28 }}>{SITE.desc}</p>
-          </div>
+          {SITE.title}
+        </p>
+        <p
+          style={{
+            fontFamily: OG.serif,
+            fontWeight: 400,
+            fontSize: 32,
+            lineHeight: 1.4,
+            color: OG.muted,
+            marginTop: "24px",
+            maxHeight: "180px",
+            overflow: "hidden",
+          }}
+        >
+          {SITE.desc}
+        </p>
+      </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              width: "100%",
-              marginBottom: "8px",
-              fontSize: 28,
-            }}
-          >
-            <span style={{ overflow: "hidden", fontWeight: "bold" }}>
-              {new URL(SITE.website).hostname}
-            </span>
-          </div>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          fontFamily: OG.mono,
+          fontSize: 24,
+          letterSpacing: "2px",
+          color: OG.muted,
+        }}
+      >
+        <span>{new URL(SITE.website).hostname.toUpperCase()}</span>
       </div>
     </div>
   );
