@@ -96,11 +96,13 @@ const socialImageURL = new URL(
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={socialImageURL} />
 
-    <!-- Self-hosted type (src/styles/fonts.css). Only the two faces every page
-         paints above the fold are preloaded — mono and the italic still load on
-         demand, since mono currently appears only in code blocks. Add the mono
-         preload when metadata lines move to it. Files live in public/fonts so
-         these URLs stay stable and preloadable. -->
+    <!-- Self-hosted type (src/styles/fonts.css). Only the faces every page
+         paints above the fold are preloaded; the italic and mono 500 still load
+         on demand. Mono 400 is on this list because the redesign made it the
+         metadata voice — the kicker above every article H1, the page kickers,
+         the hero CTAs, tags and footer links all paint it before first scroll,
+         so leaving it to be discovered by the CSS swapped that text mid-paint.
+         Files live in public/fonts so these URLs stay stable and preloadable. -->
     <link
       rel="preload"
       href="/fonts/source-sans-3-latin-wght.woff2"
@@ -111,6 +113,13 @@ const socialImageURL = new URL(
     <link
       rel="preload"
       href="/fonts/ibm-plex-serif-latin-600.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/ibm-plex-mono-latin-400.woff2"
       as="font"
       type="font/woff2"
       crossorigin
