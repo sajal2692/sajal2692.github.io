@@ -45,9 +45,9 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
         RAG.
       </p>
       <p class="hero-ctas">
-        <a href="/posts">Read my writing</a>
-        <a href="/teaching">View courses</a>
-        <a href="/about">About Me</a>
+        <a href="/posts/">Read my writing</a>
+        <a href="/teaching/">View courses</a>
+        <a href="/about/">About Me</a>
       </p>
     </section>
 
@@ -61,7 +61,7 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
         lead && (
           <a
             class="lead"
-            href={`/posts/${lead.id}`}
+            href={`/posts/${lead.id}/`}
             aria-label={lead.data.title}
           >
             <time class="lead-date" datetime={toIsoDate(lead.data.pubDatetime)}>
@@ -76,7 +76,7 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
         {
           rows.map(post => (
             <li>
-              <a href={`/posts/${post.id}`} aria-label={post.data.title}>
+              <a href={`/posts/${post.id}/`} aria-label={post.data.title}>
                 <time
                   class="row-date"
                   datetime={toIsoDate(post.data.pubDatetime)}
@@ -90,7 +90,7 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
         }
       </ul>
       <p class="more" data-track="home-all-posts">
-        <a href="/posts">All writing &rarr;</a>
+        <a href="/posts/">All writing &rarr;</a>
       </p>
     </section>
 
@@ -100,7 +100,7 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
         {coursesByNextSession().map(course => <CourseCard course={course} />)}
       </ul>
       <p class="more" data-track="home-all-teaching">
-        <a href="/teaching">All courses &rarr;</a>
+        <a href="/teaching/">All courses &rarr;</a>
       </p>
     </section>
 

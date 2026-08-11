@@ -33,7 +33,12 @@ export default defineConfig({
     "/posts/2": "/posts/",
     "/posts/3": "/posts/",
     "/posts/4": "/posts/",
-    // Page 1 of every tag was always a duplicate of the bare tag URL.
+    // Page 1 of every tag was always a duplicate of the bare tag URL. No
+    // trailing slash on the destination, unlike every other redirect here: a
+    // dynamic destination has to match a route pattern, and the route is
+    // `/tags/[tag]`, so `/tags/[tag]/` fails the build outright. The cost is
+    // that these land on the slashless URL and take GitHub Pages' own 301 to
+    // the canonical one — a second hop, on a legacy URL nothing links to.
     "/tags/[tag]/1": "/tags/[tag]",
     // Tags that ran past one page at the old 5-per-page setting.
     "/tags/ai-engineering/2": "/tags/ai-engineering/",

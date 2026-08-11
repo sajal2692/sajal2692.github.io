@@ -87,7 +87,7 @@ const railHeadings = headings.filter(
         class:list={["article-grid", { "has-rail": railHeadings.length > 0 }]}
       >
         <div class="post-nav" data-track="post-nav">
-          <a href="/posts" class="back-link">&larr; All posts</a>
+          <a href="/posts/" class="back-link">&larr; All posts</a>
         </div>
 
         {
@@ -234,13 +234,13 @@ const railHeadings = headings.filter(
     .article-grid.has-rail {
       grid-template-columns: minmax(0, theme("maxWidth.measure")) 14rem;
     }
-    .article-grid.has-rail .post-nav,
-    .article-grid.has-rail .article-main {
+    .article-grid.has-rail .post-nav {
       @apply mx-0;
     }
     /* Explicit placement because the rail now precedes the article in source
        order: auto-placement would drop it into the text column. */
     .article-grid.has-rail .article-main {
+      @apply mx-0;
       grid-column: 1;
       grid-row: 2;
     }
