@@ -85,8 +85,12 @@ module.exports = {
       // and an unquoted CSS identifier cannot start with one, so the whole
       // font-family declaration gets dropped as invalid without the quotes.
       fontFamily: {
+        // "Source Sans 3 Fallback" is the metrics-matched face declared in
+        // fonts.css; it sits ahead of the system stack so the swap does not
+        // re-wrap paragraphs. See the comment there for the measurements.
         sans: [
           '"Source Sans 3"',
+          '"Source Sans 3 Fallback"',
           "system-ui",
           "-apple-system",
           '"Segoe UI"',

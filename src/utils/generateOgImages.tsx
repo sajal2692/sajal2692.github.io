@@ -4,23 +4,31 @@ import { type CollectionEntry } from "astro:content";
 import postOgImage from "./og-templates/post";
 import siteOgImage from "./og-templates/site";
 
-const fetchFonts = async () => {
-  // Regular Font
-  const fontFileRegular = await fetch(
-    "https://www.1001fonts.com/download/font/ibm-plex-mono.regular.ttf"
-  );
-  const fontRegular: ArrayBuffer = await fontFileRegular.arrayBuffer();
+// Satori needs ttf/otf, so it cannot reuse the woff2 files in public/fonts.
+// The families still match the site's: Plex Serif for display, Plex Mono for
+// the metadata line.
+const FONT_URLS = {
+  serifRegular:
+    "https://www.1001fonts.com/download/font/ibm-plex-serif.regular.ttf",
+  serifSemibold:
+    "https://www.1001fonts.com/download/font/ibm-plex-serif.semibold.ttf",
+  monoRegular:
+    "https://www.1001fonts.com/download/font/ibm-plex-mono.regular.ttf",
+} as const;
 
-  // Bold Font
-  const fontFileBold = await fetch(
-    "https://www.1001fonts.com/download/font/ibm-plex-mono.bold.ttf"
-  );
-  const fontBold: ArrayBuffer = await fontFileBold.arrayBuffer();
-
-  return { fontRegular, fontBold };
+const fetchFont = async (url: string): Promise<ArrayBuffer> => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`OG font fetch failed (${response.status}): ${url}`);
+  }
+  return response.arrayBuffer();
 };
 
-const { fontRegular, fontBold } = await fetchFonts();
+const [serifRegular, serifSemibold, monoRegular] = await Promise.all([
+  fetchFont(FONT_URLS.serifRegular),
+  fetchFont(FONT_URLS.serifSemibold),
+  fetchFont(FONT_URLS.monoRegular),
+]);
 
 const options: SatoriOptions = {
   width: 1200,
@@ -28,15 +36,21 @@ const options: SatoriOptions = {
   embedFont: true,
   fonts: [
     {
-      name: "IBM Plex Mono",
-      data: fontRegular,
+      name: "IBM Plex Serif",
+      data: serifRegular,
       weight: 400,
       style: "normal",
     },
     {
-      name: "IBM Plex Mono",
-      data: fontBold,
+      name: "IBM Plex Serif",
+      data: serifSemibold,
       weight: 600,
+      style: "normal",
+    },
+    {
+      name: "IBM Plex Mono",
+      data: monoRegular,
+      weight: 400,
       style: "normal",
     },
   ],

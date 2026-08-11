@@ -19,10 +19,27 @@
    No unicode-range: only the latin subset is shipped, so per-glyph fallback
    already handles anything outside it, and every page needs latin anyway.
 
-   No size-adjust fallback face either: measured at 100px, Source Sans 3 sets the
-   same string within ~1% of system-ui and ~2% of San Francisco, so the swap does
-   not move the text enough to be worth a hand-tuned metrics override. Revisit if
-   CLS ever shows up in Lighthouse. */
+   A size-adjust fallback face, because the measurement that said one was not
+   needed was taken at the wrong size. At 100px, system-ui sets the same string
+   1.0% wider than Source Sans 3 — which is where "~1%" came from. At 18px, the
+   size body copy actually renders at, it sets it 8.3% wider: San Francisco's
+   optical-size axis picks a wider design for text sizes, and the 100px sample
+   never saw it. 8.3% is enough to re-wrap paragraphs when the real face swaps
+   in, which is exactly the layout shift a fallback face exists to prevent.
+
+   Measured at 18px against Source Sans 3: Arial and Helvetica 93.2%, system-ui
+   92.4%, Helvetica Neue 91.9%. The face below is pinned to Arial rather than to
+   system-ui because size-adjust needs a font it can name — a keyword cannot be
+   metric-adjusted — and Arial is present on macOS and Windows alike, so one
+   number is right on both. Only widths are overridden: line boxes are driven by
+   the explicit line-height in base.css, not by the face's own metrics. */
+
+@font-face {
+  font-family: "Source Sans 3 Fallback";
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  size-adjust: 93.2%;
+  font-display: swap;
+}
 
 @font-face {
   font-family: "Source Sans 3";

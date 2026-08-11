@@ -28,10 +28,13 @@ const years = Object.keys(byYear)
   .sort((a, b) => b - a);
 ---
 
-<Layout title={`Posts | ${SITE.title}`}>
+<!-- "Writing", not "Posts": that is what the nav item, the hero CTA and the
+     homepage section all call this page, and the H1 disagreeing with the link
+     that got you here is a small but real orientation cost. -->
+<Layout title={`Writing | ${SITE.title}`}>
   <Header activeNav="posts" />
   <Main
-    pageTitle="Posts"
+    pageTitle="Writing"
     kicker={["Archive", `${posts.length} posts`]}
     pageDesc="Here I document my experiments with AI engineering, insights from building intelligent systems and share deep dives on latest paradigms."
   >

@@ -196,20 +196,23 @@
     font-size: inherit;
   }
   /* Tables: hairline rows and a mono column head instead of a full grid of
-     borders. display:block lets a wide table scroll inside the measure on narrow
-     screens rather than pushing the page sideways — the cost is that `width:100%`
-     then applies to the block wrapper, not to the anonymous table box inside it,
-     so a table whose content is narrower than the measure shrink-wraps. Row
-     groups take the width instead, which fills the column in both cases. */
+     borders. The scroll lives on a wrapper (added by rehypeScrollableRegions),
+     not on the table: `display: block` on the table itself would let a wide
+     table scroll, but it also strips the table layout box and the implicit
+     row/cell roles a screen reader navigates by, and its min-content width
+     still pushed the article column sideways instead of scrolling in place. */
+  .prose .table-scroll {
+    @apply w-full max-w-full overflow-x-auto;
+  }
+  /* The wrapper is focusable so the region can be scrolled from the keyboard;
+     without a ring that focus stop would be invisible. */
+  .prose .table-scroll:focus-visible {
+    @apply outline-dashed outline-2 outline-offset-2 outline-skin-fill;
+  }
   .prose table {
-    @apply block w-full overflow-x-auto text-skin-base;
+    @apply w-full text-skin-base;
     border-collapse: collapse;
     font-size: 0.95em;
-  }
-  .prose thead,
-  .prose tbody,
-  .prose tfoot {
-    @apply w-full;
   }
   .prose th {
     @apply border-0 border-b border-skin-line text-left align-bottom font-mono font-medium text-skin-muted;
@@ -528,6 +531,12 @@
 .prose pre.astro-code > code {
   display: block;
   overflow-x: auto;
+}
+/* rehypeScrollableRegions moves shiki's tabindex here, onto the box that
+   actually scrolls, so the ring has to come with it. */
+.prose pre.astro-code > code:focus-visible {
+  outline: 2px dashed rgb(var(--color-accent));
+  outline-offset: 2px;
 }
 /* Every block reserves the bar's height so the copy button never lands on line
    one; only blocks with a real language print a label in it. */

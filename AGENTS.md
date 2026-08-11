@@ -83,15 +83,17 @@ Blog posts live in `src/content/blog/` as Markdown files, loaded with the `glob(
 TailwindCSS with **CSS variable-based theming** for light/dark mode:
 - Uses `--color-*` CSS variables (e.g., `--color-text-base`, `--color-accent`)
 - Custom `withOpacity()` function for RGBA color utilities
-- Access via `skin-*` utility classes (e.g., `text-skin-base`, `bg-skin-fill`)
-- Custom breakpoint: only `sm: 640px` defined
+- Access via `skin-*` utility classes (e.g., `text-skin-base`, `bg-skin-fill`). Only the scales `tailwind.config.cjs` extends exist — `text`, `bg`, `border`, `outline`. There is deliberately no `fill`/`stroke` scale, so `fill-skin-*` silently compiles to nothing
+- Custom breakpoints: `sm: 640px` and `lg: 67.5rem` (the second gates the article's TOC rail, which needs measure + gap + rail to fit; it is in `rem` so it scales with the reader's font size)
+- Self-hosted type in `src/styles/fonts.css` (IBM Plex Serif display, Source Sans 3 body, IBM Plex Mono metadata/code), with the above-the-fold faces preloaded in `Layout.astro`
+- The measure/content/shell widths are named `maxWidth` tokens, not ad-hoc values. Note that `mx-auto` on a grid item turns off `stretch` and makes it shrink-to-fit — pair it with `w-full` or a wide code block will size the column
 
 ### Markdown Processing
 
 Configured in `astro.config.ts` using the `unified()` processor from `@astrojs/markdown-remark` (not Astro 7's default Sätteri processor) so the remark/rehype plugins keep working:
 - **Remark plugins**: `remark-toc` (table of contents), `remark-collapse` (collapsible sections), `remark-math` (LaTeX math)
-- **Rehype plugins**: `rehype-katex` (math rendering)
-- **Syntax highlighting**: Shiki dual themes ("github-light" / "one-dark-pro"), swapped by CSS variables in `src/styles/base.css`
+- **Rehype plugins**: `rehype-katex` (math rendering), `rehypeTableScroll` (wraps every table in a focusable, labelled scroll container — the table itself must stay `display: table` or it loses its row/cell roles and pushes the article column sideways)
+- **Syntax highlighting**: Shiki dual themes ("github-light" / "one-dark-pro"), swapped by CSS variables in `src/styles/base.css`. A `shikiConfig.transformers` entry moves shiki's `tabindex` from the `<pre>` onto `pre > code`, which is the element `base.css` makes the scroll port. Rehype plugins run *before* shiki, so anything touching shiki's output belongs in a transformer, not a plugin
 
 ### Utility Functions (`src/utils/`)
 
@@ -102,25 +104,33 @@ Configured in `astro.config.ts` using the `unified()` processor from `@astrojs/m
 - `postFilter()`: Filter logic for draft/scheduled posts
 - `slugify()`: Convert strings to URL-safe slugs
 - `getPagination()`: Calculate pagination boundaries
-- `generateOgImages.tsx`: Generate Open Graph images with Satori
+- `formatPostDate()`: The site's one post-date format (UTC-pinned, `LOCALE.langTag`). Every surface printing a post date goes through it
+- `getReadingTime()`: Reading-time estimate for the article kicker
+- `generateOgImages.tsx`: Generate Open Graph images with Satori. Templates in `src/utils/og-templates/`; their palette mirrors the light theme via `og-templates/theme.ts` and must be kept in step with `base.css`
+- `rehypeTableScroll.ts`: The table-wrapping rehype plugin described above
 
 ### Component Structure
 
 **Layout Components:**
 - `Layout.astro`: Base layout with SEO, analytics (Google Analytics gtag on the main thread, plus the delegated `link_click` listener)
-- `Main.astro`: Main content wrapper
-- `PostDetails.astro`: Blog post layout
-- `Posts.astro`: Blog listing layout
-- `AboutLayout.astro`: About page layout
+- `Main.astro`: Main content wrapper — owns the page title/kicker/deck block every non-article page renders through
+- `PostDetails.astro`: Blog post layout, including the article grid and the sticky TOC rail. The rail sits *before* the article in source order (tab order) and is placed into the right column with explicit `grid-column`/`grid-row`
+- `TagPosts.astro`: Tag listing layout
+
+There is no `Posts.astro` or `AboutLayout.astro`: the archive is `src/pages/posts/index.astro` and About is `src/pages/about.astro`, both rendering through `Main.astro`.
 
 **Key Components:**
 - `Header.astro`: Navigation with hamburger menu
 - `Search.tsx`: Client-side search using Fuse.js
 - `Card.tsx`: Blog post preview cards
+- `CourseCard.astro`: Shared course card, used by both the homepage and `/teaching` so the two cannot drift
 - `Datetime.tsx`: Formatted datetime display
 - `Newsletter.astro`: Newsletter signup form
 - `RelatedPosts.astro`: Static "Related Posts" section on post pages (hidden when empty)
 - `Tag.astro`: Tag display component
+
+**Data:**
+- `src/data/teaching.ts`: The single source of truth for courses, talks and mentoring. Session visibility is computed against build time, so the site needs a scheduled rebuild for expiries to take effect (see the deploy workflow's `schedule` trigger)
 
 ## Important Notes
 
