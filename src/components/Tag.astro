@@ -9,7 +9,7 @@ const { tag, size = "sm" } = Astro.props;
 
 <li class="inline-block">
   <a
-    href={`/tags/${tag}`}
+    href={`/tags/${tag}/`}
     transition:name={tag}
     class={`tag-chip ${size === "lg" ? "tag-chip-lg" : ""}`}
   >
