@@ -4,6 +4,7 @@ import { unified } from "@astrojs/markdown-remark";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import remarkMath from "remark-math";
+import remarkDetectMath from "./src/utils/remarkDetectMath";
 import rehypeKatex from "rehype-katex";
 import rehypeTableScroll from "./src/utils/rehypeTableScroll";
 import sitemap from "@astrojs/sitemap";
@@ -56,6 +57,11 @@ export default defineConfig({
           },
         ],
         remarkMath,
+        // After remarkMath: before it the math nodes do not exist yet, and every
+        // post would look math-free. Sets `hasMath` on remarkPluginFrontmatter,
+        // which PostDetails uses to load the KaTeX stylesheet only where there
+        // is math to style.
+        remarkDetectMath,
       ],
       rehypePlugins: [rehypeKatex, rehypeTableScroll],
     }),
