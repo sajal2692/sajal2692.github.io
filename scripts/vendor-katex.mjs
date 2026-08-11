@@ -15,7 +15,11 @@
  * asks for.
  *
  *   node scripts/vendor-katex.mjs          copy, overwriting public/katex/
- *   node scripts/vendor-katex.mjs check    exit 1 if the copy is stale
+ *   node scripts/vendor-katex.mjs check    exit 1 if the copy is not byte-exact
+ *
+ * `check` compares every file, not a version stamp: a stamp says which release
+ * was vendored, not that the bytes are still there. A deleted stylesheet or a
+ * truncated font would pass a stamp check and ship a post with unstyled math.
  */
 import { createRequire } from "node:module";
 import {
@@ -25,7 +29,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { join } from "node:path";
+import { join, relative, sep } from "node:path";
 
 const require = createRequire(import.meta.url);
 const katexDir = join(require.resolve("katex/package.json"), "..");
@@ -47,38 +51,96 @@ function woff2Only(css) {
   });
 }
 
-const css = woff2Only(readFileSync(join(katexDir, "dist/katex.min.css"), "utf8"));
-const fonts = readdirSync(join(katexDir, "dist/fonts")).filter(f =>
-  f.endsWith(".woff2")
-);
-const stamp = `${version}\n${fonts.length} woff2\n`;
+/**
+ * The exact tree public/katex should contain, as posix-style paths. Both modes
+ * build this, so `check` compares against what `write` would actually produce
+ * rather than against a summary of it.
+ */
+function buildExpected() {
+  const files = new Map();
+  files.set(
+    "katex.min.css",
+    Buffer.from(
+      woff2Only(readFileSync(join(katexDir, "dist/katex.min.css"), "utf8"))
+    )
+  );
+  const fonts = readdirSync(join(katexDir, "dist/fonts"))
+    .filter(f => f.endsWith(".woff2"))
+    .sort();
+  for (const font of fonts) {
+    files.set(
+      `fonts/${font}`,
+      readFileSync(join(katexDir, "dist/fonts", font))
+    );
+  }
+  // Human-readable marker only. The check does not rely on it.
+  files.set("VERSION", Buffer.from(`${version}\n${fonts.length} woff2\n`));
+  return files;
+}
+
+/** Every file under dir, as posix-style paths relative to it. */
+function listActual(dir) {
+  const out = [];
+  const walk = base => {
+    let entries;
+    try {
+      entries = readdirSync(base, { withFileTypes: true });
+    } catch {
+      return; // missing directory: reported as missing files instead
+    }
+    for (const entry of entries) {
+      const full = join(base, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else out.push(relative(dir, full).split(sep).join("/"));
+    }
+  };
+  walk(dir);
+  return out;
+}
+
+const expected = buildExpected();
 
 if (mode === "check") {
-  let current = "";
-  try {
-    current = readFileSync(join(outDir, "VERSION"), "utf8");
-  } catch {
-    /* missing counts as stale */
+  const missing = [];
+  const differing = [];
+
+  for (const [name, want] of expected) {
+    let have;
+    try {
+      have = readFileSync(join(outDir, name));
+    } catch {
+      missing.push(name);
+      continue;
+    }
+    if (!have.equals(want)) differing.push(name);
   }
-  if (current !== stamp) {
-    console.error(
-      `katex: public/katex is stale (have ${JSON.stringify(current)}, ` +
-        `want ${JSON.stringify(stamp)}). Run: npm run katex:vendor`
-    );
+
+  const extra = listActual(outDir).filter(name => !expected.has(name));
+
+  if (missing.length || differing.length || extra.length) {
+    const say = (label, list) =>
+      list.length &&
+      console.error(
+        `  ${label}: ${list.slice(0, 5).join(", ")}` +
+          (list.length > 5 ? ` (+${list.length - 5} more)` : "")
+      );
+    console.error(`katex: public/katex does not match katex ${version}`);
+    say("missing", missing);
+    say("differs", differing);
+    say("unexpected", extra);
+    console.error("  Run: npm run katex:vendor");
     process.exit(1);
   }
-  console.log(`katex: public/katex up to date (${version})`);
+
+  console.log(
+    `katex: public/katex matches ${version} (${expected.size} files verified)`
+  );
   process.exit(0);
 }
 
 rmSync(outDir, { recursive: true, force: true });
 mkdirSync(join(outDir, "fonts"), { recursive: true });
-writeFileSync(join(outDir, "katex.min.css"), css);
-for (const font of fonts) {
-  writeFileSync(
-    join(outDir, "fonts", font),
-    readFileSync(join(katexDir, "dist/fonts", font))
-  );
+for (const [name, contents] of expected) {
+  writeFileSync(join(outDir, name), contents);
 }
-writeFileSync(join(outDir, "VERSION"), stamp);
-console.log(`katex: vendored ${version} (${fonts.length} woff2 faces)`);
+console.log(`katex: vendored ${version} (${expected.size} files)`);
