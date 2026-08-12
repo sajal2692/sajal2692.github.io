@@ -499,6 +499,16 @@
   .entry {
     @apply border-t border-skin-line py-4;
   }
+  /* Every hairline here separates one record from the next — except the first
+     one, which had nothing above it to separate and instead ran full-width
+     directly beneath the section heading, where it read as an underline on the
+     heading rather than as the top of a list. The section is already announced
+     three times over: the accent marker, the 28px serif, and 3.2rem of space
+     above it. Its padding goes with it, so the first record sits on the gap the
+     heading already set instead of 16px below it. */
+  .entry:first-child {
+    @apply border-t-0 pt-0;
+  }
   .entry-meta {
     @apply flex flex-wrap items-center gap-x-3 font-mono text-skin-muted;
     font-size: 0.75rem;
