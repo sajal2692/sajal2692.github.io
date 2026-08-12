@@ -7,8 +7,7 @@ featured: false
 draft: false
 tags:
   - machine-learning
-  - interviews
-  - machine-learning-from-scratch
+  - career
 description: "This post details the process of coding the K-Means Clustering algorithm from scratch using Python and NumPy. It's a great exercise for understanding the mechanics of this fundamental machine learning algorithm."
 canonicalURL: "" # Add if the article is published elsewhere
 ---

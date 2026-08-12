@@ -9,9 +9,6 @@ tags:
   - ai-engineering
   - ai-agents
   - llms
-  - mcp
-  - ai-integration
-  - software-architecture
 description: "A complete overview of Model Context Protocol (MCP) and how it solves the M×N integration problem in AI development by creating a standardized interface between AI applications and external tools."
 canonicalURL: ""
 ---

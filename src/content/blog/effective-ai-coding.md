@@ -7,10 +7,6 @@ featured: false
 draft: false
 tags:
   - ai-engineering
-  - ai-tools
-  - software-development
-  - productivity
-  - claude-code
   - ai-coding
 description: "A practical guide to working effectively with AI coding tools like Claude Code, covering mindset shifts, quality control strategies, and team collaboration workflows for modern software development."
 canonicalURL: ""

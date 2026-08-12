@@ -7,7 +7,6 @@ featured: true
 draft: false
 tags:
   - career
-  - reflections
   - ai-engineering
   - teaching
 description: "A reflection on a year of building AI products at a venture studio, teaching courses on O'Reilly, writing a viral blog post, and figuring things out."
