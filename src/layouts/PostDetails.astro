@@ -30,7 +30,7 @@ const {
   tags,
 } = post.data;
 
-const { Content, headings } = await render(post);
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
 
 const allPosts = await getCollection("blog");
 const relatedPosts = getRelatedPosts(allPosts, post.id);
@@ -50,6 +50,9 @@ const layoutProps = {
   canonicalURL,
   ogImage: ogUrl,
   scrollSmooth: true,
+  // remarkDetectMath sets this from the parsed tree, so it is true only where
+  // remark-math actually found math -- not wherever a `$` appears in prose.
+  hasMath: Boolean(remarkPluginFrontmatter.hasMath),
 };
 
 // getPostBody drops the injected "## Table of contents" heading, which would
@@ -71,14 +74,6 @@ const railHeadings = headings.filter(
 ---
 
 <Layout {...layoutProps}>
-  <!-- Add Katex Stylesheet to render Latex code correctly -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
-    integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ"
-    crossorigin="anonymous"
-  />
-
   <Header />
 
   <main id="main-content">
@@ -87,7 +82,7 @@ const railHeadings = headings.filter(
         class:list={["article-grid", { "has-rail": railHeadings.length > 0 }]}
       >
         <div class="post-nav" data-track="post-nav">
-          <a href="/posts" class="back-link">&larr; All posts</a>
+          <a href="/posts/" class="back-link">&larr; All posts</a>
         </div>
 
         {
@@ -234,13 +229,13 @@ const railHeadings = headings.filter(
     .article-grid.has-rail {
       grid-template-columns: minmax(0, theme("maxWidth.measure")) 14rem;
     }
-    .article-grid.has-rail .post-nav,
-    .article-grid.has-rail .article-main {
+    .article-grid.has-rail .post-nav {
       @apply mx-0;
     }
     /* Explicit placement because the rail now precedes the article in source
        order: auto-placement would drop it into the text column. */
     .article-grid.has-rail .article-main {
+      @apply mx-0;
       grid-column: 1;
       grid-row: 2;
     }

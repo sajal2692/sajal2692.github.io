@@ -216,7 +216,7 @@
     font-size: inherit;
   }
   /* Tables: hairline rows and a mono column head instead of a full grid of
-     borders. The scroll lives on a wrapper (added by rehypeScrollableRegions),
+     borders. The scroll lives on a wrapper (added by rehypeTableScroll),
      not on the table: `display: block` on the table itself would let a wide
      table scroll, but it also strips the table layout box and the implicit
      row/cell roles a screen reader navigates by, and its min-content width
@@ -552,7 +552,7 @@
   display: block;
   overflow-x: auto;
 }
-/* rehypeScrollableRegions moves shiki's tabindex here, onto the box that
+/* rehypeTableScroll moves shiki's tabindex here, onto the box that
    actually scrolls, so the ring has to come with it. */
 .prose pre.astro-code > code:focus-visible {
   outline: 2px dashed rgb(var(--color-accent));

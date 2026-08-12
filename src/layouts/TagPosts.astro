@@ -42,7 +42,7 @@ const { currentPage, totalPages, paginatedPosts, totalPosts, tag, tagName } =
     <ul data-track="posts-list">
       {
         paginatedPosts.map(({ data, id }) => (
-          <Card href={`/posts/${id}`} frontmatter={data} />
+          <Card href={`/posts/${id}/`} frontmatter={data} />
         ))
       }
     </ul>

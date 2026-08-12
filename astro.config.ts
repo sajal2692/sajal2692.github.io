@@ -4,6 +4,7 @@ import { unified } from "@astrojs/markdown-remark";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import remarkMath from "remark-math";
+import remarkDetectMath from "./src/utils/remarkDetectMath";
 import rehypeKatex from "rehype-katex";
 import rehypeTableScroll from "./src/utils/rehypeTableScroll";
 import sitemap from "@astrojs/sitemap";
@@ -33,7 +34,12 @@ export default defineConfig({
     "/posts/2": "/posts/",
     "/posts/3": "/posts/",
     "/posts/4": "/posts/",
-    // Page 1 of every tag was always a duplicate of the bare tag URL.
+    // Page 1 of every tag was always a duplicate of the bare tag URL. No
+    // trailing slash on the destination, unlike every other redirect here: a
+    // dynamic destination has to match a route pattern, and the route is
+    // `/tags/[tag]`, so `/tags/[tag]/` fails the build outright. The cost is
+    // that these land on the slashless URL and take GitHub Pages' own 301 to
+    // the canonical one — a second hop, on a legacy URL nothing links to.
     "/tags/[tag]/1": "/tags/[tag]",
     // Tags that ran past one page at the old 5-per-page setting.
     "/tags/ai-engineering/2": "/tags/ai-engineering/",
@@ -56,6 +62,11 @@ export default defineConfig({
           },
         ],
         remarkMath,
+        // After remarkMath: before it the math nodes do not exist yet, and every
+        // post would look math-free. Sets `hasMath` on remarkPluginFrontmatter,
+        // which PostDetails uses to load the KaTeX stylesheet only where there
+        // is math to style.
+        remarkDetectMath,
       ],
       rehypePlugins: [rehypeKatex, rehypeTableScroll],
     }),
