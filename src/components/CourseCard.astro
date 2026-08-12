@@ -1,5 +1,6 @@
 ---
 import {
+  courseDuration,
   formatSessionDate,
   formatSessionRange,
   upcomingSessions,
@@ -22,6 +23,10 @@ const { course, detail = "compact" } = Astro.props;
 
 const next = nextSession(course);
 const upcoming = detail === "full" ? upcomingSessions(course) : [];
+// Live courses had no length on the card at all, so "4 hours" read as something
+// only the on-demand course had — the one course you can start at any time was
+// also the only one telling you how much time to set aside.
+const duration = courseDuration(course);
 ---
 
 <li class="course-card">
@@ -33,7 +38,7 @@ const upcoming = detail === "full" ? upcomingSessions(course) : [];
   >
   <p class="course-meta">
     <span class="badge">{course.format}</span>
-    {course.duration && <span>{course.duration}</span>}
+    {duration && <span>{duration}</span>}
     {
       detail === "compact" && next && (
         <span>next {formatSessionDate(next)}</span>
