@@ -21,15 +21,12 @@ const courses = coursesByNextSession();
   description="O'Reilly courses on AI agents and RAG, guest lectures at Yale, and mentoring — taught by an engineer who ships the systems behind them."
 >
   <Header activeNav="teaching" />
-  <Main
-    pageTitle="Teaching"
-    pageDesc="These courses come from systems I have shipped — agent patterns running in production, not toy demos."
-  >
+  <Main pageTitle="Teaching">
     <section class="page-section" data-track="teaching-courses">
       <h2 class="section-heading">Courses</h2>
       <p class="section-intro">
-        Published through O'Reilly. Live sittings are listed with their next
-        dates; the on-demand course is available any time.
+        Courses published through O'Reilly, with upcoming live sessions listed
+        below.
       </p>
       <ul class="course-grid">
         {courses.map(course => <CourseCard course={course} detail="full" />)}
@@ -38,9 +35,6 @@ const courses = coursesByNextSession();
 
     <section class="page-section" data-track="teaching-talks">
       <h2 class="section-heading">Guest Lectures &amp; Talks</h2>
-      <p class="section-intro">
-        Invited into Yale's MGT 899 in 2025, and invited back in 2026.
-      </p>
       <ul class="entry-list">
         {
           TALKS.map(talk => (
@@ -78,21 +72,6 @@ const courses = coursesByNextSession();
           ))
         }
       </ul>
-    </section>
-
-    <!-- Names consulting directly rather than only handing it off: someone who
-         reaches this page already knows the work, and making them navigate to
-         About to find out that consulting is on the table loses them. About
-         still gets the fuller version, and the link is tracked so the handoff
-         is measurable. -->
-    <section class="page-section" data-track="teaching-contact">
-      <h2 class="section-label">Enquiries</h2>
-      <p class="section-intro">
-        For speaking, team workshops, or consulting work, email <a
-          href="mailto:contact@sajalsharma.com">contact@sajalsharma.com</a
-        >. There is more on what I take on over on <a href="/about/">About Me</a
-        >.
-      </p>
     </section>
   </Main>
   <Footer />
