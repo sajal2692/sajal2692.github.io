@@ -7,9 +7,9 @@
  * a palette the site itself no longer uses.
  */
 export const OG = {
-  paper: "#FAF9F5", // --color-fill
-  ink: "#1E1D1A", // --color-text-base
-  muted: "#6E6B62", // --color-muted
+  paper: "#FAFAFA", // --color-fill
+  ink: "#1C1C1C", // --color-text-base
+  muted: "#6B6B6B", // --color-muted
   accent: "#0D7085", // --color-accent
   serif: "IBM Plex Serif",
   mono: "IBM Plex Mono",
