@@ -14,6 +14,8 @@ export interface Props {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  /** Load the KaTeX stylesheet. Set by PostDetails for posts that have math. */
+  hasMath?: boolean;
 }
 
 const {
@@ -25,6 +27,7 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  hasMath = false,
 } = Astro.props;
 
 const socialImageURL = new URL(
@@ -124,6 +127,16 @@ const socialImageURL = new URL(
       type="font/woff2"
       crossorigin
     />
+
+    {
+      /* Self-hosted, and only on the posts that have math. It used to be a
+         jsdelivr link inside the layout slot — which put a render-blocking
+         stylesheet in the body, on all 18 posts, for the one that renders any
+         math. Vendored from the installed katex (scripts/vendor-katex.mjs) so
+         the CSS cannot drift from the version generating the markup, the way
+         the pinned 0.15.2 URL had drifted from 0.16.47. */
+      hasMath && <link rel="stylesheet" href="/katex/katex.min.css" />
+    }
 
     <meta name="theme-color" content="" />
 

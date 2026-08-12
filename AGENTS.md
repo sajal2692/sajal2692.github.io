@@ -36,6 +36,10 @@ npm run related:generate # Embed changed posts (needs OPENAI_API_KEY in .env) an
 npm run related:check    # Verify src/generated/related-posts.json is current (pure hashing, no API calls)
 npm run related:force    # Discard the embedding cache and re-embed everything
 npm run related:report   # Write per-pair calibration report to .cache/related-posts/report.json
+
+# KaTeX
+npm run katex:vendor # Re-copy the stylesheet + woff2 faces from the installed katex into public/katex
+npm run katex:check  # Verify public/katex matches the installed version (runs in build)
 ```
 
 **Pre-commit hooks:** Husky runs `related:check` (blocks commits when the related-posts artifact is stale or regenerated but unstaged) and `lint-staged` (auto-formats staged files with Prettier).
@@ -91,7 +95,7 @@ TailwindCSS with **CSS variable-based theming** for light/dark mode:
 ### Markdown Processing
 
 Configured in `astro.config.ts` using the `unified()` processor from `@astrojs/markdown-remark` (not Astro 7's default Sätteri processor) so the remark/rehype plugins keep working:
-- **Remark plugins**: `remark-toc` (table of contents), `remark-collapse` (collapsible sections), `remark-math` (LaTeX math)
+- **Remark plugins**: `remark-toc` (table of contents), `remark-collapse` (collapsible sections), `remark-math` (LaTeX math), `remarkDetectMath` (sets `hasMath` on `remarkPluginFrontmatter` — must stay *after* `remark-math`, or the math nodes it looks for do not exist yet)
 - **Rehype plugins**: `rehype-katex` (math rendering), `rehypeTableScroll` (wraps every table in a focusable, labelled scroll container — the table itself must stay `display: table` or it loses its row/cell roles and pushes the article column sideways)
 - **Syntax highlighting**: Shiki dual themes ("github-light" / "one-dark-pro"), swapped by CSS variables in `src/styles/base.css`. A `shikiConfig.transformers` entry moves shiki's `tabindex` from the `<pre>` onto `pre > code`, which is the element `base.css` makes the scroll port. Rehype plugins run *before* shiki, so anything touching shiki's output belongs in a transformer, not a plugin
 
@@ -148,6 +152,24 @@ GA4 loads as a plain async main-thread script in `Layout.astro`, gated on the bu
 - `link_section` comes from the nearest `data-track` container attribute (`header`, `footer`, `socials`, `share-links`, `related-posts`, `pagination`, `search-results`, `home-hero`, `courses`, `featured-posts`, `home-all-posts`, `home-all-teaching`, `teaching-courses`, `teaching-talks`, `teaching-mentorship`, `teaching-contact`, `posts-list`, `post-body`, `post-nav`, `post-tags`, `about`), falling back to `other`. When adding a new link-bearing section, put `data-track` on its container — never on individual anchors; `LinkButton.astro` does not forward extra props
 - Off-production hostnames log the payload via `console.debug("[link_click]", ...)` instead of sending — click through pages in the dev server to verify
 - Query from the terminal with the `ga4` CLI (see `.claude/skills/ga4-cli`), e.g. `ga4 report -m eventCount -d customEvent:link_section -f 'eventName==link_click' -r 28d`
+
+### KaTeX (math rendering)
+
+The stylesheet is self-hosted at `/katex/katex.min.css` and loaded **only on
+posts that contain math** — `remarkDetectMath` reads the parsed tree and sets
+`hasMath`, which `PostDetails.astro` passes to `Layout.astro` to emit the
+`<link>` in `<head>`. One of 18 posts uses math today; the old setup shipped a
+render-blocking jsdelivr link from the document *body* on all 18.
+
+`public/katex/` is vendored from the installed `katex` package by
+`scripts/vendor-katex.mjs`, woff2 only (324 KB; the woff/ttf fallbacks would
+triple it for browsers the site already does not serve). `npm run katex:check`
+runs as part of `npm run build` and **byte-compares all 22 files** against what
+a fresh vendor would produce, failing on a version bump, a deleted or truncated
+asset, or a stray file. It deliberately does not trust the `VERSION` marker: a
+stamp records which release was vendored, not that the bytes are still there,
+and a missing stylesheet would ship a post with unstyled math. Re-vendor with
+`npm run katex:vendor`.
 
 ### OG Image Generation
 The `/og.png.ts` endpoint dynamically generates Open Graph images. Custom templates live in `src/utils/og-templates/`.

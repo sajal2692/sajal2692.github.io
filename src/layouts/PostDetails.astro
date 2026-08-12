@@ -30,7 +30,7 @@ const {
   tags,
 } = post.data;
 
-const { Content, headings } = await render(post);
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
 
 const allPosts = await getCollection("blog");
 const relatedPosts = getRelatedPosts(allPosts, post.id);
@@ -50,6 +50,9 @@ const layoutProps = {
   canonicalURL,
   ogImage: ogUrl,
   scrollSmooth: true,
+  // remarkDetectMath sets this from the parsed tree, so it is true only where
+  // remark-math actually found math -- not wherever a `$` appears in prose.
+  hasMath: Boolean(remarkPluginFrontmatter.hasMath),
 };
 
 // getPostBody drops the injected "## Table of contents" heading, which would
@@ -71,14 +74,6 @@ const railHeadings = headings.filter(
 ---
 
 <Layout {...layoutProps}>
-  <!-- Add Katex Stylesheet to render Latex code correctly -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
-    integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ"
-    crossorigin="anonymous"
-  />
-
   <Header />
 
   <main id="main-content">
