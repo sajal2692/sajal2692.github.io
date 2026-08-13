@@ -171,6 +171,15 @@ stamp records which release was vendored, not that the bytes are still there,
 and a missing stylesheet would ship a post with unstyled math. Re-vendor with
 `npm run katex:vendor`.
 
+`katex` is a direct dependency pinned to an **exact** version, even though only
+`rehype-katex` imports it. Both properties are load-bearing: as a transitive
+dependency its version was set by `rehype-katex`'s own semver range, so any
+lockfile refresh could move it, and a caret range here would do the same on a
+fresh install. Either way `katex:check` fails the next build — including the
+unattended nightly one — with nothing in `package.json` to explain why. Bumping
+the pin is therefore a two-step change: raise the version, then
+`npm run katex:vendor` and commit the new bytes.
+
 ### OG Image Generation
 The `/og.png.ts` endpoint dynamically generates Open Graph images. Custom templates live in `src/utils/og-templates/`.
 
@@ -188,6 +197,8 @@ Both reuse `getSortedPosts`/`postFilter` (no draft/scheduled leakage) and share 
 - Sitemap auto-generated via `@astrojs/sitemap`
 - robots.txt dynamically generated in `src/pages/robots.txt.ts`
 - Canonical URLs supported via frontmatter
+- Internal links carry the trailing slash (`/posts/`, `/search/`, `/tags/rag/`). The build emits `index.html` per directory and the sitemap lists the slashed form, so a slashless link costs a GitHub Pages 301
+- **Retiring a URL means adding a redirect** in `astro.config.ts`. Anything the build has published is in the sitemap and gets indexed, so a removed page, a renamed slug, a changed `postPerPage`, or a folded tag turns live search results into 404s. The block there covers a legacy pre-Astro URL, a slug typo, the removed backprop page, the pagination URLs the redesign retired, and the 19 tags the taxonomy fold removed — each pointing at the tag that absorbed its posts. Dynamic redirects (`/tags/[tag]/1`) are enumerated from the destination route's `getStaticPaths`, so they only ever cover URLs that still exist; a retired one needs its own literal entry
 
 ## Development Workflow
 

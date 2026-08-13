@@ -89,8 +89,11 @@ const NAV_ITEMS = [
                  descendant rule: LinkButton's anchor is another component's
                  root, so it never receives this component's scope attribute and
                  such a rule silently matches nothing. -->
+            <!-- Trailing slash, like every NAV_ITEMS href: the build emits
+                 /search/ and the sitemap lists it, so the slashless form takes
+                 a GitHub Pages 301 on the way. This link is on all 38 pages. -->
             <LinkButton
-              href="/search"
+              href="/search/"
               className={`focus-outline flex p-3 transition-colors sm:p-1 ${
                 activeNav === "search"
                   ? "text-skin-base"
