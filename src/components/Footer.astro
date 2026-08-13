@@ -15,7 +15,20 @@ const { noMarginTop = false } = Astro.props;
 // primary nav has to advertise — tags left the nav in this redesign and would
 // otherwise be reachable only from the chips on a post. Echoing Writing,
 // Teaching and About down here just said the same three things twice.
+//
+// Contact is the one deliberate exception to that rule — it is in the header
+// too. The rule exists because echoing a *reading* destination here is dead
+// weight: someone at the end of a post does not need a second way to reach
+// Writing. Contact is not a place to read, it is the thing you do once you
+// have, and the header has scrolled 2,000px away by the time anyone finishes
+// one. Repeating it is the point, not an oversight.
+//
+// It replaced the "Email" mailto that used to render in the socials row beside
+// it — the address now lives on /contact, which can say what a mailto could
+// not. First in the row because it is the only destination among the three;
+// Tags and RSS are ways back into the writing.
 const FOOTER_NAV = [
+  { href: "/contact/", label: "Contact" },
   { href: "/tags/", label: "Tags" },
   { href: "/rss.xml", label: "RSS" },
 ];

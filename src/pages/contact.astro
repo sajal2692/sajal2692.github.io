@@ -1,0 +1,164 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import socialHref from "@utils/socialHref";
+import { CONTACT_EMAIL, SITE } from "@config";
+---
+
+<Layout
+  title={`Contact | ${SITE.title}`}
+  description="Get in touch about AI product work, teaching and workshops, technical publishing, and engineering roles."
+>
+  <Header activeNav="contact" />
+  <Main pageTitle="Contact">
+    <!-- One data-track for the page, on the container rather than the anchors —
+         `contact` is the registered GA4 dimension value. Both links here are
+         the same intent measured one way, and this is the number that answers
+         whether the page works: mailto clicks are the only signal an email-only
+         contact page can produce, since a send happens in a client we never
+         see. -->
+    <div data-track="contact">
+      <!-- An invitation rather than a taxonomy of enquiries. Location belongs
+           here because it is context about working together, not a fact that
+           needs its own metadata rail. "Around the world" also prevents the
+           Vancouver line from accidentally reading as a geographic limit. -->
+      <div class="contact-intro">
+        <p>
+          I'm open to thoughtful conversations about building AI products,
+          teaching and workshops, technical publishing, and engineering roles.
+          If my work seems relevant to something you're putting together, I'd be
+          glad to hear from you.
+        </p>
+        <p>
+          I'm based in Vancouver, British Columbia, and am happy to collaborate
+          with people and teams around the world.
+        </p>
+      </div>
+
+      <!-- Email remains the one dominant action; LinkedIn is available as a
+           quieter alternative underneath. Type and whitespace carry the
+           hierarchy here — enclosing these details with rules made them read
+           like a form or a separate content section.
+           The sentence introduces the address rather than following it: below
+           it, "Email is the best way to reach me" recommended a channel the
+           reader had already been shown. Above it, it is doing what it says —
+           and the two now read as one unit, which the spacing reflects. -->
+      <section class="page-section contact-details">
+        <!-- The site's own utility label, straight from base.css — the same
+             treatment the newsletter and /teaching's Private Workshops block
+             wear. Not a local copy: the whole reason this marker beat a bare
+             rule is that it is vocabulary the site already speaks, and a
+             hand-rolled lookalike here would be the drift that argument was
+             against.
+             `section` + h2 because this is now a genuinely labelled region
+             rather than a loose div; .page-section gives back the max-width and
+             padding base.css puts on every `section`. -->
+        <h2 class="section-label">Get in touch</h2>
+        <p class="contact-copy">
+          Email is the best way to reach me. A short note about who you are,
+          what you have in mind, and any relevant timing will help me respond.
+        </p>
+        <p class="contact-email">
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        </p>
+        <p class="contact-linkedin">
+          You can also find me on
+          <a href={socialHref("LinkedIn")}>LinkedIn</a>.
+        </p>
+      </section>
+    </div>
+  </Main>
+  <Footer />
+</Layout>
+
+<style>
+  /* This is prose, not a page deck: two first-person paragraphs make the page
+     feel like an invitation and let location carry the context it actually
+     has. It matches About's opening measure and type. */
+  .contact-intro {
+    @apply max-w-measure;
+  }
+  .contact-intro p {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .contact-intro p + p {
+    @apply mt-4;
+  }
+
+  /* The page's one structural break: the invitation above (whether to write)
+     and the mechanics below (how to). Every block on this page is 17px prose in
+     one ink, so without something here the two movements read as one column of
+     text — which is what happened when the gap was 32px against a 24px gap
+     inside the mechanics themselves. Two gaps that close read as the same gap.
+     The label above carries the break now; this gap sizes it. 48px is not a new
+     number — it is `.page-head`'s own mb-12, the space under the page title. So
+     the page spends one major-break value twice rather than inventing one here,
+     and its internal division stops reading as weaker than its opening. */
+  .contact-details {
+    @apply mt-12;
+  }
+  /* .section-label ships no margin of its own — the newsletter and /teaching
+     each set the gap under it, and neither agrees with the other (16px and
+     12px). 24px here rather than either: both of those sit under a single line
+     of intro text, where this one opens a three-part block and needs to read as
+     its heading rather than as a caption stuck to the first paragraph. */
+  .contact-details .section-label {
+    @apply mb-6;
+  }
+
+  /* First in the block, so .contact-details' own mt-8 sets the break above it
+     and this adds none. 1.0625rem matches the intro: both are first-person
+     prose in the same voice, and the 1px they used to sit apart read as drift
+     rather than as a rank — a step that small is not perceived as hierarchy,
+     only as inconsistency. */
+  .contact-copy {
+    @apply max-w-measure;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  /* Mono is useful here as well as characteristic: an address remains easy to
+     distinguish and copy. overflow-wrap is only a safeguard for very narrow
+     screens — the address measures 276px and the narrowest realistic column
+     (320px viewport) gives it 288px, so it holds one line everywhere it is
+     actually read; if it ever did fire it would break at an arbitrary
+     character rather than the @, which is the cost of keeping it.
+     mt-4 rather than the block gap above: the sentence introduces the address,
+     so the two are one unit and the space between them says so. */
+  .contact-email {
+    @apply mt-4 max-w-measure font-mono;
+    font-size: 1.25rem;
+    line-height: 1.45;
+  }
+  .contact-email a {
+    @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
+    border-bottom: 1px solid rgba(var(--color-accent), 0.4);
+    padding-bottom: 2px;
+    overflow-wrap: anywhere;
+  }
+  .contact-email a:hover {
+    border-bottom-color: rgb(var(--color-accent));
+  }
+
+  /* A peer of the copy above the address, not a footnote to it: same size, same
+     ink. LinkedIn is a second way to reach him rather than a lesser one, and
+     muting it said otherwise. Separation is left to the 28px above — position
+     does the work that colour was doing, without demoting the channel. */
+  .contact-linkedin {
+    @apply mt-6 max-w-measure;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  .contact-linkedin a {
+    @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
+    border-bottom: 1px solid rgba(var(--color-accent), 0.4);
+  }
+  .contact-linkedin a:hover {
+    border-bottom-color: rgb(var(--color-accent));
+  }
+</style>

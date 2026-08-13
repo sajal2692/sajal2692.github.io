@@ -31,6 +31,20 @@ export const LOGO_IMAGE = {
   height: 46,
 };
 
+/**
+ * The one place the address is written, read by /contact and by anything that
+ * needs to print or link it.
+ *
+ * It is deliberately not in SOCIALS. Socials.astro renders that list as an
+ * "Elsewhere" nav of outbound profiles under `data-track="socials"`, and the
+ * footer's Email entry has become a Contact link to /contact/ — an internal
+ * page, which is neither elsewhere nor a profile, and which GA4 should count
+ * against the footer rather than against the outbound profile row. The footer
+ * link therefore lives in Footer.astro's own FOOTER_NAV; only the address
+ * itself lives here.
+ */
+export const CONTACT_EMAIL = "contact@sajalsharma.com";
+
 export const SOCIALS: SocialObjects = [
   {
     label: "GitHub",
@@ -40,12 +54,6 @@ export const SOCIALS: SocialObjects = [
   {
     label: "LinkedIn",
     href: "https://linkedin.com/in/sajals",
-    active: true,
-  },
-  {
-    // "Email", not "Mail": it is a word in a row of words now, not an envelope.
-    label: "Email",
-    href: "mailto:contact@sajalsharma.com",
     active: true,
   },
 ];

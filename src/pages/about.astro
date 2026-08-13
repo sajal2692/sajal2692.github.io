@@ -3,22 +3,8 @@ import Layout from "@layouts/Layout.astro";
 import Main from "@layouts/Main.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import { SITE, SOCIALS } from "@config";
-
-/**
- * Profile URLs are read from SOCIALS rather than written out again: the footer
- * already links both on every page, and two copies of a vanity URL is one copy
- * too many. Thrown rather than skipped when an entry is missing or inactive —
- * a link that quietly stops rendering on About is the kind of thing nobody
- * notices for months, and a failed build is fixed in seconds.
- */
-function socialHref(label: string): string {
-  const social = SOCIALS.find(s => s.label === label && s.active);
-  if (!social) {
-    throw new Error(`about.astro: no active ${label} entry in SOCIALS`);
-  }
-  return social.href;
-}
+import socialHref from "@utils/socialHref";
+import { SITE } from "@config";
 
 /**
  * Roles, newest first. Inline rather than in `src/data/` because — unlike
@@ -207,12 +193,7 @@ const EDUCATION = [
            content in full, so naming consulting, speaking and workshops here
            too would be a second copy of it to keep in step; the sentence that
            did so was written when nowhere else answered the question. Mono, so
-           it closes the page the way the row under the intro opens it.
-           NOTE: /contact does not exist yet. This link 404s until the contact
-           page ships, which makes that page a blocker on merging this branch,
-           not a follow-up — /teaching dropped its own enquiries block earlier
-           in this pass, so the footer's Email link is the site's only working
-           route to him in the meantime. -->
+           it closes the page the way the row under the intro opens it. -->
       <p class="closing-line">
         <a href="/contact/">Get in touch</a>
       </p>

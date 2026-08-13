@@ -24,6 +24,7 @@ export const GET: APIRoute = async () => {
     // every link here costs a redirect hop and disagrees with the sitemap.
     `- [About Me](${new URL("about/", SITE.website).href}): About ${SITE.author} — background, experience, and work.`,
     `- [Teaching](${new URL("teaching/", SITE.website).href}): O'Reilly courses on AI agents and RAG, Yale guest lectures, and mentoring.`,
+    `- [Contact](${new URL("contact/", SITE.website).href}): How to reach ${SITE.author}, and the work he takes on.`,
     `- [Blog](${new URL("posts/", SITE.website).href}): All blog posts.`,
     `- [Full content](${new URL("llms-full.txt", SITE.website).href}): Every post's full text as markdown.`,
   ];
