@@ -57,13 +57,18 @@ const { currentPage, totalPages, paginatedPosts, totalPosts, tag, tagName } =
     }
   </style>
 
+  <!-- Both ends carry the trailing slash the rest of the site's internal links
+       do. Stepping back to page 1 lands on the bare tag URL, which is where
+       page 1 lives; `/tags/foo` without the slash would take a GitHub Pages 301
+       to get there. Nothing paginates at the current 20-per-page setting, so
+       this is arithmetic being kept correct for whenever something does. -->
   <Pagination
     {currentPage}
     {totalPages}
-    prevUrl={`/tags/${tag}${
-      currentPage - 1 !== 1 ? "/" + (currentPage - 1) : ""
+    prevUrl={`/tags/${tag}/${
+      currentPage - 1 !== 1 ? currentPage - 1 + "/" : ""
     }`}
-    nextUrl={`/tags/${tag}/${currentPage + 1}`}
+    nextUrl={`/tags/${tag}/${currentPage + 1}/`}
   />
 
   <Footer noMarginTop={totalPages > 1} />
