@@ -5,19 +5,27 @@ import LinkButton from "./LinkButton.astro";
 import LogoSVG from "@assets/logo";
 
 export interface Props {
-  activeNav?: "posts" | "teaching" | "about" | "search";
+  activeNav?: "posts" | "teaching" | "about" | "contact" | "search";
 }
 
 const { activeNav } = Astro.props;
 
-// Three destinations, in the order they matter: what I write, what I teach,
-// who I am. Tags left the nav — a tag index is a way to filter the writing,
-// not a fourth place to go — and is reachable from the footer and from the
-// tag chips on every post. Tag pages mark Writing active for that reason.
+// Four destinations, in the order they matter: what I write, what I teach,
+// who I am, how to reach me. Tags left the nav — a tag index is a way to filter
+// the writing, not another place to go — and is reachable from the footer and
+// from the tag chips on every post. Tag pages mark Writing active for that
+// reason.
+//
+// Contact is last because it is the one terminal item: the other three are
+// places to read and it is the thing you do once you have. It is in the nav at
+// all because the page's whole job is to be findable — a contact page nobody
+// can navigate to is only reachable by the people who were already going to
+// email anyway, which is the audience it is least meant for.
 const NAV_ITEMS = [
   { href: "/posts/", label: "Writing", key: "posts" },
   { href: "/teaching/", label: "Teaching", key: "teaching" },
   { href: "/about/", label: "About Me", key: "about" },
+  { href: "/contact/", label: "Contact", key: "contact" },
 ] as const;
 ---
 
@@ -164,8 +172,14 @@ const NAV_ITEMS = [
   }
   /* Element selectors, not a class: `.display-none` toggles the mobile menu and
      a class here would tie its specificity and win, leaving the menu open. */
+  /* sm:gap-4, not gap-5. At exactly 640px — the width where this row first goes
+     horizontal, so the tightest it is ever asked to be — the four labels, the
+     two controls and five 20px gaps needed ~443px of the ~433px between the
+     wordmark and the right edge, and "About Me" broke onto two lines to fit.
+     16px gaps buy back the 16px that costs. The band is only tight for the
+     ~20px above 640; every width past that has room to spare. */
   nav ul {
-    @apply mt-4 flex w-44 flex-col sm:ml-0 sm:mt-0 sm:w-auto sm:flex-row sm:items-center sm:gap-5;
+    @apply mt-4 flex w-44 flex-col sm:ml-0 sm:mt-0 sm:w-auto sm:flex-row sm:items-center sm:gap-4;
   }
   nav ul li {
     @apply flex items-center justify-center;
@@ -183,8 +197,13 @@ const NAV_ITEMS = [
      elsewhere: a whole row of links flashing teal on every pass of the mouse
      is exactly the noise this treatment is meant to remove.
      Mobile keeps 18px; there the menu is the only thing on screen. */
+  /* whitespace-nowrap is the actual guard, independent of the gap arithmetic
+     above: a nav label is one phrase and must never break inside itself. Without
+     it the row stays visually plausible while "About Me" silently splits, which
+     is how a fourth item got added without anyone noticing it had. Any future
+     label change now overflows visibly instead of wrapping quietly. */
   .nav-link {
-    @apply block w-full px-4 py-3 text-center text-lg font-medium text-skin-muted transition-colors hover:text-skin-base sm:w-auto sm:px-2 sm:py-1 sm:text-base;
+    @apply block w-full whitespace-nowrap px-4 py-3 text-center text-lg font-medium text-skin-muted transition-colors hover:text-skin-base sm:w-auto sm:px-2 sm:py-1 sm:text-base;
   }
   /* The active item is the one nav link in full ink; the accent is spent on the
      underline alone. */

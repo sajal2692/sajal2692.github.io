@@ -73,6 +73,29 @@ const courses = coursesByNextSession();
         }
       </ul>
     </section>
+
+    <!-- Restoring a route this page used to have. The Enquiries block was
+         removed ahead of /contact existing, which left the page most likely to
+         produce a workshop enquiry pointing nowhere but the footer.
+         It names the private-workshop offer here rather than only handing off,
+         which is the removed block's argument and still the right one: someone
+         who has read this far already knows the work, and making them navigate
+         elsewhere to discover that private sessions exist loses them.
+         `section-label`, not `section-heading` — a mono utility label is the
+         rank this block held before and the one the newsletter holds too. A
+         28px serif heading with an accent marker would announce a fourth
+         section of the page rather than close it.
+         data-track keeps the retired `teaching-contact` value rather than
+         taking a new one, so the numbers stay comparable to the old block's. -->
+    <section class="page-section contact-block" data-track="teaching-contact">
+      <h2 class="section-label">Private Workshops</h2>
+      <p class="section-intro">
+        I also run these courses as private sessions for engineering teams,
+        shaped around what the team is building. <a href="/contact/"
+          >Get in touch</a
+        > if that would be useful for yours.
+      </p>
+    </section>
   </Main>
   <Footer />
 </Layout>
@@ -122,6 +145,14 @@ const courses = coursesByNextSession();
     .course-grid > :global(.course-card:nth-child(-n + 2)) {
       @apply border-t-0 pt-0;
     }
+  }
+  /* .section-label carries no margin of its own — .section-heading's 3.2rem is
+     what sets every other boundary on this page, and a mono label deliberately
+     does not have it. So this block sets its own, and takes rather less than a
+     full section break: it closes the page rather than opening a fourth part
+     of it. Same reasoning, and the same value, as About's closing line. */
+  .contact-block {
+    margin-top: 2rem;
   }
   /* Only talks carry this: a sitting still ahead of the build date. */
   .badge {
