@@ -1,95 +1,60 @@
 import { SITE } from "@config";
 import type { CollectionEntry } from "astro:content";
+import { OG } from "./theme";
 
 export default (post: CollectionEntry<"blog">) => {
   return (
     <div
       style={{
-        background: "#fefbfb",
+        background: OG.paper,
         width: "100%",
         height: "100%",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        padding: "72px 80px",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: "-1px",
-          right: "-1px",
-          border: "4px solid #000",
-          background: "#ecebeb",
-          opacity: "0.9",
-          borderRadius: "4px",
-          display: "flex",
-          justifyContent: "center",
-          margin: "2.5rem",
-          width: "88%",
-          height: "80%",
-        }}
-      />
-
-      <div
-        style={{
-          border: "4px solid #000",
-          background: "#fefbfb",
-          borderRadius: "4px",
-          display: "flex",
-          justifyContent: "center",
-          margin: "2rem",
-          width: "88%",
-          height: "80%",
-        }}
-      >
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {/* The same short accent rule that opens a section on the site. */}
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            margin: "20px",
-            width: "90%",
-            height: "90%",
+            width: "64px",
+            height: "4px",
+            background: OG.accent,
+            marginBottom: "44px",
+          }}
+        />
+        <p
+          style={{
+            fontFamily: OG.serif,
+            fontWeight: 600,
+            fontSize: 64,
+            lineHeight: 1.18,
+            letterSpacing: "-1px",
+            color: OG.ink,
+            margin: 0,
+            maxHeight: "360px",
+            overflow: "hidden",
           }}
         >
-          <p
-            style={{
-              fontSize: 72,
-              fontWeight: "bold",
-              maxHeight: "84%",
-              overflow: "hidden",
-            }}
-          >
-            {post.data.title}
-          </p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-              marginBottom: "8px",
-              fontSize: 28,
-            }}
-          >
-            <span>
-              by{" "}
-              <span
-                style={{
-                  color: "transparent",
-                }}
-              >
-                "
-              </span>
-              <span style={{ overflow: "hidden", fontWeight: "bold" }}>
-                {post.data.author}
-              </span>
-            </span>
+          {post.data.title}
+        </p>
+      </div>
 
-            <span style={{ overflow: "hidden", fontWeight: "bold" }}>
-              {SITE.title}
-            </span>
-          </div>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontFamily: OG.mono,
+          fontSize: 24,
+          letterSpacing: "2px",
+          color: OG.muted,
+        }}
+      >
+        <span>{post.data.author.toUpperCase()}</span>
+        <span>{new URL(SITE.website).hostname.toUpperCase()}</span>
       </div>
     </div>
   );

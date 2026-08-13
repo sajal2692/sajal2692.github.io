@@ -1,5 +1,6 @@
 ---
 import { LOCALE, SITE } from "@config";
+import "@styles/fonts.css";
 import "@styles/base.css";
 
 const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
@@ -13,6 +14,8 @@ export interface Props {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  /** Load the KaTeX stylesheet. Set by PostDetails for posts that have math. */
+  hasMath?: boolean;
 }
 
 const {
@@ -24,6 +27,7 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  hasMath = false,
 } = Astro.props;
 
 const socialImageURL = new URL(
@@ -33,14 +37,20 @@ const socialImageURL = new URL(
 ---
 
 <!doctype html>
-<html
-  lang=`${LOCALE.lang ?? "en"}`
-  class={`${scrollSmooth && "scroll-smooth"}`}
->
+<!-- class:list rather than a template literal: `scrollSmooth && "scroll-smooth"`
+     evaluates to the boolean false when the prop is off, and interpolating that
+     stringified it, so every page has been shipping `class="false"`. class:list
+     drops the attribute entirely when there is nothing to put in it.
+     `||`, not `??`, for the language: config documents an empty string as the
+     way to take the default, and `??` only catches null and undefined. -->
+<html lang={LOCALE.lang || "en"} class:list={[{ "scroll-smooth": scrollSmooth }]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -81,20 +91,52 @@ const socialImageURL = new URL(
       )
     }
 
-    <!-- Twitter -->
+    <!-- X. The property names stay `twitter:*` — that is what the Card spec
+         defines and what X still reads; renaming them loses the rich preview. -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={socialImageURL} />
 
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Self-hosted type (src/styles/fonts.css). Only the faces every page
+         paints above the fold are preloaded; the italic and mono 500 still load
+         on demand. Mono 400 is on this list because the redesign made it the
+         metadata voice — the kicker above every article H1, the page kickers,
+         the hero CTAs, tags and footer links all paint it before first scroll,
+         so leaving it to be discovered by the CSS swapped that text mid-paint.
+         Files live in public/fonts so these URLs stay stable and preloadable. -->
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/source-sans-3-latin-wght.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
+    <link
+      rel="preload"
+      href="/fonts/ibm-plex-serif-latin-600.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/ibm-plex-mono-latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {
+      /* Self-hosted, and only on the posts that have math. It used to be a
+         jsdelivr link inside the layout slot — which put a render-blocking
+         stylesheet in the body, on all 18 posts, for the one that renders any
+         math. Vendored from the installed katex (scripts/vendor-katex.mjs) so
+         the CSS cannot drift from the version generating the markup, the way
+         the pinned 0.15.2 URL had drifted from 0.16.47. */
+      hasMath && <link rel="stylesheet" href="/katex/katex.min.css" />
+    }
 
     <meta name="theme-color" content="" />
 

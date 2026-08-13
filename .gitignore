@@ -31,6 +31,9 @@ pnpm-debug.log*
 # local agent tooling (launch config, local permissions, worktrees)
 .claude/
 
+# local working notes (agent proposals, scratch docs — not published)
+.notes/
+
 # yarn
 .yarn/*
 !.yarn/patches

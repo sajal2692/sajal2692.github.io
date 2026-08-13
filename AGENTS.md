@@ -36,6 +36,10 @@ npm run related:generate # Embed changed posts (needs OPENAI_API_KEY in .env) an
 npm run related:check    # Verify src/generated/related-posts.json is current (pure hashing, no API calls)
 npm run related:force    # Discard the embedding cache and re-embed everything
 npm run related:report   # Write per-pair calibration report to .cache/related-posts/report.json
+
+# KaTeX
+npm run katex:vendor # Re-copy the stylesheet + woff2 faces from the installed katex into public/katex
+npm run katex:check  # Verify public/katex matches the installed version (runs in build)
 ```
 
 **Pre-commit hooks:** Husky runs `related:check` (blocks commits when the related-posts artifact is stale or regenerated but unstaged) and `lint-staged` (auto-formats staged files with Prettier).
@@ -83,15 +87,17 @@ Blog posts live in `src/content/blog/` as Markdown files, loaded with the `glob(
 TailwindCSS with **CSS variable-based theming** for light/dark mode:
 - Uses `--color-*` CSS variables (e.g., `--color-text-base`, `--color-accent`)
 - Custom `withOpacity()` function for RGBA color utilities
-- Access via `skin-*` utility classes (e.g., `text-skin-base`, `bg-skin-fill`)
-- Custom breakpoint: only `sm: 640px` defined
+- Access via `skin-*` utility classes (e.g., `text-skin-base`, `bg-skin-fill`). Only the scales `tailwind.config.cjs` extends exist — `text`, `bg`, `border`, `outline`. There is deliberately no `fill`/`stroke` scale, so `fill-skin-*` silently compiles to nothing
+- Custom breakpoints: `sm: 640px` and `lg: 67.5rem` (the second gates the article's TOC rail, which needs measure + gap + rail to fit; it is in `rem` so it scales with the reader's font size)
+- Self-hosted type in `src/styles/fonts.css` (IBM Plex Serif display, Source Sans 3 body, IBM Plex Mono metadata/code), with the above-the-fold faces preloaded in `Layout.astro`
+- The measure/content/shell widths are named `maxWidth` tokens, not ad-hoc values. Note that `mx-auto` on a grid item turns off `stretch` and makes it shrink-to-fit — pair it with `w-full` or a wide code block will size the column
 
 ### Markdown Processing
 
 Configured in `astro.config.ts` using the `unified()` processor from `@astrojs/markdown-remark` (not Astro 7's default Sätteri processor) so the remark/rehype plugins keep working:
-- **Remark plugins**: `remark-toc` (table of contents), `remark-collapse` (collapsible sections), `remark-math` (LaTeX math)
-- **Rehype plugins**: `rehype-katex` (math rendering)
-- **Syntax highlighting**: Shiki dual themes ("github-light" / "one-dark-pro"), swapped by CSS variables in `src/styles/base.css`
+- **Remark plugins**: `remark-toc` (table of contents), `remark-collapse` (collapsible sections), `remark-math` (LaTeX math), `remarkDetectMath` (sets `hasMath` on `remarkPluginFrontmatter` — must stay *after* `remark-math`, or the math nodes it looks for do not exist yet)
+- **Rehype plugins**: `rehype-katex` (math rendering), `rehypeTableScroll` (wraps every table in a focusable, labelled scroll container — the table itself must stay `display: table` or it loses its row/cell roles and pushes the article column sideways)
+- **Syntax highlighting**: Shiki dual themes ("github-light" / "one-dark-pro"), swapped by CSS variables in `src/styles/base.css`. A `shikiConfig.transformers` entry moves shiki's `tabindex` from the `<pre>` onto `pre > code`, which is the element `base.css` makes the scroll port. Rehype plugins run *before* shiki, so anything touching shiki's output belongs in a transformer, not a plugin
 
 ### Utility Functions (`src/utils/`)
 
@@ -102,25 +108,33 @@ Configured in `astro.config.ts` using the `unified()` processor from `@astrojs/m
 - `postFilter()`: Filter logic for draft/scheduled posts
 - `slugify()`: Convert strings to URL-safe slugs
 - `getPagination()`: Calculate pagination boundaries
-- `generateOgImages.tsx`: Generate Open Graph images with Satori
+- `formatPostDate()`: The site's one post-date format (UTC-pinned, `LOCALE.langTag`). Every surface printing a post date goes through it
+- `getReadingTime()`: Reading-time estimate for the article kicker
+- `generateOgImages.tsx`: Generate Open Graph images with Satori. Templates in `src/utils/og-templates/`; their palette mirrors the light theme via `og-templates/theme.ts` and must be kept in step with `base.css`
+- `rehypeTableScroll.ts`: The table-wrapping rehype plugin described above
 
 ### Component Structure
 
 **Layout Components:**
 - `Layout.astro`: Base layout with SEO, analytics (Google Analytics gtag on the main thread, plus the delegated `link_click` listener)
-- `Main.astro`: Main content wrapper
-- `PostDetails.astro`: Blog post layout
-- `Posts.astro`: Blog listing layout
-- `AboutLayout.astro`: About page layout
+- `Main.astro`: Main content wrapper — owns the page title/kicker/deck block every non-article page renders through
+- `PostDetails.astro`: Blog post layout, including the article grid and the sticky TOC rail. The rail sits *before* the article in source order (tab order) and is placed into the right column with explicit `grid-column`/`grid-row`
+- `TagPosts.astro`: Tag listing layout
+
+There is no `Posts.astro` or `AboutLayout.astro`: the archive is `src/pages/posts/index.astro` and About is `src/pages/about.astro`, both rendering through `Main.astro`.
 
 **Key Components:**
 - `Header.astro`: Navigation with hamburger menu
 - `Search.tsx`: Client-side search using Fuse.js
 - `Card.tsx`: Blog post preview cards
+- `CourseCard.astro`: Shared course card, used by both the homepage and `/teaching` so the two cannot drift
 - `Datetime.tsx`: Formatted datetime display
 - `Newsletter.astro`: Newsletter signup form
 - `RelatedPosts.astro`: Static "Related Posts" section on post pages (hidden when empty)
 - `Tag.astro`: Tag display component
+
+**Data:**
+- `src/data/teaching.ts`: The single source of truth for courses, talks and mentoring. Session visibility is computed against build time, so the site needs a scheduled rebuild for expiries to take effect (see the deploy workflow's `schedule` trigger)
 
 ## Important Notes
 
@@ -135,9 +149,36 @@ Each post page shows up to 3 related posts (5 stored), precomputed at authoring 
 
 ### Analytics (GA4 link-click tracking)
 GA4 loads as a plain async main-thread script in `Layout.astro`, gated on the build-time `GA_TRACKING_ID` env var and a runtime `sajalsharma.com` hostname check (Partytown was removed: its worker transport dropped most events, and main-thread cost measured at 0 Lighthouse points / +9-14ms TBT). A delegated listener in `Layout.astro` fires a `link_click` event for every anchor click (`click` + middle-click `auxclick`; same-document hash jumps skipped) with params `link_section`, `link_url`, `link_domain`, `link_text`, `outbound` — the last four reuse Enhanced Measurement's names so GA4's built-in dimensions pick them up; `link_section` is a registered event-scoped custom dimension:
-- `link_section` comes from the nearest `data-track` container attribute (`header`, `footer`, `socials`, `share-links`, `related-posts`, `pagination`, `breadcrumbs`, `search-results`, `home-hero`, `courses`, `featured-posts`, `home-all-posts`, `posts-list`, `post-body`, `post-tags`, `about`), falling back to `other`. When adding a new link-bearing section, put `data-track` on its container — never on individual anchors; `LinkButton.astro` does not forward extra props
+- `link_section` comes from the nearest `data-track` container attribute (`header`, `footer`, `socials`, `share-links`, `related-posts`, `pagination`, `search-results`, `home-hero`, `courses`, `featured-posts`, `home-all-posts`, `home-all-teaching`, `teaching-courses`, `teaching-talks`, `teaching-mentorship`, `teaching-contact`, `posts-list`, `post-body`, `post-nav`, `post-tags`, `about`, `contact`), falling back to `other`. When adding a new link-bearing section, put `data-track` on its container — never on individual anchors; `LinkButton.astro` does not forward extra props
 - Off-production hostnames log the payload via `console.debug("[link_click]", ...)` instead of sending — click through pages in the dev server to verify
 - Query from the terminal with the `ga4` CLI (see `.claude/skills/ga4-cli`), e.g. `ga4 report -m eventCount -d customEvent:link_section -f 'eventName==link_click' -r 28d`
+
+### KaTeX (math rendering)
+
+The stylesheet is self-hosted at `/katex/katex.min.css` and loaded **only on
+posts that contain math** — `remarkDetectMath` reads the parsed tree and sets
+`hasMath`, which `PostDetails.astro` passes to `Layout.astro` to emit the
+`<link>` in `<head>`. One of 18 posts uses math today; the old setup shipped a
+render-blocking jsdelivr link from the document *body* on all 18.
+
+`public/katex/` is vendored from the installed `katex` package by
+`scripts/vendor-katex.mjs`, woff2 only (324 KB; the woff/ttf fallbacks would
+triple it for browsers the site already does not serve). `npm run katex:check`
+runs as part of `npm run build` and **byte-compares all 22 files** against what
+a fresh vendor would produce, failing on a version bump, a deleted or truncated
+asset, or a stray file. It deliberately does not trust the `VERSION` marker: a
+stamp records which release was vendored, not that the bytes are still there,
+and a missing stylesheet would ship a post with unstyled math. Re-vendor with
+`npm run katex:vendor`.
+
+`katex` is a direct dependency pinned to an **exact** version, even though only
+`rehype-katex` imports it. Both properties are load-bearing: as a transitive
+dependency its version was set by `rehype-katex`'s own semver range, so any
+lockfile refresh could move it, and a caret range here would do the same on a
+fresh install. Either way `katex:check` fails the next build — including the
+unattended nightly one — with nothing in `package.json` to explain why. Bumping
+the pin is therefore a two-step change: raise the version, then
+`npm run katex:vendor` and commit the new bytes.
 
 ### OG Image Generation
 The `/og.png.ts` endpoint dynamically generates Open Graph images. Custom templates live in `src/utils/og-templates/`.
@@ -156,6 +197,8 @@ Both reuse `getSortedPosts`/`postFilter` (no draft/scheduled leakage) and share 
 - Sitemap auto-generated via `@astrojs/sitemap`
 - robots.txt dynamically generated in `src/pages/robots.txt.ts`
 - Canonical URLs supported via frontmatter
+- Internal links carry the trailing slash (`/posts/`, `/search/`, `/tags/rag/`). The build emits `index.html` per directory and the sitemap lists the slashed form, so a slashless link costs a GitHub Pages 301
+- **Retiring a URL means adding a redirect** in `astro.config.ts`. Anything the build has published is in the sitemap and gets indexed, so a removed page, a renamed slug, a changed `postPerPage`, or a folded tag turns live search results into 404s. The block there covers a legacy pre-Astro URL, a slug typo, the removed backprop page, the pagination URLs the redesign retired, and the 19 tags the taxonomy fold removed — each pointing at the tag that absorbed its posts. Dynamic redirects (`/tags/[tag]/1`) are enumerated from the destination route's `getStaticPaths`, so they only ever cover URLs that still exist; a retired one needs its own literal entry
 
 ## Development Workflow
 

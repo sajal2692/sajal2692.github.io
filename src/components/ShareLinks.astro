@@ -16,9 +16,13 @@ const shareLinks = [
     linkTitle: `Share this post on Facebook`,
   },
   {
-    name: "Twitter",
-    href: "https://twitter.com/intent/tweet?url=",
-    linkTitle: `Tweet this post`,
+    // The mark, the destination and the label move together: an X glyph over a
+    // twitter.com link reading "Tweet this post" would be three different eras
+    // in one button. /intent/post is the current web intent; /intent/tweet
+    // still redirects, but there is no reason to ship the hop.
+    name: "X",
+    href: "https://x.com/intent/post?url=",
+    linkTitle: `Share this post on X`,
   },
   {
     name: "Telegram",
@@ -39,13 +43,17 @@ const shareLinks = [
 ---
 
 <div class={`social-icons`} data-track="share-links">
-  <span class="italic">Share this post on:</span>
+  <!-- mono, not italic: same metadata voice as the kicker, dates and tags -->
+  <span class="share-label">Share this post</span>
+  <!-- Same treatment as the footer socials: one line set, muted resolving to
+       ink, no rotate. The scale-90 went with it — these are the same marks at
+       the same size everywhere they appear. -->
   <div class="flex flex-wrap items-center justify-center gap-1">
     {
       shareLinks.map(social => (
         <LinkButton
           href={`${social.href + URL}`}
-          className="scale-90 p-2 hover:rotate-6 sm:p-1"
+          className="p-3 text-skin-muted transition-colors hover:text-skin-base sm:p-1"
           title={social.linkTitle}
         >
           <Fragment set:html={socialIcons[social.name]} />
@@ -61,5 +69,11 @@ const shareLinks = [
      per-link utilities are passed via className above. */
   .social-icons {
     @apply flex flex-col flex-wrap items-center justify-center gap-1 sm:items-start;
+  }
+  .share-label {
+    @apply font-mono text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 </style>

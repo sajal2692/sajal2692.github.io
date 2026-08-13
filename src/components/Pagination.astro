@@ -10,34 +10,64 @@ export interface Props {
 
 const { currentPage, totalPages, prevUrl, nextUrl } = Astro.props;
 
-const prev = currentPage > 1 ? "" : "disabled";
-const next = currentPage < totalPages ? "" : "disabled";
+const prevDisabled = currentPage <= 1;
+const nextDisabled = currentPage >= totalPages;
+
+// Utilities, not a scoped `.disabled` class: these land on LinkButton's own
+// root element, which never receives this component's scope attribute — so the
+// scoped rule that was meant to dim a dead arrow matched nothing, and both
+// arrows have been rendering at full strength. Dimming the anchor now dims the
+// icon with it, since the icon draws in the anchor's colour.
+const arrowClass = (disabled: boolean) =>
+  `flex select-none items-center gap-1.5 transition-colors ${
+    disabled
+      ? "pointer-events-none text-skin-muted opacity-50"
+      : "text-skin-muted hover:text-skin-base"
+  }`;
 ---
 
 {
   totalPages > 1 && (
-    <nav class="pagination-wrapper" aria-label="Pagination" data-track="pagination">
+    <nav
+      class="pagination-wrapper"
+      aria-label="Pagination"
+      data-track="pagination"
+    >
       <LinkButton
-        disabled={prev === "disabled"}
+        disabled={prevDisabled}
         href={prevUrl}
-        className={`mr-4 select-none ${prev}`}
+        className={`mr-4 ${arrowClass(prevDisabled)}`}
         ariaLabel="Previous"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class={`${prev}-svg`}>
-          <path d="M12.707 17.293 8.414 13H18v-2H8.414l4.293-4.293-1.414-1.414L4.586 12l6.707 6.707z" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          class="icon"
+        >
+          <path d="M5 12l14 0" />
+          <path d="M5 12l4 4" />
+          <path d="M5 12l4 -4" />
         </svg>
         Prev
       </LinkButton>
-      {currentPage} / {totalPages}
+      <span class="counter">
+        {currentPage} / {totalPages}
+      </span>
       <LinkButton
-        disabled={next === "disabled"}
+        disabled={nextDisabled}
         href={nextUrl}
-        className={`ml-4 select-none ${next}`}
+        className={`ml-4 ${arrowClass(nextDisabled)}`}
         ariaLabel="Next"
       >
         Next
-        <svg xmlns="http://www.w3.org/2000/svg" class={`${next}-svg`}>
-          <path d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          class="icon"
+        >
+          <path d="M5 12l14 0" />
+          <path d="M15 16l4 -4" />
+          <path d="M15 8l4 4" />
         </svg>
       </LinkButton>
     </nav>
@@ -45,13 +75,16 @@ const next = currentPage < totalPages ? "" : "disabled";
 }
 
 <style>
+  /* Mono uppercase at 11px, like every other utility strip on the site — the
+     words were left in inherited 18px sans when the arrows became icons, and
+     the counter was the only ink in a row of muted. Tabular figures so the
+     page number does not shift width as it climbs. */
   .pagination-wrapper {
-    @apply mb-8 mt-auto flex justify-center;
+    @apply mb-8 mt-auto flex items-center justify-center font-mono uppercase text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
   }
-  .disabled {
-    @apply pointer-events-none select-none opacity-50 hover:text-skin-base group-hover:fill-skin-base;
-  }
-  .disabled-svg {
-    @apply group-hover:!fill-skin-base;
+  .counter {
+    font-variant-numeric: tabular-nums;
   }
 </style>

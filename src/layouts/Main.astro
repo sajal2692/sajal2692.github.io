@@ -1,48 +1,91 @@
 ---
-import Breadcrumbs from "@components/Breadcrumbs.astro";
+interface BaseProps {
+  pageDesc?: string;
+  /** Mono metadata line above the title; falsy entries are dropped. */
+  kicker?: (string | false | undefined | null)[];
+}
 
-interface StringTitleProp {
+export interface Props extends BaseProps {
   pageTitle: string;
-  pageDesc?: string;
+  /** View-transition name, when the title animates in from somewhere (a tag chip). */
+  titleTransition?: string;
 }
-
-interface ArrayTitleProp {
-  pageTitle: [string, string];
-  titleTransition: string;
-  pageDesc?: string;
-}
-
-export type Props = StringTitleProp | ArrayTitleProp;
 
 const { props } = Astro;
+const kicker = (props.kicker ?? []).filter(Boolean) as string[];
 ---
 
-<Breadcrumbs />
 <main id="main-content">
-  {
-    "titleTransition" in props ? (
-      <h1>
-        {props.pageTitle[0]}
-        <span transition:name={props.titleTransition}>
-          {props.pageTitle[1]}
-        </span>
-      </h1>
-    ) : (
-      <h1>{props.pageTitle}</h1>
-    )
-  }
-  <p>{props.pageDesc}</p>
+  <slot name="backlink" />
+  <header class="page-head">
+    {
+      kicker.length > 0 && (
+        <p class="page-kicker">
+          {kicker.map(item => (
+            <span>{item}</span>
+          ))}
+        </p>
+      )
+    }
+    {
+      props.titleTransition ? (
+        <h1 class="page-title" transition:name={props.titleTransition}>
+          {props.pageTitle}
+        </h1>
+      ) : (
+        <h1 class="page-title">{props.pageTitle}</h1>
+      )
+    }
+    {props.pageDesc && <p class="page-deck">{props.pageDesc}</p>}
+  </header>
   <slot />
 </main>
 
 <style>
+  /* Every list page — the archive, tags, a tag, search — shares this header, so
+     they speak in the same voice as an article: mono kicker, serif title,
+     upright deck. It was a 30px heading over an italic paragraph in a 768px
+     column, which is most of why the lists read as a different site.
+     The breadcrumb trail that used to sit above it is gone: at body size in
+     sans it outweighed the kicker directly beneath it, and said the same thing
+     the kicker and the header's active nav item already say. Pages that need a
+     way back up put a post-page-style link in the `backlink` slot. */
+  /* A centred content frame between the 40rem reading measure and the 61.5rem
+     site shell. Indexes, chip clouds and card grids need more room than prose,
+     but taking the full shell made every non-post page feel pinned beneath the
+     logo. Prose is still clamped per element (.page-deck here). */
   #main-content {
-    @apply mx-auto w-full max-w-3xl px-4 pb-4;
+    @apply mx-auto w-full max-w-content px-4 pb-4 pt-8 sm:px-6;
   }
-  #main-content h1 {
-    @apply text-2xl font-semibold sm:text-3xl;
+  .page-head {
+    @apply mb-12;
   }
-  #main-content p {
-    @apply mb-6 mt-2 italic;
+  .page-kicker {
+    @apply mb-4 flex flex-wrap gap-x-2 gap-y-1 font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .page-kicker span:not(:last-child)::after {
+    content: " ·";
+  }
+  /* A step under a post title (which clamps to 46px): a list page announces
+     itself without competing with the piece a reader came to read. */
+  .page-title {
+    @apply font-serif font-semibold;
+    font-size: 2.25rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.85rem;
+    text-wrap: balance;
+  }
+  /* Clamped where the shell is not: a deck is prose and reads at the same 81
+     characters an article does. */
+  .page-deck {
+    @apply max-w-measure text-skin-muted;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    text-wrap: pretty;
   }
 </style>

@@ -5,9 +5,17 @@ export const SITE: Site = {
   author: "Sajal Sharma",
   desc: "Internet home of Sajal Sharma — AI engineer and O'Reilly instructor specializing in agentic AI systems, LLMs, and machine learning.",
   title: "Sajal Sharma",
-  ogImage: "sajalsharma-og.png",
+  // The generated card (src/pages/og.png.ts -> og-templates/site.tsx), not the
+  // hand-made public/sajalsharma-og.png: that one is still the pre-redesign
+  // dark-navy-and-neon card, and its footer advertises "Blog · Courses · About",
+  // none of which are what the nav calls those pages any more. Generating it
+  // keeps every share card — site and per-post — in one visual language.
+  ogImage: "og.png",
   lightAndDarkMode: true,
-  postPerPage: 5,
+  // Tag pages only — the post archive is a single unpaginated index. 20 is
+  // above every tag's current count, so nothing splits today; the pagination
+  // machinery stays wired for when one genuinely grows past a page.
+  postPerPage: 20,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
 };
 
@@ -23,114 +31,29 @@ export const LOGO_IMAGE = {
   height: 46,
 };
 
-// TODO: Update Socials
+/**
+ * The one place the address is written, read by /contact and by anything that
+ * needs to print or link it.
+ *
+ * It is deliberately not in SOCIALS. Socials.astro renders that list as an
+ * "Elsewhere" nav of outbound profiles under `data-track="socials"`, and the
+ * footer's Email entry has become a Contact link to /contact/ — an internal
+ * page, which is neither elsewhere nor a profile, and which GA4 should count
+ * against the footer rather than against the outbound profile row. The footer
+ * link therefore lives in Footer.astro's own FOOTER_NAV; only the address
+ * itself lives here.
+ */
+export const CONTACT_EMAIL = "contact@sajalsharma.com";
+
 export const SOCIALS: SocialObjects = [
   {
-    name: "Github",
+    label: "GitHub",
     href: "https://github.com/sajal2692",
-    linkTitle: ` ${SITE.title} on Github`,
     active: true,
   },
   {
-    name: "LinkedIn",
+    label: "LinkedIn",
     href: "https://linkedin.com/in/sajals",
-    linkTitle: `${SITE.title} on LinkedIn`,
     active: true,
-  },
-  {
-    name: "Mail",
-    href: "mailto:contact@sajalsharma.com",
-    linkTitle: `Send an email to ${SITE.title}`,
-    active: true,
-  },
-  {
-    name: "Twitter",
-    href: "https://twitter.com/sajal2692",
-    linkTitle: `${SITE.title} on Twitter`,
-    active: false,
-  },
-  {
-    name: "Twitch",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Twitch`,
-    active: false,
-  },
-  {
-    name: "YouTube",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on YouTube`,
-    active: false,
-  },
-  {
-    name: "WhatsApp",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on WhatsApp`,
-    active: false,
-  },
-  {
-    name: "Snapchat",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Snapchat`,
-    active: false,
-  },
-  {
-    name: "Pinterest",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Pinterest`,
-    active: false,
-  },
-  {
-    name: "TikTok",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on TikTok`,
-    active: false,
-  },
-  {
-    name: "CodePen",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on CodePen`,
-    active: false,
-  },
-  {
-    name: "Discord",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Discord`,
-    active: false,
-  },
-  {
-    name: "GitLab",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on GitLab`,
-    active: false,
-  },
-  {
-    name: "Reddit",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Reddit`,
-    active: false,
-  },
-  {
-    name: "Skype",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Skype`,
-    active: false,
-  },
-  {
-    name: "Steam",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Steam`,
-    active: false,
-  },
-  {
-    name: "Telegram",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Telegram`,
-    active: false,
-  },
-  {
-    name: "Mastodon",
-    href: "https://github.com/satnaing/astro-paper",
-    linkTitle: `${SITE.title} on Mastodon`,
-    active: false,
   },
 ];

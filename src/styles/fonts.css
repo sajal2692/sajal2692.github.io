@@ -1,0 +1,91 @@
+/* ===== Self-hosted type =====
+   Latin subsets taken from Fontsource 5.3.0 and copied into public/fonts so the
+   critical faces can be preloaded from a stable, unhashed URL (Layout.astro):
+
+     @fontsource/ibm-plex-serif          ibm-plex-serif-latin-400-normal.woff2
+     @fontsource/ibm-plex-serif          ibm-plex-serif-latin-600-normal.woff2
+     @fontsource-variable/source-sans-3  source-sans-3-latin-wght-normal.woff2
+     @fontsource-variable/source-sans-3  source-sans-3-latin-wght-italic.woff2
+     @fontsource/ibm-plex-mono           ibm-plex-mono-latin-400-normal.woff2
+     @fontsource/ibm-plex-mono           ibm-plex-mono-latin-500-normal.woff2
+
+   136 KB for the six files, replacing a render-blocking Google Fonts request
+   that shipped six IBM Plex Mono styles where two are used.
+
+   Serif 400 exists for list rows, where 600 read as emphasis on every line. It
+   is deliberately not preloaded: the display weight is above the fold on every
+   page, this one only appears in post indexes.
+
+   No unicode-range: only the latin subset is shipped, so per-glyph fallback
+   already handles anything outside it, and every page needs latin anyway.
+
+   A size-adjust fallback face, because the measurement that said one was not
+   needed was taken at the wrong size. At 100px, system-ui sets the same string
+   1.0% wider than Source Sans 3 — which is where "~1%" came from. At 18px, the
+   size body copy actually renders at, it sets it 8.3% wider: San Francisco's
+   optical-size axis picks a wider design for text sizes, and the 100px sample
+   never saw it. 8.3% is enough to re-wrap paragraphs when the real face swaps
+   in, which is exactly the layout shift a fallback face exists to prevent.
+
+   Measured at 18px against Source Sans 3: Arial and Helvetica 93.2%, system-ui
+   92.4%, Helvetica Neue 91.9%. The face below is pinned to Arial rather than to
+   system-ui because size-adjust needs a font it can name — a keyword cannot be
+   metric-adjusted — and Arial is present on macOS and Windows alike, so one
+   number is right on both. Only widths are overridden: line boxes are driven by
+   the explicit line-height in base.css, not by the face's own metrics. */
+
+@font-face {
+  font-family: "Source Sans 3 Fallback";
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  size-adjust: 93.2%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("/fonts/source-sans-3-latin-wght.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: italic;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url("/fonts/source-sans-3-latin-wght-italic.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "IBM Plex Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-serif-latin-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Serif";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-serif-latin-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-latin-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-latin-500.woff2") format("woff2");
+}

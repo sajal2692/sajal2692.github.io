@@ -8,8 +8,7 @@ draft: false
 tags:
   - llms
   - nlp
-  - aws
-  - generative-ai
+  - machine-learning
 description: "This blog post guides you through the process of deploying StableLM models on AWS Sagemaker Endpoints, including creating a custom inference script and setting up the endpoint."
 canonicalURL: "" # Add if the article is published elsewhere
 ---

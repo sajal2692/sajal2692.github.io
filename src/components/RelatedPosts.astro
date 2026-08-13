@@ -16,10 +16,7 @@ const { posts } = Astro.props;
       aria-labelledby="related-posts-heading"
       data-track="related-posts"
     >
-      <h2
-        id="related-posts-heading"
-        class="border-l-4 border-skin-accent border-opacity-80 pl-4 text-2xl font-semibold"
-      >
+      <h2 id="related-posts-heading" class="section-heading">
         Read Next
       </h2>
       <ul>
@@ -36,12 +33,15 @@ const { posts } = Astro.props;
 }
 
 <style>
-  /* pt-12 gives the heading the same 48px rhythm article h2s get from
-     mt-12 (the article's last child carries no bottom margin). Cards below
-     bring their own my-6. px-0 cancels the global section px-4 (base.css),
-     which would double-pad inside main's own px-4 and shift the section
-     off the article edge. */
+  /* No padding at all: the step above this section belongs to .section-heading's
+     own margin (the same 3.2rem a .prose h2 gets), and padding here would block
+     the collapse and stack on top of it — margins never collapse into padding,
+     which is where the old 88px gap came from. px-0 also cancels the global
+     section px-4 (base.css), which would double-pad inside main's own px-4 and
+     shift the section off the article edge. */
   #related-posts {
-    @apply px-0 pb-2 pt-12;
+    @apply p-0;
   }
+  /* .section-heading lives in base.css @layer components, alongside the quieter
+     .section-label the newsletter below uses. */
 </style>

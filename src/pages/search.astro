@@ -23,7 +23,11 @@ const searchList = sortedPosts.map(({ data, id }) => ({
 
 <Layout title={`Search | ${SITE.title}`}>
   <Header activeNav="search" />
-  <Main pageTitle="Search" pageDesc="">
+  <Main
+    pageTitle="Search"
+    kicker={[`${sortedPosts.length} posts indexed`]}
+    pageDesc="Search titles and descriptions across everything published here."
+  >
     <SearchBar client:load searchList={searchList} />
   </Main>
   <Footer />

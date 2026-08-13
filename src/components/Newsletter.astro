@@ -1,8 +1,21 @@
 ---
+
 ---
 
-<section id="newsletter" class="mt-8 mb-8 p-0">
-  <p>Sign up to get updates on my latest posts, projects and insights on AI & ML. You'll only receive an email when I publish something new. 👇</p>
+<!-- mt-16 (collapsing with the last card's mb-8, so 64px) puts real distance
+     between the article's own sections and this one, which is page furniture. -->
+<!-- max-w-none/px-0 undo base.css's `section` container from this component's
+     own markup rather than from the page's. The homepage's
+     `#main-content > section` override cannot reach here: Astro scopes that
+     rule to index.astro's elements, and this root section carries this
+     component's scope id, so it kept the centred max-w-3xl and sat indented
+     inside a shell-width page. Inside a post it fills the measure column. -->
+<section id="newsletter" class="mb-8 mt-16 max-w-none px-0">
+  <h2 class="section-label">Newsletter</h2>
+  <p class="newsletter-intro">
+    Sign up to get updates on my latest posts, projects and insights on AI & ML.
+    You'll only receive an email when I publish something new.
+  </p>
   <div class="mt-4">
     <script src="https://f.convertkit.com/ckjs/ck.5.js" is:inline></script>
     <form
@@ -14,28 +27,47 @@
       data-uid="2d16cff56e"
       data-format="inline"
       data-version="5"
-      style="max-width: 700px; border-radius: 4px;">
+      style="max-width: 700px; border-radius: 4px;"
+    >
       <div style="padding: 0;">
-        <ul class="formkit-alert formkit-alert-error" data-element="errors" data-group="alert"></ul>
-        <div id="newsletter-form-fields" data-element="fields" data-stacked="false" class="flex items-center gap-2 mt-1">
+        <ul
+          class="formkit-alert formkit-alert-error"
+          data-element="errors"
+          data-group="alert"
+        >
+        </ul>
+        <div
+          id="newsletter-form-fields"
+          data-element="fields"
+          data-stacked="false"
+          class="mt-1 flex items-center gap-2"
+        >
           <div class="formkit-field flex-grow">
-            <input 
-              class="formkit-input w-full px-4 py-2 border border-gray-300 rounded-md" 
-              name="email_address" 
-              aria-label="Email Address" 
-              placeholder="Email Address" 
-              required 
-              type="email" 
+            <input
+              class="formkit-input w-full rounded-md border border-skin-line px-4 py-2"
+              name="email_address"
+              aria-label="Email Address"
+              placeholder="Email Address"
+              required
+              type="email"
             />
           </div>
-          <button 
-            data-element="submit" 
-            class="formkit-submit text-white font-medium py-2 px-4 rounded-md transition-colors subscribe-btn">
+          <button
+            data-element="submit"
+            class="formkit-submit subscribe-btn rounded-md px-4 py-2 font-medium transition-colors"
+          >
             <span>Subscribe</span>
           </button>
         </div>
-        <div id="success-message" class="hidden mt-4 p-3 rounded-md success-msg">
-          <p class="text-center">Thanks for subscribing! <strong>Please check your email to confirm your subscription.</strong></p>
+        <div
+          id="success-message"
+          class="success-msg mt-4 hidden rounded-md p-3"
+        >
+          <p class="text-center">
+            Thanks for subscribing! <strong
+              >Please check your email to confirm your subscription.</strong
+            >
+          </p>
         </div>
       </div>
     </form>
@@ -43,82 +75,73 @@
 </section>
 
 <style>
+  /* Everything here is token-driven — the form used to hardcode five hex values
+     (two blues, two greens and a grey) that matched neither theme. */
+  /* The measure, no 52ch clamp: the tighter clamp broke two sentences into
+     three short ragged lines under a 28px heading. max-w-measure is a no-op
+     inside a post (that column already is the measure) and does the work on
+     the homepage, where this sits in a shell-width column. */
+  .newsletter-intro {
+    @apply mt-4 max-w-measure;
+    text-wrap: pretty;
+  }
   .subscribe-btn {
-    background-color: #006CAC;
+    background-color: rgb(var(--color-accent));
+    color: rgb(var(--color-fill));
   }
   .subscribe-btn:hover {
-    background-color: #005a8e;
+    background-color: rgba(var(--color-accent), 0.88);
   }
-  
-  /* Input styles */
+
   .formkit-input {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: rgb(var(--color-fill));
+    color: rgb(var(--color-text-base));
   }
-  
-  /* Dark mode styles */
-  html[data-theme="dark"] .subscribe-btn {
-    background-color: #149231;
+  /* Full-strength muted, not 0.9: the alpha composited to 4.13:1 on the light
+     paper, under WCAG AA for this 18px field. Muted on its own is 5.06:1. */
+  .formkit-input::placeholder {
+    color: rgb(var(--color-muted));
   }
-  html[data-theme="dark"] .subscribe-btn:hover {
-    background-color: #0d6b22;
-  }
-  
-  /* Success message styles */
+
+  /* Success state as a quiet accent tint rather than the old hardcoded greens,
+     which read as a different site in either theme. */
   .success-msg {
-    background-color: #f0fdf4;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-  }
-
-  html[data-theme="dark"] .success-msg {
-    background-color: rgba(20, 83, 45, 0.3);
-    color: #86efac;
-    border-color: #166534;
-  }
-
-  /* Dark mode input styles */
-  html[data-theme="dark"] .formkit-input {
-    background-color: #2A3550;
-    border-color: #3E4A6B;
-    color: #E4EDF3;
-  }
-  
-  html[data-theme="dark"] .formkit-input::placeholder {
-    color: #8996B5;
+    background-color: rgba(var(--color-accent), 0.08);
+    color: rgb(var(--color-text-base));
+    border: 1px solid rgba(var(--color-accent), 0.35);
   }
 </style>
 
 <script is:inline>
   // Wait for DOM to be fully loaded
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener("DOMContentLoaded", function () {
     // Find all newsletter forms on the page
-    const forms = document.querySelectorAll('#newsletter-form');
-    
+    const forms = document.querySelectorAll("#newsletter-form");
+
     forms.forEach(form => {
       // Handle form submissions
-      form.addEventListener('submit', function() {
+      form.addEventListener("submit", function () {
         // GA4 conversion event; gtag.js runs on the main thread (see
         // Layout.astro) and picks this up from the shared dataLayer.
         window.dataLayer = window.dataLayer || [];
         var gtag = function () {
           window.dataLayer.push(arguments);
         };
-        gtag('event', 'newsletter_signup');
+        gtag("event", "newsletter_signup");
 
         // Get the form fields and success message elements
-        const formFields = form.querySelector('#newsletter-form-fields');
-        const successMessage = form.querySelector('#success-message');
-        
+        const formFields = form.querySelector("#newsletter-form-fields");
+        const successMessage = form.querySelector("#success-message");
+
         // ConvertKit form submission handler
-        setTimeout(function() {
+        setTimeout(function () {
           // Check if the form was successfully submitted (no visible error message)
-          const errorEl = form.querySelector('.formkit-alert-error');
+          const errorEl = form.querySelector(".formkit-alert-error");
           if (errorEl && errorEl.children.length === 0) {
             // Hide the form fields and show the success message
             if (formFields && successMessage) {
-              formFields.style.display = 'none';
-              successMessage.classList.remove('hidden');
+              formFields.style.display = "none";
+              successMessage.classList.remove("hidden");
             }
           }
         }, 1000); // Short delay to allow form processing

@@ -8,7 +8,6 @@ draft: false
 tags:
   - ai-agents
   - ai-engineering
-  - sandboxing
   - llms
 description: "A guide to sandboxing AI agents: why an autonomous agent needs its own disposable computer, and the isolation tech underneath."
 canonicalURL: ""

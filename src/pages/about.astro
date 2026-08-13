@@ -1,0 +1,261 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import socialHref from "@utils/socialHref";
+import { SITE } from "@config";
+
+/**
+ * Roles, newest first. Inline rather than in `src/data/` because — unlike
+ * teaching, which the homepage and /teaching both render — nothing else on the
+ * site reads them. The shape mirrors a teaching entry so both pages render the
+ * same record: an org label, what I did there, the context, and the work.
+ *
+ * Years, not months, and one summary rather than bullets: a hiring manager gets
+ * a usable timeline here and the resume linked above carries the rest. Adding
+ * months would turn this into a second copy of that document, which is the one
+ * thing this page should not be.
+ *
+ * No company descriptor either. Each summary already establishes what the place
+ * was — the venture portfolio, the enterprise clients, the search product — so
+ * a line above it saying the same thing shorter was a label for something the
+ * reader had not read yet. It also carried "Temasek-backed" twice, which
+ * describes who funded a company rather than what the work was.
+ */
+const ROLES: {
+  org: string;
+  years: string;
+  role: string;
+  summary: string;
+}[] = [
+  {
+    org: "Liminal (formerly Menyala)",
+    years: "2024-2026",
+    role: "AI Engineer",
+    summary:
+      "Built AI products across the venture portfolio, including an investment copilot, an agentic search platform, and an AI underwriting system; led cross-functional delivery from architecture through implementation.",
+  },
+  {
+    org: "OneByZero",
+    years: "2023-2024",
+    role: "Lead AI Engineer",
+    summary:
+      "Led a six-person AI engineering team delivering LLM, retrieval, generative imaging, and forecasting systems for enterprise clients across Asia.",
+  },
+  {
+    org: "Splore (acquired by Model ML)",
+    years: "2023",
+    role: "Senior AI Engineer",
+    summary:
+      "Led the NLP team behind an AI search product, improving query understanding, retrieval quality, and the evaluation systems used to measure them.",
+  },
+  {
+    // The arrow is the literal character, not `&rarr;`: this string renders
+    // through an expression, so an HTML entity would print as its own source.
+    org: "Unscrambl",
+    years: "2017-2022",
+    role: "Machine Learning Engineer → Senior Machine Learning Engineer",
+    summary:
+      "Built NLP chatbots used across Southeast Asia, followed by natural-language interfaces that let people query business data without writing SQL.",
+  },
+  {
+    org: "Energy Umpire",
+    years: "2016-2017",
+    role: "Software Engineer",
+    summary:
+      "Built data-extraction and analytics tools for the Australian energy market.",
+  },
+];
+
+const EDUCATION = [
+  {
+    org: "University of Melbourne",
+    qualification: "Master of Information Technology",
+  },
+  {
+    org: "Bharatiya Vidyapeeth University",
+    qualification: "Bachelor of Computer Applications",
+  },
+];
+---
+
+<Layout
+  title={`About Me | ${SITE.title}`}
+  description="AI engineer and O'Reilly instructor: eight years building production machine learning — search ranking, NL2SQL, chatbots at scale, and lately agents and RAG."
+>
+  <Header activeNav="about" />
+  <!-- Title only: no kicker, no deck. "AI Engineer · O'Reilly Instructor" and
+       "Eight years of building machine learning systems…" both announced what
+       the two paragraphs and the four roles below them demonstrate, and this is
+       the one page on the site whose entire job is that demonstration. The
+       Layout description above still carries the same claims for search, which
+       has no records to read. -->
+  <Main pageTitle="About Me">
+    <!-- One data-track for the page, on the container rather than the anchors:
+         `about` is the registered GA4 dimension value and the sections below it
+         are one surface, not four. -->
+    <div data-track="about">
+      <div class="lede">
+        <p>
+          I'm an AI engineer interested in how AI can extend what people are
+          able to do, and in the engineering work required to turn that
+          potential into products people can use and rely on. My work has
+          spanned conversational systems, natural-language interfaces to data,
+          search and ranking, retrieval systems, and AI agents.
+        </p>
+        <p>
+          I've built products, led engineering teams, and worked with product
+          and business leaders to decide what should be built. I also create and
+          teach courses through O'Reilly, have guest lectured at Yale, and run
+          workshops for technical teams.
+        </p>
+      </div>
+
+      <!-- After the introduction rather than above it: the page opens by saying
+           what the work is, and these are where a reader goes once they want
+           the long version of it. Same mono voice the homepage gives its CTAs,
+           because they read as navigation rather than as prose. The resume was
+           a blockquote — the article's pull-quote component borrowed for a
+           utility link, which is why it used to announce itself louder than the
+           first paragraph of the page.
+           The resume carries the dates and titles this page deliberately leaves
+           out; LinkedIn is the same history somewhere it is attested; GitHub is
+           the work itself. -->
+      <p class="profile-links">
+        <a href="https://github.com/sajal2692/resume/blob/main/resume.pdf">
+          Resume (PDF)
+        </a>
+        <a href={socialHref("LinkedIn")}>LinkedIn</a>
+        <a href={socialHref("GitHub")}>GitHub</a>
+      </p>
+
+      <!-- No intro under the heading: it announced that the entries run newest
+           first, which the years already say, and apologised for what the list
+           leaves out, which nobody had asked about yet.
+           Three lines per entry, in the order a reader needs them: where and
+           when, what the role was, what the work was. -->
+      <section class="page-section">
+        <h2 class="section-heading">Work Experience</h2>
+        <ul class="entry-list">
+          {
+            ROLES.map(role => (
+              <li class="entry">
+                <p class="entry-meta">
+                  <span>{role.org}</span>
+                  <span>{role.years}</span>
+                </p>
+                <h3 class="entry-title">{role.role}</h3>
+                <p class="entry-summary">{role.summary}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- Summarised, not repeated. Every course, lecture and mentorship here
+           used to be retyped from /teaching, which renders them from
+           teaching.ts with live dates and upcoming badges — so this page was a
+           copy that could only ever go stale, and had already frozen two course
+           titles. It then carried counts instead, which went stale the same
+           way and disagreed with /teaching the moment that page dropped them.
+           Now it names the kinds of teaching and links out; /teaching owns
+           every course title, date and number. -->
+      <section class="page-section">
+        <h2 class="section-heading">Teaching</h2>
+        <p class="section-intro">
+          Through O'Reilly, I create and teach live and on-demand courses on AI
+          agents, retrieval, and agent development. I've also guest lectured at
+          Yale and mentored learners through Udacity and the University of
+          Melbourne. See my <a href="/teaching/"
+            >courses, talks, and mentoring</a
+          >.
+        </p>
+      </section>
+
+      <section class="page-section">
+        <h2 class="section-heading">Education</h2>
+        <ul class="entry-list">
+          {
+            EDUCATION.map(entry => (
+              <li class="entry">
+                <p class="entry-meta">
+                  <span>{entry.org}</span>
+                </p>
+                <h3 class="entry-title">{entry.qualification}</h3>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- A destination, not a paragraph. /contact owns the "what I take on"
+           content in full, so naming consulting, speaking and workshops here
+           too would be a second copy of it to keep in step; the sentence that
+           did so was written when nowhere else answered the question. Mono, so
+           it closes the page the way the row under the intro opens it. -->
+      <p class="closing-line">
+        <a href="/contact/">Get in touch</a>
+      </p>
+    </div>
+  </Main>
+  <Footer />
+</Layout>
+
+<style>
+  /* Mono, accent-underlined: the treatment the homepage gives its hero links,
+     so the two places this page offers a way onward read as navigation rather
+     than as prose. Local because they are this page's own — the shared
+     vocabulary it draws on (.page-section, .section-intro, .entry-*) lives in
+     base.css.
+     gap-x-6 is the homepage's own CTA spacing, so every mono link row on the
+     site is set the same way. */
+  .profile-links,
+  .closing-line {
+    @apply flex flex-wrap gap-x-6 gap-y-2 font-mono;
+    font-size: 0.875rem;
+  }
+  .profile-links a,
+  .closing-line a {
+    @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
+    border-bottom: 1px solid rgba(var(--color-accent), 0.4);
+    padding-bottom: 2px;
+  }
+  .profile-links a:hover,
+  .closing-line a:hover {
+    border-bottom-color: rgb(var(--color-accent));
+  }
+  /* mt-7 is the gap the homepage puts between its body copy and the same kind
+     of row. No bottom margin: the Work Experience heading below carries the
+     site's 3.2rem section margin, which collapses through to set that boundary
+     like every other one on the page. */
+  .profile-links {
+    @apply mt-7;
+  }
+
+  /* The page's opening prose, one step above the section summaries below it and
+     clamped to the measure like every other block of real prose on the site. */
+  .lede {
+    @apply max-w-measure;
+  }
+  .lede p {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .lede p + p {
+    @apply mt-4;
+  }
+  /* The one block on this page that is not a section, so it has no heading to
+     carry the site's 3.2rem section margin and has to set its own spacing. It
+     takes half of it: this is a closing link rather than a new section, and at
+     the full constant it read as a section whose contents had gone missing.
+     The bottom margin exists to balance the top one against the footer rule.
+     Main.astro's own pb-4 already puts 16px there, so 1rem here brings the gap
+     below to the 2rem above — if that padding ever changes, this number is what
+     goes out of step with it. */
+  .closing-line {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+</style>

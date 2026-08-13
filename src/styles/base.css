@@ -3,22 +3,47 @@
 @tailwind utilities;
 
 @layer base {
+  /* One accent across both themes (teal) on an achromatic surface.
+     Values and contrast ratios are recorded in .notes/claude/redesign-plan.md
+     under "Surface — true neutral".
+
+     The surface used to be #FAF9F5, which is Anthropic's brand Light value
+     exactly — on the token that paints ~90% of the page, that read as Claude's
+     app rather than as this site. The ramp is now achromatic end to end: every
+     grey measures C<=0.01 in CIELAB, against C=2.05 at H=100° (yellow) for the
+     old paper. Teal is the only chroma left on the page, which is the point —
+     the accent no longer competes with a tinted ground.
+
+     Chosen by eye against a cool-linen alternative (C=1.08 at H=272°) rendered
+     at full page size, not from swatches. Two things were weighed and
+     knowingly accepted rather than missed:
+       - #FAFAFA is the exact value of Tailwind zinc-50/neutral-50 and Material
+         Grey 50. It is a default rather than a brand, so it carries no other
+         product's identity — which was the actual problem with #FAF9F5.
+       - An achromatic ground has no chroma headroom, so it drifts warm under
+         True Tone / Night Shift where a faintly cool one would land near
+         neutral. Acceptable: the drift is ambient and affects every surface on
+         the display equally.
+     If this ever needs revisiting, move the whole ramp together — card, border
+     and code-fill carry the surface's character as much as the fill does. */
   :root,
   html[data-theme="light"] {
-    --color-fill: 251, 254, 251;
-    --color-text-base: 40, 39, 40;
-    --color-accent: 0, 108, 172;
-    --color-card: 230, 230, 230;
-    --color-card-muted: 205, 205, 205;
-    --color-border: 236, 233, 233;
+    --color-fill: 250, 250, 250; /* #FAFAFA neutral paper */
+    --color-text-base: 28, 28, 28; /* #1C1C1C ink  16.33:1 on fill */
+    --color-muted: 107, 107, 107; /* #6B6B6B  5.11:1 on fill, 4.68:1 on card */
+    --color-accent: 13, 112, 133; /* #0D7085  5.48:1 on fill, 5.02:1 on card */
+    --color-card: 240, 240, 240; /* #F0F0F0 */
+    --color-border: 223, 223, 223; /* #DFDFDF */
+    --color-code-fill: 242, 242, 242; /* #F2F2F2 */
   }
   html[data-theme="dark"] {
-    --color-fill: 33, 39, 55;
-    --color-text-base: 234, 237, 243;
-    --color-accent: 22, 219, 75;
-    --color-card: 52, 63, 96;
-    --color-card-muted: 138, 51, 2;
-    --color-border: 13, 122, 43;
+    --color-fill: 23, 23, 23; /* #171717 neutral ink-black */
+    --color-text-base: 232, 232, 232; /* #E8E8E8  14.63:1 on fill */
+    --color-muted: 154, 154, 154; /* #9A9A9A  6.37:1 on fill, 5.72:1 on card */
+    --color-accent: 90, 197, 214; /* #5AC5D6  8.87:1 on fill, 7.97:1 on card */
+    --color-card: 33, 33, 33; /* #212121 */
+    --color-border: 48, 48, 48; /* #303030 neutral, no more green hairlines */
+    --color-code-fill: 18, 18, 18; /* #121212 */
   }
   #sun-svg,
   html[data-theme="dark"] #moon-svg {
@@ -29,9 +54,20 @@
     display: block;
   }
   body {
-    /* font-sans can be changed to update the font of the whole body */
-    @apply flex min-h-[100svh] flex-col bg-skin-fill font-sans text-skin-base 
+    @apply flex min-h-[100svh] flex-col bg-skin-fill font-sans text-skin-base
     selection:bg-skin-accent selection:bg-opacity-70 selection:text-skin-inverted;
+    /* Body copy is 18px/1.72. Root stays at 16px so every rem-based Tailwind
+       size (text-sm, spacing, breakpoints) keeps its meaning. */
+    font-size: 1.125rem;
+    line-height: 1.72;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif font-semibold;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
   }
   section,
   footer {
@@ -41,60 +77,266 @@
     @apply outline-2 outline-offset-1 outline-skin-fill 
     focus-visible:no-underline focus-visible:outline-dashed;
   }
+  /* This rule used to also set `fill-skin-base` on every svg, which meant any
+     shape that named a fill token the Tailwind config never declared still
+     came out the right colour by inheritance — a blanket that hid the mistake
+     rather than a default anything should rely on. Every icon now carries
+     `.icon`, so nothing is left here but the display mode. */
   svg {
-    @apply inline-block h-6 w-6 fill-skin-base group-hover:fill-skin-accent;
+    @apply inline-block;
   }
-  svg.icon-tabler {
-    @apply inline-block h-6 w-6 scale-125 fill-transparent 
-    stroke-current stroke-2 opacity-90 group-hover:fill-transparent 
-    sm:scale-110;
+  /* ===== Article prose =====
+     Written as plain rules instead of prose-* variants: @tailwindcss/typography
+     wraps its own styles in :where(), which contributes no specificity, so
+     `.prose h2` wins outright and none of this needs !important. */
+  /* Size, leading, colour and max-width come from the typography plugin's own
+     theme (see tailwind.config.cjs) — set on `.prose` here they would lose. */
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    @apply font-semibold text-skin-base;
   }
-  .prose {
-    @apply prose-headings:!text-skin-base 
-    prose-h1:!text-3xl prose-h1:!font-bold prose-h1:!mb-6 prose-h1:!mt-8 prose-h1:!border-l-4 prose-h1:!border-skin-accent prose-h1:!pl-4
-    prose-h2:!text-2xl prose-h2:!font-semibold prose-h2:!mb-4 prose-h2:!mt-12 prose-h2:!border-l-4 prose-h2:!border-skin-accent prose-h2:!border-opacity-80 prose-h2:!pl-4
-    prose-h3:!text-xl prose-h3:!font-medium prose-h3:!mb-3 prose-h3:!mt-8 prose-h3:italic prose-h3:!border-l-4 prose-h3:!border-skin-accent prose-h3:!border-opacity-60 prose-h3:!pl-4
-    prose-h4:!text-lg prose-h4:!font-medium prose-h4:!mb-3 prose-h4:!mt-6 prose-h4:!border-l-4 prose-h4:!border-skin-accent prose-h4:!border-opacity-40 prose-h4:!pl-4
-    prose-h5:!text-base prose-h5:!font-medium prose-h5:!mb-2 prose-h5:!mt-4 prose-h5:!border-l-4 prose-h5:!border-skin-accent prose-h5:!border-opacity-30 prose-h5:!pl-4
-    prose-h6:!text-sm prose-h6:!font-medium prose-h6:!mb-2 prose-h6:!mt-4 prose-h6:!text-skin-base prose-h6:!opacity-75 prose-h6:!border-l-4 prose-h6:!border-skin-accent prose-h6:!border-opacity-20 prose-h6:!pl-4
-    prose-p:!text-skin-base 
-    prose-a:!text-skin-base prose-a:!decoration-dashed prose-a:underline-offset-8
-    hover:prose-a:text-skin-accent prose-blockquote:!border-l-skin-accent
-    prose-blockquote:border-opacity-50 prose-blockquote:opacity-80
-    prose-figcaption:!text-skin-base prose-figcaption:opacity-70
-    prose-strong:!text-skin-base
-
-    
-    prose-code:rounded prose-code:bg-skin-card 
-    prose-code:bg-opacity-75 prose-code:p-1 
-    prose-code:before:!content-none prose-code:after:!content-none
-    prose-ol:!text-skin-base 
-    prose-ul:overflow-x-clip prose-ul:!text-skin-base prose-li:marker:!text-skin-accent
-    prose-table:text-skin-base prose-th:border
-    prose-th:border-skin-line prose-td:border 
-    prose-td:border-skin-line prose-img:!my-2 
-    prose-img:mx-auto prose-img:border-2 
-    prose-img:border-skin-line prose-hr:!border-skin-line;
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    @apply font-serif;
   }
+  .prose h5,
+  .prose h6 {
+    @apply font-sans;
+    letter-spacing: 0;
+  }
+  /* The typography plugin zeroes the top margin of whatever follows an h2, h3 or
+     h4 — but not h1, h5 or h6 — so for those three each heading's own
+     margin-bottom is the entire gap to its body copy. The rule below extends the
+     same normalisation to them, otherwise a following paragraph's 1.25em (22.5px)
+     wins and an h5 label ends up with more space below it than above.
+     Values are deliberately asymmetric: more above than below. */
+  .prose h1 + *,
+  .prose h5 + *,
+  .prose h6 + * {
+    margin-top: 0;
+  }
+  .prose h1 {
+    font-size: 2rem;
+    line-height: 1.15;
+    margin: 2.5rem 0 1.1rem;
+  }
+  .prose h2 {
+    font-size: 1.75rem;
+    line-height: 1.2;
+    margin: 3.2rem 0 1.1rem;
+  }
+  .prose h3 {
+    font-size: 1.3125rem;
+    line-height: 1.3;
+    margin: 2.4rem 0 0.9rem;
+  }
+  .prose h4 {
+    font-size: 1.125rem;
+    line-height: 1.4;
+    margin: 2rem 0 0.8rem;
+  }
+  .prose h5,
+  .prose h6 {
+    font-size: 1rem;
+    margin: 1.6rem 0 0.7rem;
+  }
+  .prose h6 {
+    @apply text-skin-muted;
+  }
+  /* Major sections carry a short accent rule; every other level relies on size
+     and space. The old border-l-4 on h1-h6 is gone — when everything is
+     highlighted, nothing is. */
+  .prose h2::before {
+    content: "";
+    display: block;
+    width: 2.25rem;
+    height: 2px;
+    margin-bottom: 0.9rem;
+    background-color: rgb(var(--color-accent));
+  }
+  .prose p {
+    @apply text-skin-base;
+    text-wrap: pretty;
+  }
+  /* Ink links with a quiet accent underline; the dashed treatment now survives
+     only as the keyboard-focus state. */
   .prose a {
-    @apply break-words hover:!text-skin-accent;
+    @apply break-words text-skin-base;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: rgba(var(--color-accent), 0.5);
+    transition:
+      color 0.15s ease,
+      text-decoration-color 0.15s ease;
+  }
+  .prose a:hover {
+    @apply text-skin-accent;
+    text-decoration-color: rgb(var(--color-accent));
+  }
+  .prose strong {
+    @apply font-semibold text-skin-base;
+  }
+  .prose blockquote {
+    @apply border-l-2 border-skin-accent text-skin-muted;
+    border-left-color: rgba(var(--color-accent), 0.55);
+    font-style: italic;
+    opacity: 1;
+  }
+  .prose ol,
+  .prose ul {
+    @apply text-skin-base;
+  }
+  .prose ul {
+    @apply overflow-x-clip;
+  }
+  .prose li::marker {
+    color: rgba(var(--color-accent), 0.8);
+  }
+  .prose code {
+    @apply rounded border border-skin-line bg-skin-card font-mono;
+    font-size: 0.85em;
+    padding: 0.1em 0.35em;
+  }
+  .prose code::before,
+  .prose code::after {
+    content: none;
+  }
+  /* Fenced blocks own their background and padding; the inline-code chrome must
+     not leak into them. */
+  .prose pre code {
+    @apply border-0 bg-transparent p-0;
+    font-size: inherit;
+  }
+  /* Tables: hairline rows and a mono column head instead of a full grid of
+     borders. The scroll lives on a wrapper (added by rehypeTableScroll),
+     not on the table: `display: block` on the table itself would let a wide
+     table scroll, but it also strips the table layout box and the implicit
+     row/cell roles a screen reader navigates by, and its min-content width
+     still pushed the article column sideways instead of scrolling in place. */
+  .prose .table-scroll {
+    @apply w-full max-w-full overflow-x-auto;
+  }
+  /* The wrapper is focusable so the region can be scrolled from the keyboard;
+     without a ring that focus stop would be invisible. */
+  .prose .table-scroll:focus-visible {
+    @apply outline-dashed outline-2 outline-offset-2 outline-skin-fill;
+  }
+  .prose table {
+    @apply w-full text-skin-base;
+    border-collapse: collapse;
+    font-size: 0.95em;
+  }
+  .prose th {
+    @apply border-0 border-b border-skin-line text-left align-bottom font-mono font-medium text-skin-muted;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem;
+  }
+  .prose td {
+    @apply border-0 align-top;
+    border-bottom: 1px solid rgba(var(--color-border), 0.7);
+    padding: 0.7rem 0.75rem;
+  }
+  .prose tbody tr:last-child td {
+    @apply border-b-0;
   }
   .prose thead th:first-child,
-  tbody td:first-child,
-  tfoot td:first-child {
-    padding-left: 0.5714286em;
+  .prose tbody td:first-child {
+    padding-left: 0;
   }
+  .prose figure {
+    @apply my-8;
+  }
+  .prose figcaption {
+    @apply mt-3 text-center font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  /* Heading permalinks: visible on hover *and* on keyboard focus, which is why
+     they fade rather than display:none — a hidden element cannot be focused. */
+  .prose .heading-link {
+    @apply ml-2 font-normal text-skin-accent no-underline;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .prose :is(h2, h3, h4, h5, h6):hover .heading-link,
+  .prose .heading-link:focus-visible {
+    opacity: 1;
+  }
+  /* Without hover there is nothing to reveal it, and an opacity-0 link is still
+     the top hit target after the heading's last word — a phone reader tapping
+     near a heading would silently navigate. */
+  @media (hover: none) {
+    .prose .heading-link {
+      display: none;
+    }
+  }
+
+  /* remark-collapse emits empty <p> elements around AND inside its <details>;
+     left in the flow they add 22.5px of collapsed margin wherever they land,
+     which beat the panel's own spacing from inside it. */
+  .prose p:empty {
+    @apply hidden;
+  }
+
+  /* The in-body table of contents is the narrow-screen affordance; above the lg
+     breakpoint the sticky rail replaces it. */
   .prose h2#table-of-contents {
-    @apply mb-2;
+    @apply mb-4 mt-8 text-xl;
   }
+  .prose h2#table-of-contents::before {
+    @apply hidden;
+  }
+  .prose h2#table-of-contents + p + details {
+    /* block and selectable: .prose details is inline-block with user-select:none,
+       which turned this panel into an unselectable content-width chip instead of
+       something spanning the reading column. */
+    @apply block select-text rounded-md border border-skin-line px-4 py-3;
+  }
+  .prose h2#table-of-contents + p + details summary {
+    @apply cursor-pointer select-none font-mono text-sm text-skin-muted;
+  }
+  .prose h2#table-of-contents + p + details ul {
+    @apply mb-0 mt-3;
+  }
+  @media (min-width: theme("screens.lg")) {
+    .prose h2#table-of-contents,
+    .prose h2#table-of-contents + p + details {
+      @apply hidden;
+    }
+  }
+  .prose img {
+    @apply mx-auto my-2 border border-skin-line;
+  }
+  /* Raw embeds carry their own width attribute (one post ships a 960px slide
+     deck), which pushed the whole document sideways once the measure narrowed. */
+  .prose iframe,
+  .prose video,
+  .prose embed,
+  .prose object {
+    @apply mx-auto block max-w-full;
+  }
+  .prose hr {
+    @apply border-skin-line;
+  }
+  /* The TOC heading and panel are styled in one place above; a second
+     `mb-2` block used to sit here and quietly won on source order, and the
+     `+ p { hidden }` rule it sat beside is now covered by `.prose p:empty`. */
   .prose details {
     @apply inline-block cursor-pointer select-none text-skin-base;
   }
   .prose summary {
     @apply focus-outline;
-  }
-  .prose h2#table-of-contents + p {
-    @apply hidden;
   }
 
   /* ===== scrollbar ===== */
@@ -114,12 +356,12 @@
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    @apply bg-skin-card;
+    @apply bg-skin-line;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-skin-card-muted;
+    background-color: rgba(var(--color-muted), 0.45);
   }
 
   code,
@@ -131,9 +373,164 @@
     white-space: pre;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer components {
+  /* Every icon on the site: one 24 grid, one 1.5 stroke, no fill. Colour is
+     inherited from the parent's `color`, so an icon darkens with the link that
+     holds it instead of carrying a hover of its own — which is what let the
+     chrome hover two ways at once, links resolving to ink while the icons
+     beside them flashed accent. Nothing but this block decides how an icon
+     looks; the markup carries geometry only.
+
+     Global, not scoped, on purpose: an Astro child's root element never
+     receives the parent's scope attribute, so this is the only kind of rule
+     that can reach an icon injected through `set:html` or passed into
+     LinkButton's slot. */
+  .icon {
+    @apply h-5 w-5 flex-none fill-none stroke-current;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* The footer's single row of words. The nav echo and the socials stay two
+     elements so GA4 can tell a link back into the site from an outbound
+     profile link, but they have to read as one list — and Footer cannot style
+     Socials' anchors, for the same scope reason as above. Declared once here
+     rather than copied into both files, where the copies were a constraint
+     nothing enforced and one edit would have left the row visibly ragged.
+
+     py-1.5 is not decoration: the words are 12px, which gave a 20.6px target,
+     under the 24px WCAG 2.5.8 asks for. They were 40px when they were icons. */
+  .footer-link {
+    @apply inline-block py-1.5 font-mono uppercase text-skin-muted no-underline transition-colors hover:text-skin-base;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* Read Next is a continuation of the article, not a footer appendage, so it
+     wears the article's own section marker: the same accent dash, size, face and
+     rhythm as a .prose h2 (see the h2::before rule above). A reader who has just
+     passed "References" reads this as the next section rather than as the start
+     of some other page furniture — which is what an 11px mono label failed to
+     say. Its items sit a rank below at 21px (Card.tsx). */
+  .section-heading {
+    @apply font-serif font-semibold text-skin-base;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    margin: 3.2rem 0 1.1rem;
+  }
+  .section-heading::before {
+    content: "";
+    display: block;
+    width: 2.25rem;
+    height: 2px;
+    margin-bottom: 0.9rem;
+    background-color: rgb(var(--color-accent));
+  }
+  /* Utility blocks that are not part of the article — the newsletter — keep the
+     quiet mono label with its trailing hairline, one rank under .section-heading
+     so it never reads as content. 13px ink rather than 11px muted: legible
+     enough to register, quiet enough not to claim a section of its own. */
+  .section-label {
+    @apply flex items-center gap-4 font-mono font-normal text-skin-base;
+    font-size: 0.8125rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .section-label::after {
+    content: "";
+    @apply h-px flex-1 bg-skin-line;
+  }
+  /* Dates, reading time and tags all speak in the same monospace voice. */
+  .metadata {
+    @apply font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== Record sections =====
+     The vocabulary /teaching and /about both speak: a page made of short
+     records rather than of prose. Declared here rather than copied into each
+     page because that is the rule the rest of this redesign already follows —
+     CourseCard exists so the homepage and /teaching cannot drift, and these
+     rows are the same kind of shared thing. About was written before any of it
+     existed, which is most of why it read as a different site.
+
+     base.css gives every `section` its own max-width and padding; the page
+     shell already owns both, so a section inside it has to give them back.
+     Padding would also block the margin collapse .section-heading's 3.2rem top
+     margin relies on for the space between sections. */
+  .page-section {
+    @apply max-w-none p-0;
+  }
+  /* Prose inside a page whose shell is wider than the measure keeps the
+     measure; the grids and lists below it take the full width. */
+  .section-intro {
+    @apply mt-3 max-w-measure text-skin-muted;
+    font-size: 1rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+  .section-intro a {
+    @apply text-skin-base no-underline transition-colors hover:text-skin-accent;
+    border-bottom: 1px solid rgba(var(--color-accent), 0.4);
+  }
+  .section-intro a:hover {
+    border-bottom-color: rgb(var(--color-accent));
+  }
+
+  /* A record: mono label, serif name, muted context, summary. Hairline-ruled
+     rows rather than cards — these are read as a list, not clicked. */
+  .entry-list {
+    @apply mt-6 flex flex-col;
+  }
+  .entry {
+    @apply border-t border-skin-line py-4;
+  }
+  /* Every hairline here separates one record from the next — except the first
+     one, which had nothing above it to separate and instead ran full-width
+     directly beneath the section heading, where it read as an underline on the
+     heading rather than as the top of a list. The section is already announced
+     three times over: the accent marker, the 28px serif, and 3.2rem of space
+     above it. Its padding goes with it, so the first record sits on the gap the
+     heading already set instead of 16px below it. */
+  .entry:first-child {
+    @apply border-t-0 pt-0;
+  }
+  .entry-meta {
+    @apply flex flex-wrap items-center gap-x-3 font-mono text-skin-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .entry-title {
+    @apply mt-2 font-serif font-normal text-skin-base;
+    font-size: 1.0625rem;
+    line-height: 1.3;
+  }
+  .entry-host {
+    @apply mt-1 text-skin-muted;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+  .entry-summary {
+    @apply mt-2 max-w-measure text-skin-base;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
   .display-none {
     @apply hidden;
   }
@@ -147,12 +544,113 @@
    @layer whose classes never appear in source files, and .astro-code only
    exists in shiki-generated HTML. */
 
-/* Light mode: github-light tokens on GitHub's cool light-gray code surface,
-   which suits the site's cool-toned light palette better than stark white
-   (shiki inlines background-color:#fff, hence !important). */
+/* Block chrome: a language label bar built from the data-language attribute
+   shiki already emits, so it needs no JavaScript and no wrapper element. The
+   copy button is still JS-injected, and sits inside that bar. */
+.prose pre.astro-code {
+  position: relative;
+  border-radius: 6px;
+  padding: 1rem 1.15rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  /* The <pre> must NOT be the scroll container: the label bar and the copy
+     button are positioned against it, and when it scrolled they slid out of
+     view with the code. Shiki sets overflow-x inline, hence !important. */
+  overflow: visible !important;
+}
+.prose pre.astro-code > code {
+  display: block;
+  overflow-x: auto;
+}
+/* rehypeTableScroll moves shiki's tabindex here, onto the box that
+   actually scrolls, so the ring has to come with it. */
+.prose pre.astro-code > code:focus-visible {
+  outline: 2px dashed rgb(var(--color-accent));
+  outline-offset: 2px;
+}
+/* Every block reserves the bar's height so the copy button never lands on line
+   one; only blocks with a real language print a label in it. */
+.prose pre.astro-code[data-language] {
+  padding-top: 2.9rem;
+}
+.prose pre.astro-code[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  inset: 0 0 auto 0;
+  padding: 0.5rem 1.15rem;
+  border-bottom: 1px solid rgb(var(--color-border));
+  border-radius: 6px 6px 0 0;
+  background-color: rgba(var(--color-muted), 0.07);
+  font-family: theme("fontFamily.mono");
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* text-base, not muted: muted on the 7% wash over the code surface measures
+     4.4:1, under the 4.5 floor for 11px type. */
+  color: rgb(var(--color-text-base));
+}
+/* A bare fence has no language worth printing, but keeps the bar so the copy
+   button has somewhere to sit. Must follow the rule above to win on order. */
+.prose pre.astro-code[data-language="plaintext"]::before {
+  content: "";
+}
+.copy-code {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.6rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid rgb(var(--color-border));
+  border-radius: 4px;
+  background-color: transparent;
+  font-family: theme("fontFamily.mono");
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--color-muted));
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
+}
+.copy-code:hover {
+  color: rgb(var(--color-accent));
+  border-color: rgba(var(--color-accent), 0.45);
+}
+/* Quiet until wanted — but only where hover exists, or touch users would never
+   see it at all. */
+@media (hover: hover) {
+  .copy-code {
+    opacity: 0;
+  }
+  pre.astro-code:hover .copy-code,
+  pre.astro-code:focus-within .copy-code,
+  .copy-code:focus-visible {
+    opacity: 1;
+  }
+}
+
+/* Light mode: github-light tokens on a code surface pinned to the neutral ramp.
+   github-light's own #f6f8fa is a cool-tinted panel, which would be the only
+   chromatic grey on an otherwise achromatic page, so the surface comes from the
+   token instead (shiki inlines background-color:#fff on the pre, hence
+   !important). */
 html[data-theme="light"] pre.astro-code {
-  background-color: #f6f8fa !important;
-  border: 1px solid rgba(var(--color-card-muted), 0.55);
+  background-color: rgb(var(--color-code-fill)) !important;
+  border: 1px solid rgb(var(--color-border));
+}
+
+/* Dark mode: one-dark-pro's own #282c34 is a cool blue-grey panel, and it sits
+   *lighter* than this page — so it would read as a raised, tinted block on an
+   achromatic ground the site wants code recessed into. Re-pointed at the token
+   (#121212, darker than the fill) on both counts. Overriding the
+   --shiki-dark-bg variable (rather than background-color) matters: the rule
+   below paints every span with it too, and custom properties inherit. */
+html[data-theme="dark"] pre.astro-code {
+  /* !important because shiki writes --shiki-dark-bg into the element's inline
+     style, and inline wins over any selector without it. */
+  --shiki-dark-bg: rgb(var(--color-code-fill)) !important;
+  border: 1px solid rgb(var(--color-border));
 }
 
 /* Dark mode: restore one-dark-pro via the --shiki-dark* vars shikiji emits. */

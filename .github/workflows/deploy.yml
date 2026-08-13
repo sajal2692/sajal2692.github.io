@@ -5,6 +5,19 @@ on:
   # Using a different branch name? Replace `main` with your branch’s name
   push:
     branches: [ main ]
+  # Parts of the site are computed against build time, not read at request time:
+  # src/data/teaching.ts hides course sessions once they have run and badges
+  # talks as upcoming until their date passes, and posts scheduled with a future
+  # pubDatetime stay hidden until a build sees them. On a push-only trigger an
+  # expired session or a stale "upcoming" badge sits there until the next commit
+  # happens to land. A daily rebuild bounds that staleness to 24 hours.
+  # Cron runs on UTC, which does not observe the Pacific DST shift the sessions
+  # are scheduled against. 07:10 UTC is 00:10 PDT but 23:10 PST the day before,
+  # so half the year it ran before the Pacific midnight it was aiming past and a
+  # session stayed listed through the morning after it ran. 08:10 UTC is after
+  # midnight Pacific in both offsets (00:10 PST / 01:10 PDT).
+  schedule:
+    - cron: "10 8 * * *"
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 

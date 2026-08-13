@@ -1,37 +1,33 @@
 ---
 import { SOCIALS } from "@config";
-import LinkButton from "./LinkButton.astro";
-import socialIcons from "@assets/socialIcons";
-
-export interface Props {
-  centered?: boolean;
-}
-
-const { centered = false } = Astro.props;
 ---
 
-<div
-  class={`social-icons ${centered ? "justify-center" : ""}`}
-  data-track="socials"
->
+<!-- Words, not marks. Three brand icons in a row could never agree on optical
+     size or weight, and the footer already speaks in one voice a few pixels
+     away — so these join the mono row instead of sitting above it in a
+     different alphabet. Kept as its own component for the data-track boundary:
+     GA4 tells the socials apart from the nav echo beside them.
+
+     No title attribute: the label is visible now, so a tooltip would only
+     repeat it — and Layout's link_click listener reads title before text, so
+     these three would have reported "Sajal Sharma on GitHub" while Tags and RSS
+     beside them reported their own words. -->
+<nav class="social-links" aria-label="Elsewhere" data-track="socials">
   {
     SOCIALS.filter(social => social.active).map(social => (
-      <LinkButton
-        href={social.href}
-        className="p-2 hover:rotate-6 sm:p-1"
-        title={social.linkTitle}
-      >
-        <Fragment set:html={socialIcons[social.name]} />
-        <span class="sr-only">{social.linkTitle}</span>
-      </LinkButton>
+      <a href={social.href} class="footer-link">
+        {social.label}
+      </a>
     ))
   }
-</div>
+</nav>
 
 <style>
-  /* Scoped styles cannot reach the anchors rendered inside LinkButton, so
-     per-link utilities are passed via className above. */
-  .social-icons {
-    @apply flex flex-wrap gap-1;
+  /* Gap comes from --footer-gap, set on .footer-links in Footer.astro. Custom
+     properties inherit across the scope boundary even though rules do not, so
+     this is how the two halves of the row stay one row. */
+  .social-links {
+    @apply flex flex-wrap;
+    gap: 0.5rem var(--footer-gap);
   }
 </style>

@@ -5,58 +5,107 @@ import Main from "@layouts/Main.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import getSortedPosts from "@utils/getSortedPosts";
+import { formatPostDayMonth, toIsoDate } from "@utils/formatPostDate";
 import { SITE } from "@config";
 
-const posts = await getCollection("blog");
-const sortedPosts = getSortedPosts(posts);
+const posts = getSortedPosts(await getCollection("blog"));
+
+/**
+ * One complete index rather than a paginated feed: the archive is where you go
+ * to find a post you half-remember, so every post is on this page and the
+ * browser's own find-in-page works across the lot.
+ */
+const byYear = posts.reduce(
+  (acc, post) => {
+    const year = new Date(post.data.pubDatetime).getUTCFullYear();
+    (acc[year] ??= []).push(post);
+    return acc;
+  },
+  {} as Record<number, typeof posts>
+);
+const years = Object.keys(byYear)
+  .map(Number)
+  .sort((a, b) => b - a);
 ---
 
-<Layout title={`Posts | ${SITE.title}`}>
+<!-- "Writing", not "Posts": that is what the nav item, the hero CTA and the
+     homepage section all call this page, and the H1 disagreeing with the link
+     that got you here is a small but real orientation cost.
+     The description sits in the head rather than under the heading. As a deck
+     it claimed what the titles beneath it already demonstrate — a reader can
+     see the archive is about agents and retrieval by reading three rows of it —
+     and on a phone it spent a third of the first screen making that claim.
+     Search results and link previews have no titles to read, so the sentence
+     still has to exist somewhere: without it this page inherited SITE.desc and
+     described the whole site instead of the archive. -->
+<Layout
+  title={`Writing | ${SITE.title}`}
+  description="Writing by Sajal Sharma on AI engineering, agents, retrieval systems, AI products, and the decisions involved in building them."
+>
   <Header activeNav="posts" />
-  <Main pageTitle="Posts" pageDesc="Here I document my experiments with AI engineering, insights from building intelligent systems and share deep dives on latest paradigms.">
-    <ul class="posts-list" data-track="posts-list">
+  <Main pageTitle="Writing" kicker={["Archive", `${posts.length} posts`]}>
+    <div data-track="posts-list">
       {
-        sortedPosts.map(({ data, id }) => (
-          <li class="post-item">
-            <span class="post-date">{data.pubDatetime.toLocaleDateString("en-US", { 
-              day: "2-digit", 
-              month: "short", 
-              year: "numeric" 
-            })}</span>
-            <span class="post-separator">»</span>
-            <a href={`/posts/${id}`} class="post-title">
-              {data.title}
-            </a>
-          </li>
+        years.map(year => (
+          <section class="year-group">
+            <h2 class="section-label">{year}</h2>
+            <ul class="index-list">
+              {byYear[year].map(post => (
+                <li class="index-row">
+                  <time
+                    class="index-date"
+                    datetime={toIsoDate(post.data.pubDatetime)}
+                  >
+                    {formatPostDayMonth(post.data.pubDatetime)}
+                  </time>
+                  <a href={`/posts/${post.id}/`} class="index-title">
+                    {post.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
         ))
       }
-    </ul>
+    </div>
   </Main>
   <Footer />
 </Layout>
 
 <style>
-  .posts-list {
-    @apply list-none p-0 m-0;
+  /* max-w-none/px-0 undo the global `section` container in base.css, which would
+     otherwise indent each year group out of line with the header above it. */
+  .year-group {
+    @apply max-w-none px-0;
   }
-  
-  .post-item {
-    @apply mb-2 flex items-start;
+  .year-group + .year-group {
+    @apply mt-12;
   }
-  
-  .post-date {
-    @apply text-skin-base opacity-70 mr-2 whitespace-nowrap;
+  .year-group .section-label {
+    @apply mb-4;
   }
-  
-  .post-separator {
-    @apply text-skin-base opacity-70 mr-2;
+  .index-list {
+    @apply m-0 list-none p-0;
   }
-  
-  .post-title {
-    @apply text-skin-accent no-underline;
+  .index-row {
+    @apply grid items-baseline gap-x-5 py-2;
+    grid-template-columns: 4rem minmax(0, 1fr);
   }
-  
-  .post-title:hover {
-    @apply underline;
+  .index-date {
+    @apply font-mono text-skin-muted;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Serif 400, not the 600 used for display type: at 19px on every row, semibold
+     read as emphasis on all eighteen of them. */
+  .index-title {
+    @apply font-serif font-normal text-skin-base no-underline;
+    font-size: 1.1875rem;
+    line-height: 1.35;
+    transition: color 0.15s ease;
+  }
+  .index-title:hover {
+    @apply text-skin-accent;
   }
 </style>

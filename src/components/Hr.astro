@@ -2,11 +2,19 @@
 export interface Props {
   noPadding?: boolean;
   ariaHidden?: boolean;
+  /** Span the full page shell (header rule) rather than the content column. */
+  wide?: boolean;
 }
 
-const { noPadding = false, ariaHidden = true } = Astro.props;
+const { noPadding = false, ariaHidden = true, wide = false } = Astro.props;
+
+// Padding is resolved into one branch per combination on purpose: composing
+// `sm:px-6` with `px-0` looks right but is not — the sm variant lands in a later
+// media block and wins, so noPadding would silently stop working above 640px.
+const width = wide ? "max-w-shell" : "max-w-3xl";
+const padding = noPadding ? "px-0" : wide ? "px-4 sm:px-6" : "px-4";
 ---
 
-<div class={`max-w-3xl mx-auto ${noPadding ? "px-0" : "px-4"}`}>
+<div class={`mx-auto ${width} ${padding}`}>
   <hr class="border-skin-line" aria-hidden={ariaHidden} />
 </div>

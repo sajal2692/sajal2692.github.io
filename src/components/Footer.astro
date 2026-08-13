@@ -9,16 +9,56 @@ export interface Props {
 }
 
 const { noMarginTop = false } = Astro.props;
+
+// Only what the header does not already carry. Tags and the feed are ways back
+// into the writing for someone who already reads it, not destinations the
+// primary nav has to advertise — tags left the nav in this redesign and would
+// otherwise be reachable only from the chips on a post. Echoing Writing,
+// Teaching and About down here just said the same three things twice.
+//
+// Contact is the one deliberate exception to that rule — it is in the header
+// too. The rule exists because echoing a *reading* destination here is dead
+// weight: someone at the end of a post does not need a second way to reach
+// Writing. Contact is not a place to read, it is the thing you do once you
+// have, and the header has scrolled 2,000px away by the time anyone finishes
+// one. Repeating it is the point, not an oversight.
+//
+// It replaced the "Email" mailto that used to render in the socials row beside
+// it — the address now lives on /contact, which can say what a mailto could
+// not. First in the row because it is the only destination among the three;
+// Tags and RSS are ways back into the writing.
+const FOOTER_NAV = [
+  { href: "/contact/", label: "Contact" },
+  { href: "/tags/", label: "Tags" },
+  { href: "/rss.xml", label: "RSS" },
+];
 ---
 
-<footer class={`${noMarginTop ? "" : "mt-auto"}`} data-track="footer">
-  <Hr noPadding />
+<footer
+  class={`footer-shell ${noMarginTop ? "" : "mt-auto"}`}
+  data-track="footer"
+>
+  <!-- wide + noPadding: the shell's own padding is already applied by
+       .footer-shell, so the rule spans its inner width, matching the header's. -->
+  <Hr wide noPadding />
   <div class="footer-wrapper">
-    <Socials centered />
-    <div class="copyright-wrapper">
-      <span>Copyright &#169; {currentYear}</span>
-      <span class="separator">&nbsp;|&nbsp;</span>
-      <span>All rights reserved.</span>
+    <div class="footer-bottom">
+      <!-- Socials carry their own data-track, so every link left directly under
+           the footer section is one of these — no extra attribute needed to
+           tell the nav echo apart in GA4. -->
+      <div class="footer-links">
+        <nav class="footer-nav" aria-label="Footer">
+          {
+            FOOTER_NAV.map(item => (
+              <a href={item.href} class="footer-link">
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+        <Socials />
+      </div>
+      <p class="copyright">&copy; {currentYear} Sajal Sharma</p>
     </div>
   </div>
 </footer>
@@ -27,13 +67,40 @@ const { noMarginTop = false } = Astro.props;
   footer {
     @apply w-full;
   }
+  /* The class (not the element) carries the width so it beats the global
+     `section, footer { max-w-3xl }` in base.css. Footer chrome spans the same
+     shell as the header, so the rules bracketing a page are the same length —
+     they were 936px at the top and 736px at the bottom. */
+  .footer-shell {
+    @apply mx-auto max-w-shell px-4 sm:px-6;
+  }
   .footer-wrapper {
-    @apply flex flex-col items-center justify-between py-6 sm:flex-row-reverse sm:py-4;
+    @apply py-8;
   }
-  .copyright-wrapper {
-    @apply my-2 flex flex-col items-center whitespace-nowrap sm:flex-row;
+  /* One band, so the wrapper's own padding is all the space there is: an mt here
+     would stack on top of it and push a single row of 12px type a long way
+     below the rule that closes the page. */
+  .footer-bottom {
+    @apply flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between;
   }
-  .separator {
-    @apply hidden sm:inline;
+  /* Nav echo and socials read as one row of words. They stay two elements only
+     so GA4 can tell an outbound profile link from a link back into the site.
+     One gap value, declared here and inherited by both — a seam the eye can see
+     would be a distinction the reader does not need, and three literal 1.25rems
+     across two files is how that seam eventually appears. The anchors
+     themselves are .footer-link in base.css, for the same reason.  */
+  .footer-links {
+    --footer-gap: 1.25rem;
+    @apply flex flex-wrap items-center;
+    gap: 0.5rem var(--footer-gap);
+  }
+  .footer-nav {
+    @apply flex flex-wrap;
+    gap: 0.5rem var(--footer-gap);
+  }
+  .copyright {
+    @apply font-mono text-skin-muted;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
   }
 </style>

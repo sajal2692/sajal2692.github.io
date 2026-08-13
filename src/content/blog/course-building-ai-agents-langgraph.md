@@ -8,8 +8,7 @@ draft: false
 tags:
   - ai-agents
   - langgraph
-  - generative-ai
-  - online-learning
+  - llms
   - teaching
 description: "Announcing my first video course with O'Reilly—Building AI Agents with LangGraph! This course dives deep into AI agent design, action-taking, and multi-agent architectures using Python and OpenAI."
 canonicalURL: "" # Add if the article is published elsewhere
