@@ -266,8 +266,15 @@ const EDUCATION = [
     @apply mt-4;
   }
   /* The one block on this page that is not a section, so it has no heading to
-     carry the site's 3.2rem section margin and has to set it itself. */
+     carry the site's 3.2rem section margin and has to set its own spacing. It
+     takes half of it: this is a closing link rather than a new section, and at
+     the full constant it read as a section whose contents had gone missing.
+     The bottom margin exists to balance the top one against the footer rule.
+     Main.astro's own pb-4 already puts 16px there, so 1rem here brings the gap
+     below to the 2rem above — if that padding ever changes, this number is what
+     goes out of step with it. */
   .closing-line {
-    margin-top: 3.2rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
   }
 </style>
