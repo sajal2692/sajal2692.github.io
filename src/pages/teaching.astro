@@ -21,15 +21,12 @@ const courses = coursesByNextSession();
   description="O'Reilly courses on AI agents and RAG, guest lectures at Yale, and mentoring — taught by an engineer who ships the systems behind them."
 >
   <Header activeNav="teaching" />
-  <Main
-    pageTitle="Teaching"
-    pageDesc="These courses come from systems I have shipped — agent patterns running in production, not toy demos."
-  >
+  <Main pageTitle="Teaching">
     <section class="page-section" data-track="teaching-courses">
       <h2 class="section-heading">Courses</h2>
       <p class="section-intro">
-        Published through O'Reilly. Live sittings are listed with their next
-        dates; the on-demand course is available any time.
+        Courses published through O'Reilly, with upcoming live sessions listed
+        below.
       </p>
       <ul class="course-grid">
         {courses.map(course => <CourseCard course={course} detail="full" />)}
@@ -38,9 +35,6 @@ const courses = coursesByNextSession();
 
     <section class="page-section" data-track="teaching-talks">
       <h2 class="section-heading">Guest Lectures &amp; Talks</h2>
-      <p class="section-intro">
-        Invited into Yale's MGT 899 in 2025, and invited back in 2026.
-      </p>
       <ul class="entry-list">
         {
           TALKS.map(talk => (
@@ -79,21 +73,6 @@ const courses = coursesByNextSession();
         }
       </ul>
     </section>
-
-    <!-- Names consulting directly rather than only handing it off: someone who
-         reaches this page already knows the work, and making them navigate to
-         About to find out that consulting is on the table loses them. About
-         still gets the fuller version, and the link is tracked so the handoff
-         is measurable. -->
-    <section class="page-section" data-track="teaching-contact">
-      <h2 class="section-label">Enquiries</h2>
-      <p class="section-intro">
-        For speaking, team workshops, or consulting work, email <a
-          href="mailto:contact@sajalsharma.com">contact@sajalsharma.com</a
-        >. There is more on what I take on over on <a href="/about/">About Me</a
-        >.
-      </p>
-    </section>
   </Main>
   <Footer />
 </Layout>
@@ -108,13 +87,40 @@ const courses = coursesByNextSession();
      by listing every sitting inside each card rather than just the next one.
      Talks and mentoring below are full-width lists — neither has a link to
      click, and both read as a short history rather than a schedule. */
+  /* The first heading on this page opens the content; the ones below it divide
+     it. The accent marker and the 3.2rem above it both say "a section ended and
+     another began", which is true of Guest Lectures and Mentoring and not of
+     Courses — nothing precedes it but the page title, so the two together read
+     as two openings stacked, "Teaching" and then "Courses" again. Dropping both
+     leaves the page head's own bottom margin to set the gap.
+     Deliberately scoped here rather than added to .section-heading in base.css:
+     on /about the first heading follows a resume link and two paragraphs of
+     prose, so there it marks a real transition and keeps its marker. */
+  .page-section:first-of-type .section-heading {
+    margin-top: 0;
+  }
+  .page-section:first-of-type .section-heading::before {
+    display: none;
+  }
   .course-grid {
     @apply mt-6 grid gap-x-8 gap-y-6;
     grid-template-columns: minmax(0, 1fr);
   }
+  /* The same rule .entry:first-child drops in base.css, for the one list on
+     this page that is a grid: the top row's hairlines ran under the heading
+     block and read as an underline on it. It is the first *row* that clears,
+     not the first card, so the count tracks the column count below — one card
+     on mobile, two once the grid splits. :global because .course-card is
+     CourseCard's own root element and never carries this page's scope. */
+  .course-grid > :global(.course-card:first-child) {
+    @apply border-t-0 pt-0;
+  }
   @media (min-width: 640px) {
     .course-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .course-grid > :global(.course-card:nth-child(-n + 2)) {
+      @apply border-t-0 pt-0;
     }
   }
   /* Only talks carry this: a sitting still ahead of the build date. */

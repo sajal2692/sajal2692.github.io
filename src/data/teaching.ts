@@ -69,14 +69,14 @@ export interface Talk {
 }
 
 /**
- * Long-running mentoring, which is neither a course nor a talk: no URL, no
- * single date, and its weight comes from a quantity rather than a schedule.
+ * Long-running mentoring, which is neither a course nor a talk: no URL and no
+ * single date, only a span of years and what was done inside it.
  */
 export interface Mentorship {
   org: string;
   /** Inclusive range, e.g. "2017-2023". */
   years: string;
-  /** One line carrying the number that makes it a receipt. */
+  /** One line: what the mentoring actually was. */
   summary: string;
 }
 
@@ -105,7 +105,7 @@ export const COURSES: Course[] = [
     url: "https://learning.oreilly.com/live-events/building-integrated-ai-agents-with-openclaw/0642572350437/0642572350420/",
     format: "live",
     summary:
-      "OpenClaw's architecture, deployment, and the proactive automation it makes possible.",
+      "Self-hosting a personal AI agent: OpenClaw's architecture, deployment, and what it can automate.",
     sessions: [
       { start: "2026-08-25T08:00:00-07:00", end: "2026-08-25T12:00:00-07:00" },
     ],
@@ -125,10 +125,17 @@ export const COURSES: Course[] = [
 /** Guest lectures and conference talks, newest first. */
 export const TALKS: Talk[] = [
   {
-    // TODO: talk title and abstract once ODSC publishes the schedule.
     venue: "ODSC West",
+    title: "Building Self-Hosted Personal AI Agents with OpenClaw",
     year: 2026,
     month: 10,
+    // Condensed from Sajal's own abstract, not from ODSC's speaker page: that
+    // page currently publishes a different session under this title — hybrid
+    // coding-harness workflows on SambaNova inference, traced with LangFuse —
+    // which appears to be another speaker's abstract pasted under his slot.
+    // Do not "correct" this line against their copy while that is still up.
+    summary:
+      "Designing the workspace that gives a self-hosted agent its identity, its skills, and a reason to start work on its own.",
   },
   {
     venue: "Yale University",
@@ -177,13 +184,13 @@ export const MENTORSHIP: Mentorship[] = [
     org: "Udacity",
     years: "2017-2023",
     summary:
-      "Reviewed more than 1,000 projects across the Machine Learning and Data Science programs, rated A+ by Udacity's internal audit.",
+      "Mentored learners across Udacity's Machine Learning and Data Science programs through project feedback and technical guidance.",
   },
   {
     org: "University of Melbourne",
     years: "2020-2023",
     summary:
-      "STEM Mentorship Program: career and technical guidance for students moving into technology and AI.",
+      "Mentored University of Melbourne students through its STEM Industry Mentoring Program, offering career and technical guidance as they prepared to enter the industry.",
   },
 ];
 
@@ -207,6 +214,36 @@ export function nextSession(
   now: Date = new Date()
 ): CourseSession | null {
   return upcomingSessions(course, now)[0] ?? null;
+}
+
+/**
+ * How long a course runs, for the card's meta row. On-demand courses store it
+ * as `duration` because there is no sitting to measure; a live course's length
+ * is derived from its own session times instead of typed alongside them, which
+ * is the only version that cannot drift out of step with the "9:00 AM - 1:00 PM"
+ * range printed directly beneath it.
+ *
+ * Returns null when the upcoming sittings do not all run the same length: one
+ * number cannot honestly describe them, and every range is listed on /teaching
+ * anyway. Same for a course whose sittings have all run — there is nothing left
+ * to advertise the length of.
+ */
+export function courseDuration(
+  course: Course,
+  now: Date = new Date()
+): string | null {
+  if (course.duration) return course.duration;
+
+  const lengths = upcomingSessions(course, now).map(
+    session =>
+      new Date(session.end).getTime() - new Date(session.start).getTime()
+  );
+  if (lengths.length === 0) return null;
+  if (lengths.some(ms => ms <= 0 || ms !== lengths[0])) return null;
+
+  const hours = lengths[0] / 3_600_000;
+  const rounded = Math.round(hours * 2) / 2;
+  return `${rounded} ${rounded === 1 ? "hour" : "hours"}`;
 }
 
 /**

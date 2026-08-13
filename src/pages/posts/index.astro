@@ -30,14 +30,20 @@ const years = Object.keys(byYear)
 
 <!-- "Writing", not "Posts": that is what the nav item, the hero CTA and the
      homepage section all call this page, and the H1 disagreeing with the link
-     that got you here is a small but real orientation cost. -->
-<Layout title={`Writing | ${SITE.title}`}>
+     that got you here is a small but real orientation cost.
+     The description sits in the head rather than under the heading. As a deck
+     it claimed what the titles beneath it already demonstrate — a reader can
+     see the archive is about agents and retrieval by reading three rows of it —
+     and on a phone it spent a third of the first screen making that claim.
+     Search results and link previews have no titles to read, so the sentence
+     still has to exist somewhere: without it this page inherited SITE.desc and
+     described the whole site instead of the archive. -->
+<Layout
+  title={`Writing | ${SITE.title}`}
+  description="Writing by Sajal Sharma on AI engineering, agents, retrieval systems, AI products, and the decisions involved in building them."
+>
   <Header activeNav="posts" />
-  <Main
-    pageTitle="Writing"
-    kicker={["Archive", `${posts.length} posts`]}
-    pageDesc="Here I document my experiments with AI engineering, insights from building intelligent systems and share deep dives on latest paradigms."
-  >
+  <Main pageTitle="Writing" kicker={["Archive", `${posts.length} posts`]}>
     <div data-track="posts-list">
       {
         years.map(year => (

@@ -14,7 +14,7 @@ tags:
   - langgraph
   - rag
   - nlp
-  - agentic-workflows
+  - ai-agents
 description: "A tutorial on building an advanced agentic RAG workflow that combines query routing, document grading, and query rewriting using LangGraph to create a robust, self-correcting retrieval system."
 canonicalURL: ""
 ---

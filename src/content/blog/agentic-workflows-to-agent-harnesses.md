@@ -9,7 +9,6 @@ tags:
   - ai-agents
   - ai-engineering
   - llms
-  - agentic-workflows
 description: "Why the industry is shifting from handcrafted agentic workflows to agents operating inside harnesses, what that looks like in practice, and the trade-offs involved."
 canonicalURL: ""
 ---

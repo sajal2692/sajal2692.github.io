@@ -3,7 +3,7 @@
     "schemaVersion": 1,
     "model": "text-embedding-3-large",
     "dimensions": 1024,
-    "corpusHash": "sha256:eced5f20447b058d5f0945901567574d8a41ef13fb8a6f0dde4b650c0d030757",
+    "corpusHash": "sha256:1e48990667501f2331a4ef1d53323babe748c02df828625a987bc6d44d4c1ddc",
     "rankingConfigHash": "sha256:95e9fcc0007ef14e4a5c38ee5b226c5909947b384796b02ac565b18f760665c7"
   },
   "posts": {
@@ -33,7 +33,7 @@
       "overview-multi-agent-frameworks",
       "introduction-to-agentic-rag",
       "effective-ai-coding",
-      "comprehensive-agentic-rag"
+      "adventures-claude-code"
     ],
     "building-ai-agents-langgraph-oreilly": [
       "yale-guest-lecture-february-2025-ai-agents-langgraph",

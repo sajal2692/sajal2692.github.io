@@ -9,7 +9,6 @@ tags:
   - llms
   - ai-engineering
   - product
-  - ventures
 description: "Some thoughts on product defensibility for AI applications from my experience in the startup world."
 canonicalURL: "" # Add if the article is published elsewhere
 ---
