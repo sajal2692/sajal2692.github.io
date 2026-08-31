@@ -109,6 +109,7 @@ export const COURSES: Course[] = [
       "Self-hosting a personal AI agent: OpenClaw's architecture, deployment, and what it can automate.",
     sessions: [
       { start: "2026-08-25T08:00:00-07:00", end: "2026-08-25T12:00:00-07:00" },
+      { start: "2026-10-28T09:00:00-07:00", end: "2026-10-28T14:00:00-07:00" },
     ],
   },
   {
