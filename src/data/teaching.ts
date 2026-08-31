@@ -91,13 +91,14 @@ export const COURSES: Course[] = [
   },
   {
     title: "Agentic RAG with LangGraph",
-    url: "https://www.oreilly.com/live-events/agentic-rag-with-langgraph/0642572176174/",
+    url: "https://learning.oreilly.com/live-events/-/0642572176174/",
     format: "live",
     summary:
       "Building retrieval systems that reason about what they retrieve, using agentic workflows.",
     sessions: [
       { start: "2026-07-09T21:00:00-07:00", end: "2026-07-10T01:00:00-07:00" },
       { start: "2026-08-27T09:00:00-07:00", end: "2026-08-27T13:00:00-07:00" },
+      { start: "2026-09-30T17:00:00-07:00", end: "2026-09-30T21:00:00-07:00" },
     ],
   },
   {
@@ -112,12 +113,53 @@ export const COURSES: Course[] = [
   },
   {
     title: "Getting Started with Claude Agent SDK",
-    url: "https://learning.oreilly.com/live-events/getting-started-with-claude-agent-sdk/0642572273255/0642572273248/",
+    url: "https://learning.oreilly.com/live-events/-/0642572273255/",
     format: "live",
     summary:
       "Building agents on the Claude Agent SDK, from first tool call to a working harness.",
     sessions: [
       { start: "2026-08-26T09:00:00-07:00", end: "2026-08-26T13:00:00-07:00" },
+      { start: "2026-10-19T09:00:00-07:00", end: "2026-10-19T13:00:00-07:00" },
+    ],
+  },
+  {
+    title: "Sandboxing an AI Agent",
+    url: "https://learning.oreilly.com/live-events/-/0642572438159/",
+    format: "live",
+    summary:
+      "Threat-modeling agent workloads and choosing the right isolation tier, from process restrictions and containers to userspace kernels and microVMs.",
+    sessions: [
+      { start: "2026-09-24T07:00:00-07:00", end: "2026-09-24T09:00:00-07:00" },
+    ],
+  },
+  {
+    title: "Designing Agent Fleets",
+    url: "https://learning.oreilly.com/live-events/-/0642572438173/",
+    format: "live",
+    summary:
+      "Designing the control plane for agent workers: durable runs, queues, scheduling, verification, operational signals, and spend.",
+    sessions: [
+      { start: "2026-09-28T07:00:00-07:00", end: "2026-09-28T09:00:00-07:00" },
+    ],
+  },
+  {
+    title: "Harness Engineering for Computer Use",
+    url: "https://learning.oreilly.com/live-events/-/0642572438135/",
+    format: "live",
+    summary:
+      "Building the computer half of an agent harness: screenshot economics, coordinate grounding, context management, and a real cloud desktop.",
+    sessions: [
+      { start: "2026-10-23T07:00:00-07:00", end: "2026-10-23T09:00:00-07:00" },
+    ],
+  },
+  {
+    title: "Harness Engineering for Browser Agents",
+    url: "https://learning.oreilly.com/live-events/-/0642572438197/",
+    format: "live",
+    summary:
+      "Building a browser-agent harness with CDP, including perception, actions, verification, recovery, guardrails, and session isolation.",
+    sessions: [
+      { start: "2026-10-16T07:00:00-07:00", end: "2026-10-16T09:00:00-07:00" },
     ],
   },
 ];

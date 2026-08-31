@@ -7,7 +7,7 @@ import Newsletter from "@components/Newsletter.astro";
 import CourseCard from "@components/CourseCard.astro";
 import getSortedPosts from "@utils/getSortedPosts";
 import { formatPostDate, toIsoDate } from "@utils/formatPostDate";
-import { coursesByNextSession } from "@data/teaching";
+import { coursesByNextSession, nextSession } from "@data/teaching";
 
 const sorted = getSortedPosts(await getCollection("blog"));
 
@@ -19,6 +19,12 @@ const sorted = getSortedPosts(await getCollection("blog"));
  */
 const lead = sorted.find(({ data }) => data.featured) ?? sorted[0];
 const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
+
+// Keep the homepage focused on what can be booked next. /teaching remains the
+// complete catalog, including on-demand courses and live courses between runs.
+const upcomingCourses = coursesByNextSession()
+  .filter(course => nextSession(course))
+  .slice(0, 4);
 ---
 
 <Layout title="Sajal Sharma | AI Engineer | O'Reilly Instructor">
@@ -98,7 +104,7 @@ const rows = sorted.filter(post => post.id !== lead?.id).slice(0, 4);
     <section id="teaching" data-track="courses">
       <h2 class="section-heading">Teaching</h2>
       <ul class="course-grid">
-        {coursesByNextSession().map(course => <CourseCard course={course} />)}
+        {upcomingCourses.map(course => <CourseCard course={course} />)}
       </ul>
       <p class="more" data-track="home-all-teaching">
         <a href="/teaching/">All courses &rarr;</a>
