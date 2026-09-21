@@ -7,6 +7,7 @@ import remarkMath from "remark-math";
 import remarkDetectMath from "./src/utils/remarkDetectMath";
 import rehypeKatex from "rehype-katex";
 import rehypeTableScroll from "./src/utils/rehypeTableScroll";
+import rehypeThemedDiagrams from "./src/utils/rehypeThemedDiagrams";
 import sitemap from "@astrojs/sitemap";
 import { SITE } from "./src/config";
 
@@ -120,7 +121,7 @@ export default defineConfig({
         // is math to style.
         remarkDetectMath,
       ],
-      rehypePlugins: [rehypeKatex, rehypeTableScroll],
+      rehypePlugins: [rehypeKatex, rehypeTableScroll, rehypeThemedDiagrams],
     }),
     shikiConfig: {
       // Dual theme: light syntax palette in light mode, one-dark-pro in dark mode.

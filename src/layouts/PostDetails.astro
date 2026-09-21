@@ -11,6 +11,7 @@ import getPostBody from "@utils/getPostBody";
 import ShareLinks from "@components/ShareLinks.astro";
 import Newsletter from "@components/Newsletter.astro";
 import RelatedPosts from "@components/RelatedPosts.astro";
+import PostContent from "@components/PostContent.astro";
 import { formatPostDate, toIsoDate } from "@utils/formatPostDate";
 
 export interface Props {
@@ -28,6 +29,7 @@ const {
   pubDatetime,
   modDatetime,
   tags,
+  youtube,
 } = post.data;
 
 const { Content, headings, remarkPluginFrontmatter } = await render(post);
@@ -149,7 +151,9 @@ const railHeadings = headings.filter(
             class="prose"
             data-track="post-body"
           >
-            <Content />
+            <PostContent youtube={youtube}>
+              <Content />
+            </PostContent>
           </article>
 
           <RelatedPosts posts={relatedPosts} />

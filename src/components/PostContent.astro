@@ -1,0 +1,25 @@
+---
+import YouTubeEmbed, { type Props as VideoProps } from "./YouTubeEmbed.astro";
+
+interface Props {
+  youtube?: VideoProps;
+}
+
+const { youtube } = Astro.props;
+const html = await Astro.slots.render("default");
+// Insert into the rendered Markdown so placement also works without JavaScript.
+const tocIndex = html.search(/<h2\b[^>]*\bid="table-of-contents"/);
+const videoIndex = Math.max(0, tocIndex);
+---
+
+{
+  youtube ? (
+    <>
+      <Fragment set:html={html.slice(0, videoIndex)} />
+      <YouTubeEmbed {...youtube} />
+      <Fragment set:html={html.slice(videoIndex)} />
+    </>
+  ) : (
+    <Fragment set:html={html} />
+  )
+}

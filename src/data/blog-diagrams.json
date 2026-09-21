@@ -1,0 +1,47 @@
+[
+  {
+    "fallback": "/images/blog/shared-knowledge-base-for-ai-agents/light/shared_knowledge_base.png",
+    "light": "/images/blog/shared-knowledge-base-for-ai-agents/light/shared_knowledge_base.svg",
+    "dark": "/images/blog/shared-knowledge-base-for-ai-agents/dark/shared_knowledge_base.svg",
+    "title": "A Shared Knowledge Base",
+    "alt": "You and several agent harnesses read and update a shared knowledge base containing activity and working state, personal context, and knowledge and reference material. Agents also access external sources through tools, while notes can link to those sources.",
+    "width": 1262,
+    "height": 952
+  },
+  {
+    "fallback": "/images/blog/shared-knowledge-base-for-ai-agents/light/knowledge_base_to_workspace.png",
+    "light": "/images/blog/shared-knowledge-base-for-ai-agents/light/knowledge_base_to_workspace.svg",
+    "dark": "/images/blog/shared-knowledge-base-for-ai-agents/dark/knowledge_base_to_workspace.svg",
+    "title": "From a Knowledge Base to a Workspace",
+    "alt": "A shared agent workspace contains a knowledge base plus instructions and maps, skills and resources, and tool connections, used together across harnesses.",
+    "width": 752,
+    "height": 702
+  },
+  {
+    "fallback": "/images/blog/shared-knowledge-base-for-ai-agents/light/knowledge_lifecycle.png",
+    "light": "/images/blog/shared-knowledge-base-for-ai-agents/light/knowledge_lifecycle.svg",
+    "dark": "/images/blog/shared-knowledge-base-for-ai-agents/dark/knowledge_lifecycle.svg",
+    "title": "The Knowledge Lifecycle",
+    "alt": "A task leads through a combined retrieval and context assembly step, then agent work. A two-way arrow connects retrieval with the knowledge base for lookups and returned information. Useful information is captured, and routine updates go directly to writeback. Changes needing review take a separate path before writeback. Temporary responses stay outside the knowledge base.",
+    "width": 1097,
+    "height": 1002
+  },
+  {
+    "fallback": "/images/blog/shared-knowledge-base-for-ai-agents/light/summarized_views.png",
+    "light": "/images/blog/shared-knowledge-base-for-ai-agents/light/summarized_views.svg",
+    "dark": "/images/blog/shared-knowledge-base-for-ai-agents/dark/summarized_views.svg",
+    "title": "Examples of Summarized Views",
+    "alt": "Three examples of summarized views, each shown as a horizontal sequence. Across time: daily notes to weekly reviews to a monthly summary. Across a project: meeting notes and work logs to decision summaries to a project overview. Across a topic: notes on individual sources to summaries of related ideas to a topic overview. Each view keeps links to its supporting material.",
+    "width": 1247,
+    "height": 927
+  },
+  {
+    "fallback": "/images/blog/shared-knowledge-base-for-ai-agents/light/synchronization_models.png",
+    "light": "/images/blog/shared-knowledge-base-for-ai-agents/light/synchronization_models.svg",
+    "dark": "/images/blog/shared-knowledge-base-for-ai-agents/dark/synchronization_models.svg",
+    "title": "Access and Synchronization Models",
+    "alt": "Three access and synchronization models side by side. Central access connects two devices to a shared service holding the knowledge base. Server-mediated synchronization exchanges changes between a server copy and local copies on each device. Peer-to-peer synchronization exchanges changes among devices that each hold a local copy. Examples include Notion for central access; iCloud, Google Drive, Dropbox, and Obsidian Sync for server-mediated synchronization; and Syncthing for peer-to-peer synchronization.",
+    "width": 1632,
+    "height": 787
+  }
+]
