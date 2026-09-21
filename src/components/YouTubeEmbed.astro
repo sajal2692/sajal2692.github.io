@@ -8,7 +8,7 @@ const { id, title } = Astro.props;
 const watchUrl = `https://www.youtube.com/watch?v=${id}`;
 ---
 
-<figure class="session-video" data-track="post-video">
+<figure class="session-video not-prose" data-track="post-video">
   <youtube-embed data-video-id={id} data-video-title={title}>
     <a
       class="video-poster focus-outline"
@@ -94,6 +94,8 @@ const watchUrl = `https://www.youtube.com/watch?v=${id}`;
     width: 100%;
     height: 100%;
     object-fit: contain;
+    margin: 0;
+    border: 0;
   }
   .play-control {
     position: absolute;

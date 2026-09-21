@@ -11,7 +11,7 @@ import getPostBody from "@utils/getPostBody";
 import ShareLinks from "@components/ShareLinks.astro";
 import Newsletter from "@components/Newsletter.astro";
 import RelatedPosts from "@components/RelatedPosts.astro";
-import YouTubeEmbed from "@components/YouTubeEmbed.astro";
+import PostContent from "@components/PostContent.astro";
 import { formatPostDate, toIsoDate } from "@utils/formatPostDate";
 
 export interface Props {
@@ -145,15 +145,15 @@ const railHeadings = headings.filter(
             {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
           </ul>
 
-          {youtube && <YouTubeEmbed {...youtube} />}
-
           <article
             id="article"
             role="article"
             class="prose"
             data-track="post-body"
           >
-            <Content />
+            <PostContent youtube={youtube}>
+              <Content />
+            </PostContent>
           </article>
 
           <RelatedPosts posts={relatedPosts} />
