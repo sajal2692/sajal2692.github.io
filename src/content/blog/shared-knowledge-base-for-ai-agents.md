@@ -10,6 +10,9 @@ tags:
   - ai-engineering
   - ai-coding
 description: "Build a shared knowledge base that you and your AI agents can use across tools and devices, with common notes, instructions, skills, and workflows."
+youtube:
+  id: u-ACrRWdn58
+  title: "Zero to Agent in 30 Minutes: Build a Shared Knowledge Base for All Your Agents with Sajal Sharma"
 ---
 
 ## Introduction

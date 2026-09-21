@@ -29,6 +29,17 @@ https://sajalsharma.com/posts/shared-knowledge-base-for-ai-agents/
 - Mobile TOC opens and anchors work. The synchronization diagram has a labelled,
   keyboard-focusable scroll region; horizontal scrolling reaches all models
   without page overflow. Full-size SVG links work by keyboard.
+- The O’Reilly session thumbnail sits above the introduction. The player loads
+  only after activation; mouse click, Enter, and Space all replace the poster
+  with a titled YouTube privacy-enhanced iframe and move focus into it.
+  Actual playback was verified on desktop and 320px mobile, in both themes,
+  with no page overflow or console errors. Navigation back to the article
+  restores a working poster. The thumbnail is 1280 × 720 and loads successfully.
+- The optional YouTube frontmatter leaves the Markdown body unchanged. The
+  poster remains a normal YouTube link without JavaScript, and the separate
+  “Watch on YouTube” link remains available after playback starts. Existing
+  session links remain in RSS and text exports. Explicit `related:check` still
+  passes without regenerating embeddings.
 
 ## Existing repository check failures
 
@@ -36,12 +47,24 @@ https://sajalsharma.com/posts/shared-knowledge-base-for-ai-agents/
 `gtag` in `src/layouts/Layout.astro` (lines 168, 170, 171 on the base branch).
 
 `npm run format:check` encounters the existing `Layout.astro` parser error and
-formatting warnings in `.github/workflows/deploy.yml`,
+formatting warnings in `.github/scripts/send-newsletter.mjs`, `.github/workflows/deploy.yml`,
 `.github/workflows/send-newsletter.yml`, `public/katex/katex.min.css`, `README.md`,
 `src/assets/logo.tsx`, and `src/components/Newsletter.astro`. These files are
 unchanged. Only changed source files were formatted.
 
 ## Screenshots
+
+Video preview on desktop (1200 × 1000 CSS viewport):
+
+| Light                                                       | Dark                                                      |
+| ----------------------------------------------------------- | --------------------------------------------------------- |
+| ![Session thumbnail in light mode](video-desktop-light.png) | ![Session thumbnail in dark mode](video-desktop-dark.png) |
+
+Video preview on narrow mobile (320 × 800 CSS viewport):
+
+| Light                                                             | Dark                                                            |
+| ----------------------------------------------------------------- | --------------------------------------------------------------- |
+| ![Mobile session thumbnail in light mode](video-mobile-light.png) | ![Mobile session thumbnail in dark mode](video-mobile-dark.png) |
 
 Desktop diagram evidence (1200 × 833 CSS viewport):
 

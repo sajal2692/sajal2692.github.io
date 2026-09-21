@@ -33,6 +33,12 @@ const blog = defineCollection({
         .optional(),
       description: z.string(),
       canonicalURL: z.string().optional(),
+      youtube: z
+        .object({
+          id: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
+          title: z.string(),
+        })
+        .optional(),
     }),
 });
 
