@@ -118,7 +118,8 @@ async function createBroadcast({ subject, content, description }) {
       subject,
       content,
       description,
-      email_layout_template: "Text only",
+      // Use the account's default email template and keep the broadcast a draft.
+      send_at: null,
       public: false,
     }),
   });
@@ -170,6 +171,7 @@ function discoverPosts() {
       description: frontmatter.description || "",
       pubDate,
       author: frontmatter.author || "Sajal Sharma",
+      youtube: frontmatter.youtube,
       content,
     });
   }
@@ -182,16 +184,34 @@ function discoverPosts() {
 // Markdown to email HTML
 // ---------------------------------------------------------------------------
 
-function rewriteUrls(html) {
+function rewriteUrls(html, postUrl) {
   return html.replace(
-    /(src|href)="(?!https?:\/\/|mailto:|#)([^"]+)"/g,
+    /(src|href)="(?!https?:\/\/|mailto:)([^"]+)"/g,
     (match, attr, url) => {
-      const absoluteUrl = url.startsWith("/")
-        ? `${SITE_URL}${url}`
-        : `${SITE_URL}/${url}`;
+      const absoluteUrl = url.startsWith("#")
+        ? `${postUrl}${url}`
+        : url.startsWith("/")
+          ? `${SITE_URL}${url}`
+          : `${SITE_URL}/${url}`;
       return `${attr}="${absoluteUrl}"`;
     }
   );
+}
+
+function insertVideoPreview(markdown, youtube) {
+  if (!youtube || !/^[A-Za-z0-9_-]{11}$/.test(youtube.id ?? "")) {
+    return markdown;
+  }
+
+  const watchUrl = `https://www.youtube.com/watch?v=${youtube.id}`;
+  const title = escapeHtml(youtube.title || "Watch the video on YouTube");
+  const preview = `<p><a href="${watchUrl}"><img src="https://i.ytimg.com/vi/${youtube.id}/maxresdefault.jpg" alt="${title}" width="520"></a><br><a href="${watchUrl}">Watch the session on YouTube</a></p>`;
+  const toc = /^## Table of contents[ \t]*$/im;
+
+  // Match the article's placement before its TOC; email omits the TOC itself.
+  return toc.test(markdown)
+    ? markdown.replace(toc, heading => `${preview}\n\n${heading}`)
+    : `${preview}\n\n${markdown}`;
 }
 
 function stripTableOfContents(markdown) {
@@ -211,14 +231,13 @@ function stripMath(markdown) {
 }
 
 function convertToEmailHtml(post) {
-  let markdown = post.content;
+  let markdown = insertVideoPreview(post.content, post.youtube);
   markdown = stripTableOfContents(markdown);
   markdown = stripMath(markdown);
 
-  const bodyHtml = marked.parse(markdown, { async: false });
-  const rewrittenHtml = rewriteUrls(bodyHtml);
-
   const postUrl = `${SITE_URL}/posts/${post.slug}/`;
+  const bodyHtml = marked.parse(markdown, { async: false });
+  const rewrittenHtml = rewriteUrls(bodyHtml, postUrl);
   const formattedDate = post.pubDate.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -444,7 +463,9 @@ async function main() {
   if (TARGET_SLUG) {
     posts = posts.filter(p => p.slug === TARGET_SLUG);
     if (posts.length === 0) {
-      console.error(`ERROR: Post with slug "${TARGET_SLUG}" not found among eligible posts.`);
+      console.error(
+        `ERROR: Post with slug "${TARGET_SLUG}" not found among eligible posts.`
+      );
       process.exit(1);
     }
   } else if (posts.length > 1) {
