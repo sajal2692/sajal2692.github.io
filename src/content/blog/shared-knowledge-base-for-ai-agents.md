@@ -9,6 +9,7 @@ tags:
   - ai-agents
   - ai-engineering
   - ai-coding
+  - personal-ai
 description: "Build a shared knowledge base that you and your AI agents can use across tools and devices, with common notes, instructions, skills, and workflows."
 youtube:
   id: u-ACrRWdn58

@@ -3,7 +3,7 @@
     "schemaVersion": 1,
     "model": "text-embedding-3-large",
     "dimensions": 1024,
-    "corpusHash": "sha256:373c92084bafe8c7bf5e7775b3f2152804c61b9a23f7aa51452a11bdad1436e2",
+    "corpusHash": "sha256:b0e525ad103cc0bfbb9ce2686a730377062e57e480e85a8ac6f6f1b09d9c1a2c",
     "rankingConfigHash": "sha256:95e9fcc0007ef14e4a5c38ee5b226c5909947b384796b02ac565b18f760665c7"
   },
   "posts": {
