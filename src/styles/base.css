@@ -318,6 +318,30 @@
   .prose img {
     @apply mx-auto my-2 border border-skin-line;
   }
+  /* Registered diagram variants follow the site's saved/manual theme. Hiding
+     the whole link also removes the inactive image from keyboard and AX trees. */
+  .prose .themed-diagram .diagram-light,
+  html[data-theme="dark"] .prose .themed-diagram .diagram-dark {
+    display: block;
+  }
+  .prose .themed-diagram .diagram-dark,
+  html[data-theme="dark"] .prose .themed-diagram .diagram-light {
+    display: none;
+  }
+  .prose .themed-diagram img {
+    width: 100%;
+    height: auto;
+    margin: 0;
+  }
+  /* Keep the three-column comparison readable without widening the page. */
+  .prose .diagram-scroll {
+    @apply focus-outline;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .prose .diagram-scroll > a {
+    min-width: 64rem;
+  }
   /* Raw embeds carry their own width attribute (one post ships a 960px slide
      deck), which pushed the whole document sideways once the measure narrowed. */
   .prose iframe,
