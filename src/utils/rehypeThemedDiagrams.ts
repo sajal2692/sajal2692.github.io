@@ -1,7 +1,11 @@
-import type { Element, Root } from "hast";
+import type { Element, ElementContent, Root } from "hast";
 import diagrams from "../data/blog-diagrams.json";
 
-/** Enhance only registered diagrams; raw Markdown keeps one PNG for feeds. */
+/**
+ * Enhance only registered diagrams; raw Markdown keeps one PNG for feeds.
+ * An emphasized line directly under the image (`_Caption_`) becomes the
+ * figure caption in place of the generic full-size hint.
+ */
 export default function rehypeThemedDiagrams() {
   return (tree: Root) => walk(tree);
 }
@@ -9,10 +13,19 @@ export default function rehypeThemedDiagrams() {
 function walk(parent: Root | Element): void {
   parent.children = parent.children.map(node => {
     if (node.type !== "element") return node;
-    const image =
-      node.tagName === "p" && node.children.length === 1
-        ? node.children[0]
+    const parts =
+      node.tagName === "p"
+        ? node.children.filter(
+            child => !(child.type === "text" && child.value.trim() === "")
+          )
+        : [];
+    const caption =
+      parts.length === 2 &&
+      parts[1].type === "element" &&
+      parts[1].tagName === "em"
+        ? parts[1].children
         : null;
+    const image = parts.length === 1 || caption ? parts[0] : null;
     const diagram =
       image?.type === "element" && image.tagName === "img"
         ? diagrams.find(item => item.fallback === image.properties.src)
@@ -71,13 +84,13 @@ function walk(parent: Root | Element): void {
           type: "element",
           tagName: "figcaption",
           properties: {},
-          children: [
+          children: caption ?? [
             {
               type: "text",
               value: wide
                 ? "Scroll to see all three models. Select the diagram to open it at full size."
                 : "Select the diagram to open it at full size.",
-            },
+            } satisfies ElementContent,
           ],
         },
       ],
