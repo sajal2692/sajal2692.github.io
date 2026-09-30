@@ -10,7 +10,7 @@ tags:
   - personal-ai
   - openclaw
   - consumer-ai
-description: "Meta's Muse, OpenAI's Dots, and Instinct brought personal agents to the mainstream within a year of OpenClaw. Most people still use AI to ask questions, and trust now depends on who you let hold your data."
+description: "Within a year of OpenClaw, Meta, OpenAI, and Instinct launched personal agents. What stands between asking AI questions and handing it your errands?"
 ogImage: "/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-timeline.png"
 canonicalURL: ""
 ---
