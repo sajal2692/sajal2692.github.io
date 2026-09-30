@@ -3,7 +3,7 @@
     "schemaVersion": 1,
     "model": "text-embedding-3-large",
     "dimensions": 1024,
-    "corpusHash": "sha256:b0e525ad103cc0bfbb9ce2686a730377062e57e480e85a8ac6f6f1b09d9c1a2c",
+    "corpusHash": "sha256:adb7b529291e1d509d65f8ad9107245ffd7ebb829af9adcdef944018b88a49c6",
     "rankingConfigHash": "sha256:95e9fcc0007ef14e4a5c38ee5b226c5909947b384796b02ac565b18f760665c7"
   },
   "posts": {
@@ -32,8 +32,8 @@
       "sandboxing-an-ai-agent",
       "overview-multi-agent-frameworks",
       "introduction-to-agentic-rag",
-      "effective-ai-coding",
-      "shared-knowledge-base-for-ai-agents"
+      "personal-agents-have-gone-mainstream",
+      "effective-ai-coding"
     ],
     "building-ai-agents-langgraph-oreilly": [
       "yale-guest-lecture-february-2025-ai-agents-langgraph",
@@ -59,8 +59,8 @@
     "effective-ai-coding": [
       "adventures-claude-code",
       "shared-knowledge-base-for-ai-agents",
-      "agentic-workflows-to-agent-harnesses",
       "2025-career-in-review",
+      "agentic-workflows-to-agent-harnesses",
       "understanding-mcp"
     ],
     "introduction-to-agentic-rag": [
@@ -72,10 +72,10 @@
     ],
     "openclaw-experiments": [
       "adventures-claude-code",
+      "personal-agents-have-gone-mainstream",
       "effective-ai-coding",
       "2025-career-in-review",
-      "shared-knowledge-base-for-ai-agents",
-      "sandboxing-an-ai-agent"
+      "shared-knowledge-base-for-ai-agents"
     ],
     "overview-multi-agent-frameworks": [
       "agentic-workflows-to-agent-harnesses",
@@ -84,31 +84,38 @@
       "comprehensive-agentic-rag",
       "effective-ai-coding"
     ],
+    "personal-agents-have-gone-mainstream": [
+      "agentic-workflows-to-agent-harnesses",
+      "openclaw-experiments",
+      "sandboxing-an-ai-agent",
+      "shared-knowledge-base-for-ai-agents",
+      "product-defensibility-ai-applications"
+    ],
     "product-defensibility-ai-applications": [
       "effective-ai-coding",
       "adventures-claude-code",
       "understanding-mcp",
-      "openclaw-experiments",
-      "agentic-workflows-to-agent-harnesses"
+      "personal-agents-have-gone-mainstream",
+      "openclaw-experiments"
     ],
     "sandboxing-an-ai-agent": [
       "agentic-workflows-to-agent-harnesses",
+      "personal-agents-have-gone-mainstream",
       "shared-knowledge-base-for-ai-agents",
-      "openclaw-experiments",
       "effective-ai-coding",
-      "overview-multi-agent-frameworks"
+      "openclaw-experiments"
     ],
     "shared-knowledge-base-for-ai-agents": [
       "effective-ai-coding",
       "agentic-workflows-to-agent-harnesses",
       "sandboxing-an-ai-agent",
-      "understanding-mcp",
-      "openclaw-experiments"
+      "personal-agents-have-gone-mainstream",
+      "understanding-mcp"
     ],
     "understanding-mcp": [
       "effective-ai-coding",
-      "shared-knowledge-base-for-ai-agents",
       "overview-multi-agent-frameworks",
+      "shared-knowledge-base-for-ai-agents",
       "adventures-claude-code",
       "product-defensibility-ai-applications"
     ],
