@@ -11,11 +11,11 @@ tags:
   - openclaw
   - consumer-ai
 description: "Meta's Muse, OpenAI's Dots, and Instinct brought personal agents to the mainstream within a year of OpenClaw. Most people still use AI to ask questions, and trust now depends on who you let hold your data."
-ogImage: "/images/blog/personal-agents-have-gone-mainstream/personal-agents-timeline.png"
+ogImage: "/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-timeline.png"
 canonicalURL: ""
 ---
 
-![A timeline from November 2025 to September 2026. Open-source milestones: OpenClaw, Mac minis selling out, Hermes Agent, and OpenClaw 2.0. Large-company milestones: OpenClaw's creator joining OpenAI, Google Gemini Spark, Meta Muse, OpenAI Dots, and Instinct at a $10B valuation.](/images/blog/personal-agents-have-gone-mainstream/personal-agents-timeline.png)
+![A timeline from November 2025 to September 2026. Open-source milestones: OpenClaw, Mac minis selling out, Hermes Agent, and OpenClaw 2.0. Large-company milestones: OpenClaw's creator joining OpenAI, Google Gemini Spark, Meta Muse, OpenAI Dots, and Instinct at a $10B valuation.](/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-timeline.png)
 _Personal agents, from hobby project to mainstream_
 
 In the space of three weeks, Meta [launched Muse](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/) and watched it [climb to the top of the US App Store](https://techcrunch.com/2026/09/25/meta-is-putting-its-muscle-behind-muse-as-the-ai-app-takes-off/), OpenAI [announced Dots](https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/) at DevDay, and Instinct, a startup whose founder is 23, [raised \$1B at a \$10B valuation](https://fortune.com/2026/09/30/noah-shinn-instinct-ai-assistant-meta-muse-alexandr-wang-tech-series-c-ai-agent-mark-zuckerberg/) for an assistant you text like a friend. All three point to the same shift: from an assistant that answers your questions to one that gets things done for you, like booking travel, cancelling a subscription, or sitting through a phone call while you do something else.
@@ -40,7 +40,7 @@ That makes sense to me once you look at what delegation involves. Asking a quest
 
 More than 900 million people a week have a very capable assistant in ChatGPT, and after nearly four years of chatting, most of them treat it as a better search box and writing helper.
 
-![A spectrum from asking to getting things done. Asking examples: explain this lease clause, rewrite my email, plan a weekend in Victoria. Getting-things-done examples: book the ferry and hotel, cancel my gym membership, sit through the insurance call. Most ChatGPT use sits at the asking end. Getting things done involves three steps: pick the task, grant access, and live with the result.](/images/blog/personal-agents-have-gone-mainstream/personal-agents-asking-to-doing.png)
+![A spectrum from asking to getting things done. Asking examples: explain this lease clause, rewrite my email, plan a weekend in Victoria. Getting-things-done examples: book the ferry and hotel, cancel my gym membership, sit through the insurance call. Most ChatGPT use sits at the asking end. Getting things done involves three steps: pick the task, grant access, and live with the result.](/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-asking-to-doing.png)
 _From asking questions to getting things done_
 
 ## Why the cute personas
@@ -59,7 +59,7 @@ There's also the question of what happens when you want to switch. A year into u
 
 Part of the appeal of OpenClaw and Hermes for people like me is that the memory and credentials sit on a machine I own, in plain files I can read and move. The tradeoff is that I'm the one managing the risks, from vetting every skill I install to keeping that machine locked down. As these agents take on more of your errands, choosing which company to trust becomes the main decision.
 
-![A comparison of where a personal agent's data lives. On your machine (OpenClaw, Hermes): memory is plain files on a machine you own, logins and keys stay on your machine, you vet every skill and keep the machine locked down, and you take your files to the next agent. In their cloud (Muse, Dots, Gemini Spark): memory is stored on the company's servers, email, calendar, and payments are linked to their agent, the company runs security with isolated VMs and approval checks, and switching means rebuilding what the agent knew about you.](/images/blog/personal-agents-have-gone-mainstream/personal-agents-where-your-data-lives.png)
+![A comparison of where a personal agent's data lives. On your machine (OpenClaw, Hermes): memory is plain files on a machine you own, logins and keys stay on your machine, you vet every skill and keep the machine locked down, and you take your files to the next agent. In their cloud (Muse, Dots, Gemini Spark): memory is stored on the company's servers, email, calendar, and payments are linked to their agent, the company runs security with isolated VMs and approval checks, and switching means rebuilding what the agent knew about you.](/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-where-your-data-lives.png)
 _Where your data lives_
 
 ## Where this goes next

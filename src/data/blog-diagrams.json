@@ -43,5 +43,32 @@
     "alt": "Three access and synchronization models side by side. Central access connects two devices to a shared service holding the knowledge base. Server-mediated synchronization exchanges changes between a server copy and local copies on each device. Peer-to-peer synchronization exchanges changes among devices that each hold a local copy. Examples include Notion for central access; iCloud, Google Drive, Dropbox, and Obsidian Sync for server-mediated synchronization; and Syncthing for peer-to-peer synchronization.",
     "width": 1632,
     "height": 787
+  },
+  {
+    "fallback": "/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-timeline.png",
+    "light": "/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-timeline.png",
+    "dark": "/images/blog/personal-agents-have-gone-mainstream/dark/personal-agents-timeline.png",
+    "title": "Personal Agents, from Hobby Project to Mainstream",
+    "alt": "A timeline from November 2025 to September 2026. Open-source milestones: OpenClaw, Mac minis selling out, Hermes Agent, and OpenClaw 2.0. Large-company milestones: OpenClaw's creator joining OpenAI, Google Gemini Spark, Meta Muse, OpenAI Dots, and Instinct at a $10B valuation.",
+    "width": 1600,
+    "height": 900
+  },
+  {
+    "fallback": "/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-asking-to-doing.png",
+    "light": "/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-asking-to-doing.png",
+    "dark": "/images/blog/personal-agents-have-gone-mainstream/dark/personal-agents-asking-to-doing.png",
+    "title": "From Asking Questions to Getting Things Done",
+    "alt": "A spectrum from asking to getting things done. Asking examples: explain this lease clause, rewrite my email, plan a weekend in Victoria. Getting-things-done examples: book the ferry and hotel, cancel my gym membership, sit through the insurance call. Most ChatGPT use sits at the asking end. Getting things done involves three steps: pick the task, grant access, and live with the result.",
+    "width": 1600,
+    "height": 900
+  },
+  {
+    "fallback": "/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-where-your-data-lives.png",
+    "light": "/images/blog/personal-agents-have-gone-mainstream/light/personal-agents-where-your-data-lives.png",
+    "dark": "/images/blog/personal-agents-have-gone-mainstream/dark/personal-agents-where-your-data-lives.png",
+    "title": "Where Your Data Lives",
+    "alt": "A comparison of where a personal agent's data lives. On your machine (OpenClaw, Hermes): memory is plain files on a machine you own, logins and keys stay on your machine, you vet every skill and keep the machine locked down, and you take your files to the next agent. In their cloud (Muse, Dots, Gemini Spark): memory is stored on the company's servers, email, calendar, and payments are linked to their agent, the company runs security with isolated VMs and approval checks, and switching means rebuilding what the agent knew about you.",
+    "width": 1600,
+    "height": 900
   }
 ]
